@@ -1,0 +1,22 @@
+@import "tailwindcss";
+@custom-variant dark (&:is(.dark *));
+@theme inline {
+  --color-background: var(--background); --color-foreground: var(--foreground);
+  --color-card: var(--card); --color-card-foreground: var(--foreground);
+  --color-primary: var(--primary); --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted); --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border); --color-input: var(--border); --color-ring: var(--primary);
+  --color-destructive: var(--destructive);
+  --font-sans: "Segoe UI", "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+:root { --background:#f7f8f5; --foreground:#1f3029; --card:#fff; --primary:#245c47; --primary-foreground:#fff; --muted:#edf1eb; --muted-foreground:#5c6c62; --border:#dfe6de; --destructive:#b52e35; color-scheme:light; }
+.dark { --background:#101b16; --foreground:#e7eee7; --card:#19271f; --primary:#91c4a3; --primary-foreground:#102219; --muted:#23342a; --muted-foreground:#a2b5a6; --border:#34483b; --destructive:#ff999e; color-scheme:dark; }
+@layer base { * { border-color:var(--border); } body { background:var(--background); color:var(--foreground); font-family:var(--font-sans); -webkit-font-smoothing:antialiased; } button:not(:disabled), a, select, summary { cursor:pointer; } :focus-visible { outline:2px solid var(--primary); outline-offset:3px; } ::selection { background:#cfe4d4; color:#173c2b; } }
+.table-wrap { overflow-x:auto; }
+.data-table { width:100%; border-collapse:collapse; text-align:left; font-size:0.875rem; white-space:nowrap; }
+.data-table th { padding:1rem 1.25rem; font-size:0.75rem; font-weight:600; color:var(--muted-foreground); background:var(--muted); }
+.data-table td { padding:1rem 1.25rem; border-top:1px solid var(--border); }
+.data-table tbody tr:hover { background:color-mix(in srgb,var(--muted) 45%,transparent); }
+.number { font-variant-numeric:tabular-nums; }
+@media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:0.01ms!important; transition-duration:0.01ms!important; scroll-behavior:auto!important; } }
+@media print { @page { size:auto; margin:3mm; } html,body { background:white!important; color:black!important; } .no-print { display:none!important; } .print-page { margin:0!important; padding:0!important; max-width:none!important; } .receipt { width:72mm!important; margin:0!important; padding:0!important; border:0!important; box-shadow:none!important; color:black!important; background:white!important; font-size:11px!important; } .receipt * { color:black!important; } .receipt h1 { font-size:26px!important; } }

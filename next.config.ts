@@ -1,15 +1,18 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
-const nextConfig: NextConfig = {
-  /* config options here */
-  turbopack: {
-    rules: {
-      "*.css": {
-        loaders: ["@tailwindcss/turbopack"],
-        as: "*.css",
-      },
-    },
+const config: NextConfig = {
+  poweredByHeader: false,
+  agentRules: false,
+  experimental: { agentFeedback: false },
+  async headers() {
+    return [{ source: "/:path*", headers: [
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "Referrer-Policy", value: "same-origin" },
+      { key: "X-Frame-Options", value: "DENY" },
+      { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+      { key: "Cache-Control", value: "private, no-store" },
+    ] }];
   },
 };
-
-export default nextConfig;
+export default createNextIntlPlugin("./src/i18n/request.ts")(config);
