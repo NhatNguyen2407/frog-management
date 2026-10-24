@@ -1,129 +1,172 @@
-# The Frog Operations — Phase 1
+# Frog Management
 
-Private staff operations for events, counter orders, tickets, a live queue, inventory, costs and owner reporting. Built with Next.js App Router, TypeScript, Tailwind CSS, owned shadcn/ui components, Supabase, next-intl and Recharts.
+A staff-only management app for The Frog Art Space. I'm building it to replace the workshop spreadsheets with one place to manage events, counter sales, tickets, the live queue, inventory, expenses and financial reporting.
 
-## Delivery status
+The first business unit is a creative workshop with a small F&B catalogue. The data model supports additional business units later, but a coffee-specific workflow has not been built.
 
-- All Phase 1 screens and database migrations are implemented.
-- The production build, calculation/formatting/translation tests, and isolated Postgres database assertions have passed.
-- No hosted Supabase project has been connected, linked or modified. This was intentionally deferred by the owner.
-- Live Google OAuth, Supabase Realtime delivery, physical receipt printing and authenticated device acceptance tests remain to be verified after the new project is configured. Database tests use actual Postgres RLS with minimal test-only Auth interfaces; they do not simulate a successful Google login.
-- Without environment settings the app renders a translated, private workspace setup screen. There is no demo login, seeded staff account or authentication bypass.
+## Project status
 
-## Run the app now
+**Phase 1 has been implemented in the repository, but live acceptance testing is still pending.**
 
-Requirements: Node.js 24+, npm, and the approved packages in `package-lock.json`.
+The repository contains the screens, SQL migrations, seed catalogue and automated tests. The initial implementation reported passing local build and database tests. Those results have not been rerun as part of this documentation update.
+
+A hosted Supabase connection, Google OAuth sign-in, Realtime updates on real devices and physical receipt printing still need to be verified before using the app for real sales. Without Supabase environment variables, the app shows a setup screen rather than a working demo.
+
+This is an internal application, not an online store. There are no customer accounts, online payments or public registration pages in Phase 1.
+
+## Features
+
+| Area | What is implemented | Access |
+| --- | --- | --- |
+| Events | Create events, set capacity and ticket prefix, switch active context | Owner |
+| Products | SKU catalogue, event availability, prices and unit costs | Owner |
+| Counter | Create orders with workshop and F&B items, optional ticket registration | Owner, staff |
+| Tickets | Sequential ticket numbers, status history, receipt printing | Owner, staff |
+| Queue | Operational queue and a separate TV display with Supabase Realtime subscription | Owner, staff |
+| Orders | Paid, Unpaid, Refunded and Cancelled statuses; cash or bank transfer | Owner, staff |
+| Inventory | Prepared stock, product-to-supply mappings, usage movements and alerts | Owner |
+| Costs | Record event expenses by category and date | Owner |
+| Dashboard | Paid revenue, costs, profit, margin, category breakdown and charts | Owner |
+| Operations dashboard | Queue and ticket counts without financial reporting | Staff |
+| Settings | Allowlisted Google accounts and owner/staff roles | Owner |
+
+The TV display requires an authenticated staff session. It is not a public screen.
+
+## Stack
+
+- Next.js 16 App Router, React 19 and TypeScript
+- Tailwind CSS 4 and shadcn/ui-style components
+- Supabase Postgres, Google Auth, RLS and Realtime
+- next-intl for Vietnamese and English
+- Recharts for reporting
+- Vercel-ready Next.js deployment
+
+## Run locally
+
+Requirements: Node.js 24 or later and npm. Open the repository folder in VS Code. You do not need to create another Next.js app or install React separately.
 
 ```powershell
-npm ci --ignore-scripts
+git clone https://github.com/NhatNguyen2407/frog-management.git
+cd frog-management
+npm ci
 npm run dev
 ```
 
-Open http://localhost:3000. Vietnamese is the default (`/vi`); English uses `/en`. `/display` redirects to the Vietnamese TV route, and the language-aware navigation opens the selected locale's display route.
+Open the local URL printed in the terminal, usually `http://localhost:3000`.
 
-The connection-pending screen works without Supabase configuration. To run the operational screens, complete the connection steps below.
+- `/vi` is the default Vietnamese route.
+- `/en` uses English.
+- `/vi/display` and `/en/display` are the queue display routes.
+
+Without a configured database, the setup screen is expected. It does not mean the workshop data is available yet.
+
+For a production-mode local check:
 
 ```powershell
 npm run build
 npm start
 ```
 
-## Environment variables
+## Configure Supabase
 
-Copy `.env.example` to `.env.local`. Never commit `.env.local` or put secret/service-role keys in browser code. The application does not require a service-role key: user requests retain their own RLS permissions.
+Use a **new Supabase project for Frog Management**. Do not point these migrations at an existing Dioxyzine Frog database.
 
-| Variable | Purpose |
+### 1. Environment variables
+
+Copy `.env.example` to `.env.local` and fill in the relevant values.
+
+| Variable | Used for |
 | --- | --- |
-| `NEXT_PUBLIC_SUPABASE_URL` | New project's Supabase API URL, or local URL reported by the CLI |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Browser-safe publishable key; never a secret or service-role key |
-| `NEXT_PUBLIC_SITE_URL` | Exact app origin; `http://localhost:3000` locally, deployed HTTPS origin on Vercel |
-| `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` | Google OAuth client ID for local Supabase CLI |
-| `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET` | Google OAuth secret for local Supabase CLI only |
-| `INITIAL_OWNER_EMAIL` | Google email used by the explicit owner bootstrap command |
-| `INITIAL_BUSINESS_UNIT_SLUG` | Bootstrap unit; `workshop` after seeding |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project API URL |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Browser-safe publishable key |
+| `NEXT_PUBLIC_SITE_URL` | App origin, e.g. `http://localhost:3000` |
+| `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` | Google OAuth for the local Supabase stack |
+| `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET` | Google OAuth for the local Supabase stack |
+| `INITIAL_OWNER_EMAIL` | Email used by the optional owner bootstrap script |
+| `INITIAL_BUSINESS_UNIT_SLUG` | Initial unit, normally `workshop` |
 
-The intended initial owner is `john.bibibi@gmail.com`, as supplied during setup planning. It has **not** been inserted into any hosted database. Set `INITIAL_OWNER_EMAIL` when ready; further team emails can be managed by an owner in Settings.
+The hosted Google OAuth credentials belong in Supabase Auth provider settings. Never commit `.env.local`, a service-role key or a Google client secret. The web app does not require a service-role key.
 
-## Connect a new hosted Supabase project later
+### 2. Apply the database
 
-Use a new project chosen for this app. Do not run these commands against either existing Dioxyzine Frog project without a separate instruction.
+Install the Supabase CLI separately if needed, and check `supabase --version` and `supabase db --help` before running commands.
 
-1. Create/select the new Supabase project, then authenticate the installed Supabase CLI and link this folder using that project's reference:
+For a new hosted project:
 
-   ```powershell
-   supabase login
-   supabase link --project-ref YOUR_NEW_PROJECT_REFERENCE
-   supabase db push
-   ```
+```powershell
+supabase login
+supabase link --project-ref YOUR_PROJECT_REF
+supabase db push --dry-run
+supabase db push --include-seed
+```
 
-2. Run `supabase/seed.sql` with the new project's SQL Editor, or through the linked CLI:
+Review the target project and dry-run output first. The migrations create the tables, RLS policies, operations and reporting views. The seed inserts one Workshop unit, two categories and 11 products at their initial prices. It does not create orders, customers, event expenses, stock counts or staff accounts.
 
-   ```powershell
-   supabase db query --linked --file supabase/seed.sql
-   ```
+`--include-seed` is used here because the seed file contains multiple SQL statements. Avoid passing the entire seed file to `supabase db query` as a single prepared query.
 
-   The seed is idempotent and includes one Workshop business unit, Workshop/F&B categories and exactly the requested 11 products and prices. Unknown unit costs are null. It includes no costs, stock counts, events, customers or staff accounts.
-
-3. In Supabase Auth, enable **Google only**. Disable email/password, anonymous sign-ins and other identity providers. In Google Cloud create a web OAuth client and add the Supabase callback URL shown by the provider configuration. Store the Google credentials in Supabase's provider settings.
-4. Set Supabase Auth's Site URL to the app origin and allow the exact app callback URL: `http://localhost:3000/auth/callback` locally, plus the deployed origin's `/auth/callback` when deploying. The app callback accepts a locale query parameter.
-5. In Auth Hooks, enable **Before User Created** and select `public.before_user_created`. This rejects accounts outside the active email allowlist before account creation. Ongoing RLS also checks active membership, including for already-issued tokens.
-6. Fill in the project URL, publishable key and app origin in `.env.local`.
-7. Bootstrap the initial owner only after verifying the linked project:
-
-   ```powershell
-   npm run db:bootstrap -- --linked
-   ```
-
-   This inserts an owner allowlist entry. It does not create a Google account. Then sign in normally with that approved account.
-8. Check that `queue_entries` is in the `supabase_realtime` publication. The security migration adds it. No customer phone numbers, item options, financial ledgers or audit payloads are published.
-9. Run the new project's Supabase security/performance advisors and the acceptance checklist below before staff use.
-
-After migrations have been applied, do not edit those migration files. Schema changes need approval and a new migration.
-
-## Optional full local Supabase
-
-Requires Docker Desktop, the Supabase CLI, and Google's local OAuth configuration. Supply the Google variables to the shell/CLI environment. In PowerShell you can set them for the current session; do not paste them into source files or commit them.
+For a fresh, disposable local Supabase environment with Docker:
 
 ```powershell
 supabase start
 supabase status
 ```
 
-Use the local API URL and browser-safe key reported by `supabase status` in `.env.local`. The CLI applies the migrations and catalogue seed to the new local stack on first start. Its configured Google signup hook is enabled by `supabase/config.toml`.
+The configured local stack loads migrations and `supabase/seed.sql`. Use the local API URL and publishable key printed by `supabase status`. Do not run `supabase db reset` on a database containing data you need to keep.
 
-```powershell
-npm run db:seed
-npm run db:bootstrap
-npm run dev
+### 3. Enable Google sign-in
+
+- Enable Google as the Supabase Auth provider and configure its callback in Google Cloud.
+- Set the Supabase Site URL to the app origin.
+- Allow the app's `/auth/callback` URL locally and for each approved deployment origin.
+- Enable the **Before User Created** Auth Hook, using `public.before_user_created`.
+- Set up at least one approved owner email before the first Google sign-in.
+
+For a new hosted project, the initial owner can be added using the Supabase SQL Editor after the seed is applied. Replace the placeholder with the intended Google account:
+
+```sql
+insert into public.staff_allowlist (business_unit_id, email, role, active)
+select id, lower('YOUR_GOOGLE_EMAIL'), 'owner', true
+from public.business_units
+where slug = 'workshop'
+on conflict (business_unit_id, email)
+do update set role = 'owner', active = true;
 ```
 
-`db:seed` re-runs only the catalogue seed; it does not reset a database. Do not use `supabase db reset` against a database whose data you need to preserve.
+The repository also includes an owner bootstrap script. Its CLI invocation should be checked against the installed CLI version before relying on it. Subsequent owner/staff accounts can be managed through Settings after sign-in.
 
-## First event
+## How the numbers work
 
-1. Sign in as owner and enter known unit costs in Products **before creating test sales**.
-2. Create an event in Events. Set its date, capacity and ticket prefix. New events start active and include all currently active products.
-3. Select the event in the global header. The chosen business unit and event are validated on each request.
-4. Add inventory items, enter preparation counts and thresholds, then connect products to the supplies they consume. No material usage is guessed from workshop-specific product names.
-5. Add any staff Google emails through Settings. Choose the staff role when they should only use counter operations, orders, tickets and the queue.
-6. Use Counter to combine Workshop and F&B items. Optional details are stored as JSONB on each order item. A new ticket and its Unpaid or Paid order are created in one transaction.
+- All money values are stored as integer VND, with locale-aware display formatting.
+- Revenue includes **Paid** orders only. Unpaid, Refunded, Cancelled and soft-deleted orders contribute no revenue.
+- Order items retain sale-time SKU, name, category, price and unit-cost snapshots. A price change to a sold SKU requires a new SKU.
+- Profit = Paid revenue - cost of goods for Paid items - event operating costs. If a sold item's unit cost is missing, profit and margin are shown as unavailable.
+- An order can contain both workshop and F&B items.
+- Stock usage is recorded for non-cancelled orders, including Unpaid and Refunded orders. Cancelling, soft-deleting or voiding an item reverses the corresponding recorded usage. A refund does not imply a physical return.
+- Ticket numbers are generated per event. Tickets move through Registered, Ticket printed, Waiting, In progress and Completed, with a separate Cancelled state.
+- Printing records a print request and reprint count. The browser cannot confirm that paper was successfully printed.
+- Events and operational data are associated with a business unit. The SQL migrations use RLS and restricted functions to enforce access.
 
-## Operational rules
+Be careful not to count the same material purchase both as a product unit cost and as an event expense.
 
-- Money is stored as integer VND. Vietnamese displays `1.000.000 ₫`, English `1,000,000 ₫`. Dates display `dd/MM/yyyy`; timestamps and reporting buckets use `Asia/Ho_Chi_Minh`.
-- Revenue includes only Paid orders that are not soft-deleted, and only non-voided items. Unpaid, Refunded and Cancelled orders contribute no revenue.
-- Prices, SKU, product name, category and unit cost are snapshotted at order creation. Sold SKU prices are database-locked; use a new SKU for a new price. Updating current unit cost does not rewrite historical cost snapshots.
-- Profit = Paid revenue − snapshotted costs of Paid items − event operating costs. Missing sold-item unit costs leave profit/margin incomplete. Event costs should not repeat purchases already represented in unit costs.
-- Unpaid, Paid and Refunded orders consume mapped physical stock. Payment alone does not consume stock again. Cancelled orders, soft-deleted orders and voided items reverse their usage. Quantity edits apply only the difference.
-- A refund records money being returned; it does not imply a physical stock return. The confirmation dialog explains this.
-- Null stock preparation means **not entered**; zero means **none prepared**. Negative remaining stock is visible as Out rather than silently clamped to zero.
-- Stock mappings are snapshotted per order item. Editing a mapping affects future items; it does not recalculate old orders.
-- Ticket flow is Registered → Ticket printed → Waiting → In progress → Completed. Any non-terminal ticket can be Cancelled. Ticket cancellation and order/payment cancellation are separate, important for mixed Workshop/F&B orders.
-- The first print request changes Registered to Ticket printed. Reprints increase the print counter. Browser print APIs cannot confirm physical printer success, so the counter records print requests.
-- Orders are archived with `deleted_at`; application roles have no hard-delete grant.
-- Staff can see current sale prices and the checkout amount for an Unpaid order, or the immediate result of an order they just create. They cannot query the protected historical financial ledger, unit costs, cost rows, owner reports or financial audit data. The staff dashboard contains operational counts only. As in any counter system, staff may infer business activity from operational information they are allowed to handle.
+## Project structure
 
-## Verification
+```text
+src/app/                 Routes, layouts and auth callback
+src/components/          Shared components and staff navigation
+src/features/            Counter, tickets, orders, inventory, reports and settings
+src/lib/domain/          Finance and inventory calculations
+src/lib/permissions/     Authenticated workspace context
+src/lib/supabase/        Supabase clients, queries and types
+src/i18n/ + messages/    Vietnamese and English UI strings
+supabase/migrations/     Four Phase 1 SQL migrations
+supabase/seed.sql        Initial product catalogue
+scripts/                 Owner bootstrap and database test runner
+tests/                   Unit tests and SQL permission/operations assertions
+```
+
+## Tests
+
+Run these from the repository root:
 
 ```powershell
 npm test
@@ -131,56 +174,39 @@ npm run typecheck
 npm run build
 ```
 
-The Node test suite covers revenue inclusion/exclusion, mixed categories, profit, unknown unit costs, zero revenue, negative profit, safe integer money, stock deductions/reversals, idempotent adjustments, missing-versus-zero stock, fractional supplies, exact VND formatting, Vietnam date boundaries and translation-key parity.
+The current unit suite covers revenue, profit, stock calculations, formatting and translation-key parity.
 
-### Isolated database tests
-
-Requires Docker and the standard `postgres:17` image. The runner refuses to download an image implicitly; if it is not already available, explicitly obtain it first:
+Database tests require Docker and a locally available `postgres:17` image:
 
 ```powershell
 docker pull postgres:17
 npm run test:db
 ```
 
-The runner uses an isolated container named `frog-operations-phase1-tests`, no published ports, and no container network. It loads minimal test-only Supabase Auth interfaces, the real migration SQL and disposable fixtures inside one transaction. Every schema/data change is rolled back, and the container is stopped. It does not apply migration history or modify a hosted project.
+The database test runner starts an isolated PostgreSQL container, exercises migrations and permissions, and rolls back its test fixtures. It does not test Google OAuth, actual Supabase Realtime delivery or a real printer.
 
-Assertions exercise actual Postgres permissions/RLS as owner, staff, non-allowlisted, revoked and anonymous users. They cover private financial tables/views, mutation restrictions, cross-unit access, signup allowlist, last-owner protection, ticket transitions/printing, duplicate-submit protection, SKU/cost snapshots, stock edits/reversals and Paid-only reports.
+### Acceptance checks before live use
 
-### Acceptance checklist after connecting the new project
+- Allowlisted Google accounts can sign in; unapproved accounts cannot access business data.
+- Owner and staff restrictions work at the database level, not just in navigation.
+- Registering, printing, advancing and cancelling tickets updates the authenticated TV display.
+- An Unpaid order contributes no revenue; Paid contributes its amount; Refunded removes it.
+- Inventory usage and reversal match an order's mapped supplies.
+- Missing unit costs prevent misleading profit figures.
+- Vietnamese, English, light/dark themes and 360px / desktop layouts work on real devices.
+- Browser printing works with the actual receipt printer.
+- Migrations, seed, backup and restore procedures have been tested against a disposable environment.
 
-| Done item | How to verify |
-| --- | --- |
-| Approved staff signs in, outsider is blocked | Bootstrap owner, add a second Google email as staff, sign in with it. Try a third non-allowlisted account; expect rejection. Remove staff access and confirm existing tokens can no longer read records. |
-| Ticket → print → full queue flow | Open `/display` in another authenticated window with the same event selected. Register a ticket, open Print, request printing, then move it through Waiting, In progress and Completed. Check the TV updates without reloading. Cancel another ticket and verify it disappears. |
-| Payment controls revenue | Create a known-price Unpaid order. Confirm zero contribution to the owner report. Mark it Paid, verify its exact total, then mark Refunded and verify that contribution disappears. Cancel another Unpaid order and verify zero contribution. |
-| Database role restrictions | Run `npm run test:db`. In the configured project, use a staff session's publishable-key client to query `product_costs`, `order_item_financials`, `costs`, `audit_log`, `event_financials`, `product_revenue` and `revenue_over_time`; expect zero rows. Attempt owner mutations; expect denial. Do not test with service-role credentials. |
-| Inventory | Prepare 10 units, map one unit per product, and create an Unpaid order for two. Remaining stock becomes 8; paying keeps 8. Cancelling an Unpaid order restores its usage, while refunding retains physical usage. Test blank, zero and low-threshold counts. |
-| Vietnamese/English and responsive layouts | Use browser device tools at 360px and 1920px. Check Counter, ticket actions, Orders, navigation, forms, the owner/staff dashboards and TV display in both languages and both themes. Confirm no page-wide horizontal overflow and keyboard focus visibility. |
-| Receipt | Use 80mm paper in the browser's print settings, print at 100% scale and inspect the 72mm content width. Test first print, reprint and cancelling the browser dialog; counters represent requests. |
-| Local setup | Follow the steps above from a fresh dependency install; `.env.local` remains ignored and the seed creates no customers or costs. |
-| Calculations | `npm test` passes; compare a known Paid order, its snapshotted costs and one operating expense with the owner dashboard. |
+## Next priorities
 
-## Vercel deployment
+Before opening the workshop, I want to focus on real Supabase integration, end-to-end acceptance tests, repeatable backups and CI checks. The current repository has tests but no committed GitHub Actions workflow.
 
-Import this folder as a Next.js project. Use Node.js 24 and the `npm run build` command. Set the three `NEXT_PUBLIC_*` values separately for Preview and Production. Configure Google/Supabase redirect URLs for each approved deployment origin; do not put Google OAuth secrets into public environment variables. No deployment has been created by this task.
+Operational improvements to evaluate next are corrections to cost entries, explicit inventory adjustments/restocking, safer customer names on a public-facing TV and more robust event-level product controls.
 
-## Files
+Phase 2 can then cover customer history, exports, product-level cost analytics, cross-event comparisons and a separate public registration flow. The future coffee unit should be designed around its actual sales and shift workflow rather than assuming every coffee order is a workshop ticket.
 
-```text
-src/app/                     App Router pages, auth callback, global styles
-src/components/ui/           Owned shadcn/ui components using Radix and Tailwind
-src/components/layout/       Responsive staff shell and event selector
-src/features/                Counter, catalogue, tickets, queue, orders,
-                             inventory, costs, settings and dashboard
-src/lib/domain/              Pure finance and stock calculations
-src/lib/supabase/            Typed clients and queries
-src/lib/permissions/         Validated request context
-src/i18n/ + messages/        Vietnamese/English routing and all UI copy
-supabase/migrations/         Four ordered Phase 1 SQL migrations
-supabase/seed.sql            Exact supplied product catalogue
-tests/ + scripts/            Calculation/RLS tests and explicit owner bootstrap
-```
+## Deployment
 
-## Phase 2 — not implemented
+The app is structured for Vercel with Next.js. Configure the three `NEXT_PUBLIC_*` values for each approved environment, update Supabase and Google OAuth redirect URLs, and run the acceptance checks above before enabling staff access.
 
-Product cost analytics, customer history, exports, multi-event comparisons and a public registration page, subject to separate scope and access review. No online payment, customer account, public storefront, messaging integration or coffee-specific module is included in Phase 1.
+No live deployment or operational readiness is claimed by this README.
