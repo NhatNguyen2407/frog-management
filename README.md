@@ -210,3 +210,16 @@ Phase 2 can then cover customer history, exports, product-level cost analytics, 
 The app is structured for Vercel with Next.js. Configure the three `NEXT_PUBLIC_*` values for each approved environment, update Supabase and Google OAuth redirect URLs, and run the acceptance checks above before enabling staff access.
 
 No live deployment or operational readiness is claimed by this README.
+
+## Frontend-first prototype
+
+The visual POS prototype is available at **/vi/prototype** (or **/en/prototype**) after starting Next.js with `npm run dev`. The standalone static entry is `/prototype/index.html`.
+
+- No Supabase credentials or login are needed for the prototype.
+- Explore Dashboard, Register, Orders, Workshops, Ticket Queue / TV mode, Inventory, Reports and Settings.
+- Add products to a mock cart, create sample orders and workshop tickets, advance the queue, refund sample orders and edit mock stock.
+- Toggle Vietnamese/English and light/dark themes. The color tokens follow Dioxyzine Frog's cream, mint, lilac and grape palette.
+- Mock changes are kept in your browser's `localStorage`. Use Settings -> Reset demo data to restore initial values.
+- The prototype is a standalone, dependency-free UI experiment; existing production-focused app screens and Supabase migrations remain unchanged. It is **not** secured by Supabase RLS, and should **never** be used to record real sales or customer information.
+
+The next UI iteration will integrate the approved screens into the Next.js component structure and replace the mock data adapter with database-backed actions after frontend review.
