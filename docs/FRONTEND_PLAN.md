@@ -17,27 +17,30 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 
 ## Progress
 
-| Step | Deliverable | Status |
-| --- | --- | --- |
-| 1.1 | Product Management: list, search, create, edit, archive/restore | Implemented |
-| 1.2 | POS: item modifiers, stock and workshop-ticket rules | Next |
-| 1.3 | Orders: open/unpaid, paid, cancellations/refunds | Planned |
-| 1.4 | Receipts and ticket flow | Planned |
-| 2.1 | Workshops: create/edit, capacity, registrations, check-in | Planned |
-| 2.2 | Queue and inventory movements | Planned |
-| 2.3 | Expenses and transaction-based dashboard | Planned |
-| 3.1 | Reports, CSV export and customer history | Planned |
-| 3.2 | Responsive/UX testing and code cleanup | Planned |
-| 4 | Connect Supabase, authentication and deployment | Deferred |
+| Step | Deliverable | Status | Implemented on |
+| --- | --- | --- | --- |
+| 1.1 | Product Management: list, search, create, edit, archive/restore | Code complete | 2026-10-26 |
+| 1.2 | POS: per-line custom notes, stock validation, workshop-ticket rules | Code complete, manual QA pending | 2026-10-26 |
+| 1.3 | Orders: open/unpaid, paid, cancellations/refunds | Next | - |
+| 1.4 | Receipts and ticket flow | Planned | - |
+| 2.1 | Workshops: create/edit, capacity, registrations, check-in | Planned | - |
+| 2.2 | Queue and inventory movements | Planned | - |
+| 2.3 | Expenses and transaction-based dashboard | Planned | - |
+| 3.1 | Reports, CSV export and customer history | Planned | - |
+| 3.2 | Responsive/UX testing and code cleanup | Planned | - |
+| 4 | Connect Supabase, authentication and deployment | Deferred | - |
 
-## Step 1.1 - Acceptance
+## Completed increments
 
-- Add a workshop/F&B product with a unique SKU, name, price and cost.
-- Edit product details without changing its SKU.
-- Archive/restore a product; archived items disappear from POS, not from past orders.
-- Keep quantity changes in Inventory, not Product Management.
-- An owner can edit the catalogue; staff preview cannot.
-- Check both themes and mobile layout before calling visual QA complete.
+- 2026-10-26 - Step 1.1: Product catalogue with create/edit/archive/restore, duplicate SKU checks and historical order snapshots.
+- 2026-10-26 - Step 1.2: Separate customization note per cart line, prevent overselling across multiple lines of the same SKU, and issue a workshop ticket only when the order contains a workshop product. Check event ticket capacity.
+
+## Remaining design decisions
+
+- Free-text customization is intentional for V1; priced modifiers/variant definitions are not implemented yet.
+- One workshop ticket per order is the current behavior. Multiple attendees in one order will be addressed alongside workshop registration in Step 2.1.
+- Local mock data is not transactional or synchronized between devices.
+- Each completed step requires browser acceptance; keep test instructions in chat, not in this document.
 
 ## Run
 
