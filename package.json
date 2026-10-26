@@ -11,7 +11,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit --incremental false",
-    "test": "node --test tests/domain/*.test.ts",
+    "test": "node --test tests/domain/*.test.ts tests/prototype/*.test.mjs",
     "test:db": "node scripts/test-database.mjs",
     "db:start": "supabase start",
     "db:seed": "supabase db query --local --file supabase/seed.sql",

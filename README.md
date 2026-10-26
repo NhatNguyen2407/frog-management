@@ -222,4 +222,4 @@ The visual POS prototype is available at **/vi/prototype** (or **/en/prototype**
 - Mock changes are kept in your browser's `localStorage`. Use Settings -> Reset demo data to restore initial values.
 - The prototype is a standalone, dependency-free UI experiment; existing production-focused app screens and Supabase migrations remain unchanged. It is **not** secured by Supabase RLS, and should **never** be used to record real sales or customer information.
 
-The next UI iteration will integrate the approved screens into the Next.js component structure and replace the mock data adapter with database-backed actions after frontend review.
+Frontend V1 work is tracked in [docs/FRONTEND_PLAN.md](docs/FRONTEND_PLAN.md). Product Management now supports mock create/edit/archive/restore with SKU validation. Existing backend files remain untouched; these screens are not ready for real sales.
