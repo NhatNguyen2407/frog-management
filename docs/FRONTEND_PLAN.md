@@ -20,7 +20,7 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | Step | Deliverable | Status | Implemented on |
 | --- | --- | --- | --- |
 | 1.1 | Product Management: list, search, create, edit, archive/restore | Code complete | 2026-10-26 |
-| 1.2 | POS: per-line custom notes, stock validation, workshop-ticket rules | Code complete, manual QA pending | 2026-10-26 |
+| 1.2 | POS: per-line custom notes, stock validation, workshop-ticket rules | Accepted - 7/7 manual checks | 2026-10-26 |
 | 1.3 | Orders: open/unpaid, paid, cancellations/refunds | Next | - |
 | 1.4 | Receipts and ticket flow | Planned | - |
 | 2.1 | Workshops: create/edit, capacity, registrations, check-in | Planned | - |
@@ -34,6 +34,7 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 
 - 2026-10-26 - Step 1.1: Product catalogue with create/edit/archive/restore, duplicate SKU checks and historical order snapshots.
 - 2026-10-26 - Step 1.2: Separate customization note per cart line, prevent overselling across multiple lines of the same SKU, and issue a workshop ticket only when the order contains a workshop product. Check event ticket capacity.
+- 2026-10-26 - Step 1.2 accepted: 7/7 manual browser checks passed as reported by the project owner, covering per-item notes, stock limits, F&B-only and mixed orders, event capacity, data persistence and responsive/theme/language checks. Automated suite/build not independently verified in this review.
 
 ## Remaining design decisions
 
