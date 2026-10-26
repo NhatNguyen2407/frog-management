@@ -21,8 +21,8 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | --- | --- | --- | --- |
 | 1.1 | Product Management: list, search, create, edit, archive/restore | Code complete | 2026-10-26 |
 | 1.2 | POS: per-line custom notes, stock validation, workshop-ticket rules | Accepted - 7/7 manual checks | 2026-10-26 |
-| 1.3 | Orders: open/unpaid, paid, cancellations/refunds | Next | - |
-| 1.4 | Receipts and ticket flow | Planned | - |
+| 1.3 | Orders: open/unpaid, paid, cancel/restock, refund, history | Code complete - manual QA pending | 2026-10-26 |
+| 1.4 | Receipts and ticket flow | Next | - |
 | 2.1 | Workshops: create/edit, capacity, registrations, check-in | Planned | - |
 | 2.2 | Queue and inventory movements | Planned | - |
 | 2.3 | Expenses and transaction-based dashboard | Planned | - |
@@ -36,10 +36,13 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 - 2026-10-26 - Step 1.2: Separate customization note per cart line, prevent overselling across multiple lines of the same SKU, and issue a workshop ticket only when the order contains a workshop product. Check event ticket capacity.
 - 2026-10-26 - Step 1.2 accepted: 7/7 manual browser checks passed as reported by the project owner, covering per-item notes, stock limits, F&B-only and mixed orders, event capacity, data persistence and responsive/theme/language checks. Automated suite/build not independently verified in this review.
 
+- 2026-10-26 - Step 1.3: Added payment confirmation, unpaid cancellation with stock restoration, refunds without restocking, order history/details, ticket updates and unit tests. Manual browser QA pending.
+
 ## Remaining design decisions
 
 - Free-text customization is intentional for V1; priced modifiers/variant definitions are not implemented yet.
 - One workshop ticket per order is the current behavior. Multiple attendees in one order will be addressed alongside workshop registration in Step 2.1.
+- V1 treats Unpaid as an open order. Cancelling is blocked after ticket work begins; refunds do not restock automatically and retain cost in mock profit.
 - Local mock data is not transactional or synchronized between devices.
 - Each completed step requires browser acceptance; keep test instructions in chat, not in this document.
 
