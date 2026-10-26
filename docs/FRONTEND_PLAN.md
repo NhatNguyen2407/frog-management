@@ -21,7 +21,7 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | --- | --- | --- | --- |
 | 1.1 | Product Management: list, search, create, edit, archive/restore | Code complete | 2026-10-26 |
 | 1.2 | POS: per-line custom notes, stock validation, workshop-ticket rules | Accepted - 7/7 manual checks | 2026-10-26 |
-| 1.3 | Orders: open/unpaid, paid, cancel/restock, refund, history | Code complete - manual QA pending | 2026-10-26 |
+| 1.3 | Orders: open/unpaid, paid, cancel/restock, refund, history | Accepted - 9/9 manual checks | 2026-10-26 |
 | 1.4 | Receipts and ticket flow | Next | - |
 | 2.1 | Workshops: create/edit, capacity, registrations, check-in | Planned | - |
 | 2.2 | Queue and inventory movements | Planned | - |
@@ -37,6 +37,7 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 - 2026-10-26 - Step 1.2 accepted: 7/7 manual browser checks passed as reported by the project owner, covering per-item notes, stock limits, F&B-only and mixed orders, event capacity, data persistence and responsive/theme/language checks. Automated suite/build not independently verified in this review.
 
 - 2026-10-26 - Step 1.3: Added payment confirmation, unpaid cancellation with stock restoration, refunds without restocking, order history/details, ticket updates and unit tests. Manual browser QA pending.
+- 2026-10-26 - Step 1.3 accepted: 9/9 manual browser checks passed as reported by the project owner. Verified Unpaid to Paid, payment methods, unpaid cancellation/restocking, prevention of repeated cancellation, Paid refunds, prevention of repeated refunds, order details/history, ticket/queue handling, and UI/data persistence. Automated tests and full build were not independently rerun for this acceptance.
 
 ## Remaining design decisions
 
