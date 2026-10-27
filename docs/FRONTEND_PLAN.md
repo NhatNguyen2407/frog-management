@@ -1,6 +1,6 @@
 # Frontend V1 - Plan and Progress
 
-Updated: 2026-10-26
+Updated: 2026-10-27
 
 ## Goal
 
@@ -38,6 +38,8 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 
 - 2026-10-26 - Step 1.3: Added payment confirmation, unpaid cancellation with stock restoration, refunds without restocking, order history/details, ticket updates and unit tests. Manual browser QA pending.
 - 2026-10-26 - Step 1.3 accepted: 9/9 manual browser checks passed as reported by the project owner. Verified Unpaid to Paid, payment methods, unpaid cancellation/restocking, prevention of repeated cancellation, Paid refunds, prevention of repeated refunds, order details/history, ticket/queue handling, and UI/data persistence. Automated tests and full build were not independently rerun for this acceptance.
+
+- 2026-10-27 - UI maintenance: Removed decorative backgrounds and borders around the official transparent Frog logo in sidebar, profile and Dashboard. Reformatted prototype stylesheets and normalized HTML asset grouping. Browser acceptance pending. No operational rules changed.
 
 ## Remaining design decisions
 
