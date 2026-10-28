@@ -1,0 +1,37 @@
+@page { size: 76mm 130mm; margin: 0; }
+:root { font: 11px Arial, sans-serif; color: #111; color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #eee; }
+.toolbar { padding: 10px; background: #241930; text-align: center; }
+.toolbar button { padding: 9px 14px; margin: 0 3px; border: 0; border-radius: 7px; cursor: pointer; }
+.toolbar button:disabled { opacity: .5; cursor: not-allowed; }
+.hint, .warning { max-width: 400px; margin: 10px auto; padding: 0 10px; text-align: center; }
+.warning { color: #9a253a; font-weight: bold; }
+.warning[hidden] { display: none; }
+.sheet { width: 76mm; height: 130mm; margin: 12px auto; padding: 3mm 3.5mm; overflow: hidden; background: #fff; line-height: 1.22; box-shadow: 0 4px 25px #0002; }
+.bill-brand { display: flex; align-items: center; justify-content: center; gap: 4px; }
+.bill-brand img { width: 13mm; height: 9mm; object-fit: contain; filter: grayscale(1) contrast(2); }
+.bill-brand b { display: block; font-size: 12px; }
+.bill-brand small { display: block; font-size: 8px; }
+.bill-label { text-align: center; margin-top: 3px; font-size: 9px; font-weight: bold; }
+h1 { text-align: center; margin: 1px 0; font-size: 22px; line-height: 1.1; }
+.bill-id { margin: 1px 0; text-align: center; font-size: 9px; }
+.bill-rule { border-top: 1px dashed #777; margin: 5px 0; }
+.bill-row { display: flex; justify-content: space-between; gap: 5px; margin: 2px 0; }
+.bill-row b { text-align: right; overflow-wrap: anywhere; }
+.bill-heading { display: block; margin: 4px 0 2px; font-size: 9px; }
+.bill-item { margin: 3px 0; break-inside: avoid; }
+.bill-item-line { display: flex; justify-content: space-between; gap: 5px; }
+.bill-item-line span { flex: 1; overflow-wrap: anywhere; }
+.bill-item-line > b { white-space: nowrap; }
+.bill-item small { display: block; margin: 1px 0 0 10px; font-size: 9px; overflow-wrap: anywhere; }
+.bill-total { display: flex; justify-content: space-between; align-items: baseline; }
+.bill-total strong { font-size: 15px; }
+.bill-status { margin: 3px 0; text-align: center; font-size: 10px; font-weight: bold; }
+footer { margin-top: 6px; text-align: center; font-size: 9px; font-weight: bold; }
+footer small { display: block; margin-top: 3px; font-size: 8px; font-weight: normal; }
+@media print {
+  html, body { width: 76mm; height: 130mm; margin: 0; background: #fff; }
+  .toolbar, .hint, .warning { display: none !important; }
+  .sheet { margin: 0; box-shadow: none; }
+}

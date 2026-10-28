@@ -1,6 +1,6 @@
 # Frontend V1 - Plan and Progress
 
-Updated: 2026-10-27
+Updated: 2026-10-28
 
 ## Goal
 
@@ -22,7 +22,8 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | 1.1 | Product Management: list, search, create, edit, archive/restore | Code complete | 2026-10-26 |
 | 1.2 | POS: per-line custom notes, stock validation, workshop-ticket rules | Accepted - 7/7 manual checks | 2026-10-26 |
 | 1.3 | Orders: open/unpaid, paid, cancel/restock, refund, history | Accepted - 9/9 manual checks | 2026-10-26 |
-| 1.4 | Receipts and ticket flow | Next | - |
+| 1.4a | Compact customer bill, 76 x 130 mm label | Implemented - manual printer QA pending | 2026-10-28 |
+| 1.4b | Staff preparation slip and dual-print flow | Next | - |
 | 2.1 | Workshops: create/edit, capacity, registrations, check-in | Planned | - |
 | 2.2 | Queue and inventory movements | Planned | - |
 | 2.3 | Expenses and transaction-based dashboard | Planned | - |
@@ -40,6 +41,8 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 - 2026-10-26 - Step 1.3 accepted: 9/9 manual browser checks passed as reported by the project owner. Verified Unpaid to Paid, payment methods, unpaid cancellation/restocking, prevention of repeated cancellation, Paid refunds, prevention of repeated refunds, order details/history, ticket/queue handling, and UI/data persistence. Automated tests and full build were not independently rerun for this acceptance.
 
 - 2026-10-27 - UI maintenance: Removed decorative backgrounds and borders around the official transparent Frog logo in sidebar, profile and Dashboard. Reformatted prototype stylesheets and normalized HTML asset grouping. Browser acceptance pending. No operational rules changed.
+
+- 2026-10-28 - Step 1.4a: Added a compact customer bill preview for the 76 x 130 mm label, drawing on international cafe receipt conventions. Includes item snapshots, quantities, notes, line totals, payment state and order/workshop ID. Print preview does not mutate ticket status. Printer acceptance pending.
 
 ## Remaining design decisions
 
