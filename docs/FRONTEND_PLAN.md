@@ -48,6 +48,8 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 - 2026-10-29 - Formatting maintenance: Added a consistent Prettier configuration, npm formatting scripts and VS Code format-on-save settings. Historical TSX/JS source formatting remains pending until the formatter has run across the working tree.
 - 2026-10-29 - Project formatting verified: Prettier check passed, 28/28 unit tests passed, TypeScript typecheck passed, and no whitespace errors were detected.
 
+- 2026-10-29 - UI maintenance: Replaced the browser-native event selector with a Frog-themed popover in the prototype topbar. Added event dates, selection indicators, theme-aware styling, click-outside/Escape handling, keyboard navigation and markup tests. Browser acceptance pending. No event business logic was changed.
+
 ## Remaining design decisions
 
 - Free-text customization is intentional for V1; priced modifiers/variant definitions are not implemented yet.

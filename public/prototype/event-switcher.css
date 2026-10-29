@@ -1,0 +1,192 @@
+/* Workshop picker: a theme-native popover, not a browser-native select menu. */
+.event-switcher {
+  position: relative;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.event-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 200px;
+  max-width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: var(--card);
+  color: var(--fg);
+  padding: 7px 11px;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.event-trigger:hover,
+.event-switcher.is-open .event-trigger {
+  border-color: var(--primary);
+  background: var(--muted);
+}
+
+.event-switcher.is-open .event-trigger {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
+}
+
+.event-trigger-mark {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 0 4px var(--lilac);
+}
+
+.event-trigger-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.event-trigger-copy small {
+  color: var(--sub);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.event-trigger-copy strong {
+  overflow: hidden;
+  color: var(--fg);
+  font-size: 11px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.event-trigger-chevron {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  margin: -4px 2px 0 5px;
+  border-right: 1.5px solid var(--sub);
+  border-bottom: 1.5px solid var(--sub);
+  transform: rotate(45deg);
+  transition: transform 0.15s;
+}
+
+.event-switcher.is-open .event-trigger-chevron {
+  margin-top: 4px;
+  transform: rotate(225deg);
+}
+
+.event-menu {
+  position: absolute;
+  z-index: 90;
+  top: calc(100% + 9px);
+  right: 0;
+  width: min(290px, calc(100vw - 28px));
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: 0 18px 50px color-mix(in srgb, var(--fg) 18%, transparent);
+}
+
+.event-menu[hidden] {
+  display: none;
+}
+
+.event-menu-title {
+  padding: 7px 10px 10px;
+  color: var(--sub);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+.event-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 57px;
+  padding: 11px 12px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--fg);
+  text-align: left;
+}
+
+.event-option:hover,
+.event-option:focus-visible {
+  outline: none;
+  background: var(--muted);
+}
+
+.event-option.is-selected,
+.event-option.is-selected:hover,
+.event-option.is-selected:focus-visible {
+  background: var(--lilac);
+}
+
+.event-option-copy {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.event-option-copy strong {
+  overflow-wrap: anywhere;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.event-option-copy small {
+  color: var(--sub);
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+.event-option-check {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 13px;
+}
+
+.event-menu-empty {
+  padding: 10px;
+  color: var(--sub);
+  font-size: 11px;
+}
+
+@media (max-width: 720px) {
+  .event-trigger {
+    width: 158px;
+    gap: 8px;
+    min-height: 38px;
+    padding: 6px 9px;
+  }
+
+  .event-trigger-copy small {
+    font-size: 8px;
+  }
+
+  .event-trigger-copy strong {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .event-trigger {
+    width: 140px;
+  }
+}

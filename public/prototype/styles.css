@@ -326,28 +326,6 @@ button:disabled {
   border-radius: 50%;
   background: #bdae57;
 }
-.event-picker {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid var(--border);
-  border-radius: 11px;
-  padding: 0 12px;
-  height: 37px;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--sub);
-}
-.event-picker select {
-  border: 0;
-  outline: 0;
-  background: transparent;
-  max-width: 185px;
-  color: var(--fg);
-  font-size: 10px;
-  font-weight: 700;
-  cursor: pointer;
-}
 .icon-btn {
   width: 37px;
   height: 37px;
@@ -1236,15 +1214,6 @@ button:disabled {
   }
   .demo-chip {
     display: none;
-  }
-  .event-picker {
-    padding: 0 7px;
-  }
-  .event-picker > span {
-    display: none;
-  }
-  .event-picker select {
-    max-width: 125px;
   }
   .main {
     padding: 24px 15px 100px;

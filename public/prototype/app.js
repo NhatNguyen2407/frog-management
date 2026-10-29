@@ -488,6 +488,18 @@
     ["reports", "▥"],
     ["settings", "⚙"],
   ];
+  function setEventMenuOpen(open, focusOption = false) {
+    const menu = $("#event-switcher-menu");
+    const trigger = $("#event-switcher-trigger");
+    const picker = $("#event-switcher");
+    if (!menu || !trigger || !picker) return;
+    menu.hidden = !open;
+    trigger.setAttribute("aria-expanded", String(open));
+    picker.classList.toggle("is-open", open);
+    if (open && focusOption) {
+      (menu.querySelector('[aria-checked="true"]') || menu.querySelector("[data-event-option]"))?.focus();
+    }
+  }
   function navRender() {
     $("#side-nav").innerHTML = `<div class="side-nav">${navs
       .filter(([key]) => state.role === "owner" || key !== "products")
@@ -503,12 +515,7 @@
       })
       .join("");
     $("#breadcrumb").textContent = t(page);
-    $("#event-select").innerHTML = state.events
-      .map(
-        (e) =>
-          `<option value="${e.id}" ${state.selectedEvent === e.id ? "selected" : ""}>${esc(e.name)}</option>`,
-      )
-      .join("");
+    $("#event-switcher").innerHTML = FrogEventSwitcher.render(state.events, state.selectedEvent, state.locale);
     $("#role-label").textContent = `${t(state.role)} / Demo`;
     $("#theme-toggle").textContent = state.theme === "light" ? "☾" : "☀";
     $("#language-toggle").textContent = state.locale === "vi" ? "EN" : "VI";
@@ -980,6 +987,30 @@
     r.innerHTML = `<div class="queue-display"><div class="flex wrap" style="justify-content:space-between"><div><div class="eyebrow">FROG ART SPACE / LIVE</div><h1 class="page-title">${t("queueTitle")} · ${esc(currentEvent().name)}</h1></div>${btn("✕ " + t("exitTv"), "close-tv", "secondary")}</div>${queueColumns(true)}</div>`;
   }
   document.addEventListener("click", (e) => {
+    const trigger = e.target.closest("#event-switcher-trigger");
+    if (trigger) {
+      const menu = $("#event-switcher-menu");
+      const opening = menu?.hidden;
+      setEventMenuOpen(Boolean(opening), Boolean(opening));
+      return;
+    }
+    const eventOption = e.target.closest("[data-event-option]");
+    if (eventOption) {
+      const selected = state.events.find(item => item.id === eventOption.dataset.eventOption);
+      if (!selected) return;
+      const changed = state.selectedEvent !== selected.id;
+      if (changed) {
+        state.selectedEvent = selected.id;
+        persist();
+        render();
+        toast(t("updated"));
+      } else {
+        setEventMenuOpen(false);
+      }
+      $("#event-switcher-trigger")?.focus();
+      return;
+    }
+    if (!e.target.closest("#event-switcher")) setEventMenuOpen(false);
     const nav = e.target.closest("[data-nav]");
     if (nav) {
       e.preventDefault();
@@ -1073,12 +1104,35 @@
       render();
     } else if (name === "reset") reset();
   });
-  document.addEventListener("change", (e) => {
-    if (e.target.id === "event-select") {
-      state.selectedEvent = e.target.value;
-      persist();
-      render();
+  document.addEventListener("keydown", (e) => {
+    const menu = $("#event-switcher-menu");
+    const trigger = $("#event-switcher-trigger");
+    if (!menu || !trigger) return;
+    const items = [...menu.querySelectorAll("[data-event-option]")];
+    if (e.key === "Escape" && !menu.hidden) {
+      e.preventDefault();
+      setEventMenuOpen(false);
+      trigger.focus();
+      return;
     }
+    if (document.activeElement === trigger && ["ArrowDown", "ArrowUp"].includes(e.key)) {
+      e.preventDefault();
+      setEventMenuOpen(true, true);
+      return;
+    }
+    if (menu.hidden || !menu.contains(document.activeElement)) return;
+    const current = items.indexOf(document.activeElement);
+    if (["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) {
+      e.preventDefault();
+      const next = e.key === "Home" ? 0
+        : e.key === "End" ? items.length - 1
+        : (current + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
+      items[next]?.focus();
+    } else if (e.key === "Tab") {
+      setEventMenuOpen(false);
+    }
+  });
+  document.addEventListener("change", (e) => {
     if (e.target.id === "payment-status") payment = e.target.value;
     if (e.target.id === "payment-method") method = e.target.value;
     if (e.target.id === "with-ticket") createTicket = e.target.checked;
