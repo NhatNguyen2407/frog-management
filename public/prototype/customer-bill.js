@@ -50,7 +50,7 @@
       '<small>BẢN DEMO - KHÔNG PHẢI HÓA ĐƠN THẬT</small></footer>';
   }
   globalThis.FrogCustomerBill = { renderBill };
-  if (typeof document === "undefined") return;
+  if (typeof document === "undefined" || !document.querySelector("#bill")) return;
 
   let state;
   try { state = JSON.parse(localStorage.getItem("frog-management-prototype-v1")); } catch { state = null; }

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Frog - Two-ticket printing</title>
+    <link rel="stylesheet" href="./customer-bill.css" />
+    <link rel="stylesheet" href="./staff-slip.css" />
+    <link rel="stylesheet" href="./print-bills.css" />
+    <script defer src="./customer-bill.js"></script>
+    <script defer src="./staff-slip.js"></script>
+    <script defer src="./print-bills.js"></script>
+  </head>
+  <body>
+    <div class="toolbar">
+      <button type="button" id="print-button" disabled>In phiếu 76 × 130 mm</button>
+      <button type="button" id="close-button">Đóng</button>
+    </div>
+    <p class="hint">Mỗi trang là một tem 76 × 130 mm. Chọn máy A318BT Label, đúng khổ giấy, lề 0, tỷ lệ 100% và tắt header/footer.</p>
+    <p class="warning" id="print-warning" hidden role="alert"></p>
+    <main id="print-pages"></main>
+  </body>
+</html>

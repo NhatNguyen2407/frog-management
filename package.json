@@ -15,7 +15,9 @@
     "test:db": "node scripts/test-database.mjs",
     "db:start": "supabase start",
     "db:seed": "supabase db query --local --file supabase/seed.sql",
-    "db:bootstrap": "node --env-file=.env.local scripts/bootstrap-owner.mjs"
+    "db:bootstrap": "node --env-file=.env.local scripts/bootstrap-owner.mjs",
+    "format": "npx --yes prettier@3.6.2 --write .",
+    "format:check": "npx --yes prettier@3.6.2 --check ."
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",
