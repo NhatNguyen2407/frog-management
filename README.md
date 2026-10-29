@@ -16,19 +16,19 @@ This is an internal application, not an online store. There are no customer acco
 
 ## Features
 
-| Area | What is implemented | Access |
-| --- | --- | --- |
-| Events | Create events, set capacity and ticket prefix, switch active context | Owner |
-| Products | SKU catalogue, event availability, prices and unit costs | Owner |
-| Counter | Create orders with workshop and F&B items, optional ticket registration | Owner, staff |
-| Tickets | Sequential ticket numbers, status history, receipt printing | Owner, staff |
-| Queue | Operational queue and a separate TV display with Supabase Realtime subscription | Owner, staff |
-| Orders | Paid, Unpaid, Refunded and Cancelled statuses; cash or bank transfer | Owner, staff |
-| Inventory | Prepared stock, product-to-supply mappings, usage movements and alerts | Owner |
-| Costs | Record event expenses by category and date | Owner |
-| Dashboard | Paid revenue, costs, profit, margin, category breakdown and charts | Owner |
-| Operations dashboard | Queue and ticket counts without financial reporting | Staff |
-| Settings | Allowlisted Google accounts and owner/staff roles | Owner |
+| Area                 | What is implemented                                                             | Access       |
+| -------------------- | ------------------------------------------------------------------------------- | ------------ |
+| Events               | Create events, set capacity and ticket prefix, switch active context            | Owner        |
+| Products             | SKU catalogue, event availability, prices and unit costs                        | Owner        |
+| Counter              | Create orders with workshop and F&B items, optional ticket registration         | Owner, staff |
+| Tickets              | Sequential ticket numbers, status history, receipt printing                     | Owner, staff |
+| Queue                | Operational queue and a separate TV display with Supabase Realtime subscription | Owner, staff |
+| Orders               | Paid, Unpaid, Refunded and Cancelled statuses; cash or bank transfer            | Owner, staff |
+| Inventory            | Prepared stock, product-to-supply mappings, usage movements and alerts          | Owner        |
+| Costs                | Record event expenses by category and date                                      | Owner        |
+| Dashboard            | Paid revenue, costs, profit, margin, category breakdown and charts              | Owner        |
+| Operations dashboard | Queue and ticket counts without financial reporting                             | Staff        |
+| Settings             | Allowlisted Google accounts and owner/staff roles                               | Owner        |
 
 The TV display requires an authenticated staff session. It is not a public screen.
 
@@ -75,15 +75,15 @@ Use a **new Supabase project for Frog Management**. Do not point these migration
 
 Copy `.env.example` to `.env.local` and fill in the relevant values.
 
-| Variable | Used for |
-| --- | --- |
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project API URL |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Browser-safe publishable key |
-| `NEXT_PUBLIC_SITE_URL` | App origin, e.g. `http://localhost:3000` |
-| `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` | Google OAuth for the local Supabase stack |
-| `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET` | Google OAuth for the local Supabase stack |
-| `INITIAL_OWNER_EMAIL` | Email used by the optional owner bootstrap script |
-| `INITIAL_BUSINESS_UNIT_SLUG` | Initial unit, normally `workshop` |
+| Variable                                  | Used for                                          |
+| ----------------------------------------- | ------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`                | Supabase project API URL                          |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`    | Browser-safe publishable key                      |
+| `NEXT_PUBLIC_SITE_URL`                    | App origin, e.g. `http://localhost:3000`          |
+| `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` | Google OAuth for the local Supabase stack         |
+| `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET`    | Google OAuth for the local Supabase stack         |
+| `INITIAL_OWNER_EMAIL`                     | Email used by the optional owner bootstrap script |
+| `INITIAL_BUSINESS_UNIT_SLUG`              | Initial unit, normally `workshop`                 |
 
 The hosted Google OAuth credentials belong in Supabase Auth provider settings. Never commit `.env.local`, a service-role key or a Google client secret. The web app does not require a service-role key.
 

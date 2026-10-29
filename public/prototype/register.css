@@ -1,24 +1,24 @@
 .product:disabled {
-  cursor:not-allowed;
-  opacity:.62;
-  transform:none
+  cursor: not-allowed;
+  opacity: 0.62;
+  transform: none;
 }
 .product-availability {
-  display:block;
-  margin-top:5px;
-  color:var(--sub);
-  font-size:10px;
-  font-weight:600
+  display: block;
+  margin-top: 5px;
+  color: var(--sub);
+  font-size: 10px;
+  font-weight: 600;
 }
 .line-note {
-  display:block;
-  margin-top:10px;
-  font-size:10px;
-  font-weight:700;
-  color:var(--sub)
+  display: block;
+  margin-top: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--sub);
 }
 .line-note .field {
-  margin-top:5px;
-  font-size:11px;
-  min-height:35px
+  margin-top: 5px;
+  font-size: 11px;
+  min-height: 35px;
 }

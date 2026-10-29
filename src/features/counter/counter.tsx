@@ -2,7 +2,16 @@
 import { useMemo, useRef, useState, useTransition, type FormEvent } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
-import { Plus, Minus, Trash2, ShoppingBag, Check, Search, ArrowRight, LoaderCircle } from "lucide-react";
+import {
+  Plus,
+  Minus,
+  Trash2,
+  ShoppingBag,
+  Check,
+  Search,
+  ArrowRight,
+  LoaderCircle,
+} from "lucide-react";
 import type { Product, Category, Ticket, Event, CheckoutResult } from "@/lib/supabase/types";
 import { formatVnd } from "@/lib/formatting";
 import { subtotal } from "@/lib/domain/finance";
@@ -14,23 +23,383 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Field, Notice, PageTitle } from "@/components/shared";
 import { OptionsEditor } from "./options-editor";
-type CartLine={id:string;product:Product;quantity:number;options:Record<string,string>};
-export function Counter({products,categories,tickets,event}:{products:Product[];categories:Category[];tickets:Ticket[];event:Event}) {
-  const t=useTranslations();const locale=useLocale();const router=useRouter();const [search,setSearch]=useState("");const [category,setCategory]=useState("");
-  const [cart,setCart]=useState<CartLine[]>([]);const [ticketMode,setTicketMode]=useState("new");const [payment,setPayment]=useState("unpaid");
-  const [error,setError]=useState<string|null>(null);const [result,setResult]=useState<CheckoutResult|null>(null);const [pending,startTransition]=useTransition();const requestId=useRef<string|null>(null);
-  const filtered=useMemo(()=>products.filter(p=>(!category||p.category_id===category)&&`${p.name} ${p.sku}`.toLowerCase().includes(search.toLowerCase())),[products,search,category]);
-  const total=subtotal(cart.map(line=>({quantity:line.quantity,unitPriceVnd:line.product.price_vnd,unitCostVnd:null,category:""})));
-  function update(id:string,patch:Partial<CartLine>){setCart(previous=>previous.map(line=>line.id===id?{...line,...patch}:line));}
-  function submit(event:FormEvent<HTMLFormElement>){event.preventDefault();if(!cart.length){setError("items_required");return;}const form=new FormData(event.currentTarget);requestId.current??=crypto.randomUUID();form.set("request_id",requestId.current);form.set("items",JSON.stringify(cart.map(line=>({product_id:line.product.id,quantity:line.quantity,options:line.options,expected_price_vnd:line.product.price_vnd}))));if(ticketMode==="new")form.set("register_ticket","on");setError(null);startTransition(async()=>{const response=await mutate("orderCreate",form);if(response.ok&&response.checkout){setResult(response.checkout);router.refresh();}else setError(response.error??"generic");});}
-  if(result)return <><PageTitle title={t("counter.success")}/><Card className="mx-auto max-w-lg"><CardContent className="py-12 text-center"><div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary"><Check className="size-8" aria-hidden/></div><h2 className="text-2xl font-semibold">{result.ticket_number?t("counter.ticketCreated",{number:result.ticket_number}):t("counter.orderCreated")}</h2>{result.total_vnd!==undefined?<p className="number mt-4 text-3xl font-semibold">{formatVnd(result.total_vnd,locale)}</p>:null}<p className="mt-3 break-all font-mono text-xs text-muted-foreground">{result.order_id}</p><div className="mt-8 grid gap-3">{result.ticket_id?<Button asChild><Link href={`/tickets/${result.ticket_id}/print`}>{t("common.print")}</Link></Button>:null}<Button variant="secondary" onClick={()=>{setResult(null);setCart([]);requestId.current=null;setError(null);}}>{t("counter.another")}<ArrowRight aria-hidden/></Button></div></CardContent></Card></>;
-  return <><PageTitle title={t("counter.title")} description={t("counter.description")}/>{event.status!=="active"?<Notice>{t("counter.eventClosed")}</Notice>:null}<div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_400px]">
-    <section aria-label={t("counter.catalogue")}><div className="mb-5 flex flex-wrap gap-3"><div className="relative min-w-0 flex-1"><Search aria-hidden className="absolute left-3 top-3.5 size-4 text-muted-foreground"/><Input className="pl-9" aria-label={t("common.search")} placeholder={t("common.search")} value={search} onChange={e=>setSearch(e.target.value)}/></div><Select aria-label={t("common.category")} className="w-auto max-w-44" value={category} onChange={e=>setCategory(e.target.value)}><option value="">{t("common.all")}</option>{categories.map(row=><option key={row.id} value={row.id}>{row.name}</option>)}</Select></div>
-      {!filtered.length?<Card><CardContent className="py-12 text-center text-sm text-muted-foreground">{t("counter.activeProductsEmpty")}</CardContent></Card>:<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3">{filtered.map(product=><button type="button" key={product.id} disabled={pending||event.status!=="active"} aria-label={t("counter.addItem",{name:product.name})} onClick={()=>setCart(previous=>[...previous,{id:crypto.randomUUID(),product,quantity:1,options:{}}])} className="group flex min-h-40 flex-col items-start rounded-2xl border bg-card p-4 text-left transition hover:border-primary/40 hover:shadow-md disabled:opacity-50"><span className="mb-4 flex size-9 items-center justify-center rounded-xl bg-muted text-primary"><ShoppingBag className="size-4" aria-hidden/></span><span className="text-sm font-semibold leading-snug">{product.name}</span><span className="mt-2 text-[10px] text-muted-foreground">{product.sku}</span><span className="mt-auto flex w-full items-center justify-between gap-2 pt-4"><span className="number text-sm font-semibold text-primary">{formatVnd(product.price_vnd,locale)}</span><Plus aria-hidden className="size-4 shrink-0"/></span></button>)}</div>}
-    </section><Card id="current-order" className="scroll-mt-40 overflow-hidden"><CardHeader className="flex items-center justify-between"><h2 className="font-semibold">{t("counter.basket")}</h2><Badge>{cart.length}</Badge></CardHeader><form onSubmit={submit}><fieldset disabled={pending} className="contents"><div className="space-y-4 p-4 sm:p-5">{!cart.length?<div className="py-10 text-center"><ShoppingBag className="mx-auto mb-4 size-8 text-muted-foreground/50" aria-hidden/><p className="text-sm font-semibold">{t("counter.empty")}</p><p className="mt-2 text-xs text-muted-foreground">{t("counter.emptyBody")}</p></div>:cart.map(line=><div key={line.id} className="rounded-xl border p-3"><div className="flex items-start justify-between gap-2"><p className="text-sm font-semibold">{line.product.name}</p><Button variant="ghost" size="icon" type="button" aria-label={t("counter.removeItem",{name:line.product.name})} onClick={()=>setCart(previous=>previous.filter(row=>row.id!==line.id))} className="-mr-2 -mt-2 shrink-0"><Trash2 className="size-3.5"/></Button></div><div className="mt-2 flex items-center justify-between gap-3"><div className="flex items-center"><Button type="button" variant="ghost" size="icon" disabled={line.quantity<=1} aria-label={t("counter.quantityFor",{name:line.product.name})} onClick={()=>update(line.id,{quantity:line.quantity-1})}><Minus/></Button><Input type="number" aria-label={t("counter.quantityFor",{name:line.product.name})} className="w-16 px-1 text-center" min={1} max={999} value={line.quantity} onChange={e=>{const number=Number(e.target.value);if(number>=1&&number<=999)update(line.id,{quantity:number});}}/><Button type="button" variant="ghost" size="icon" disabled={line.quantity>=999} aria-label={t("counter.quantityFor",{name:line.product.name})} onClick={()=>update(line.id,{quantity:line.quantity+1})}><Plus/></Button></div><span className="number text-sm font-medium">{formatVnd(subtotal([{quantity:line.quantity,unitPriceVnd:line.product.price_vnd,unitCostVnd:null,category:""}]),locale)}</span></div><details className="mt-3 border-t pt-3"><summary className="min-h-8 text-xs font-medium text-primary">{t("counter.itemDetails")}</summary><div className="mt-4"><OptionsEditor value={line.options} onChange={options=>update(line.id,{options})}/></div></details></div>)}
-      <div className="space-y-4 border-t pt-5"><Field label={t("counter.customer")}><Select value={ticketMode} onChange={e=>setTicketMode(e.target.value)}><option value="new">{t("counter.createTicket")}</option><option value="existing">{t("counter.existingTicket")}</option><option value="none">{t("common.none")}</option></Select></Field>{ticketMode==="new"?<><Field label={t("counter.customerName")}><Input name="customer_name" autoComplete="off" required maxLength={150}/></Field><Field label={`${t("counter.phone")} · ${t("common.optional")}`}><Input name="phone_zalo" type="tel" autoComplete="off" maxLength={50}/></Field></>:ticketMode==="existing"?<Field label={t("tickets.number")}><Select name="ticket_id" required defaultValue=""><option value="" disabled>{t("common.choose")}</option>{tickets.filter(row=>row.status!=="cancelled").map(row=><option key={row.id} value={row.id}>{row.ticket_number} · {row.customer_name}</option>)}</Select></Field>:null}
-      <Field label={t("counter.payment")}><Select name="payment_status" value={payment} onChange={e=>setPayment(e.target.value)}><option value="unpaid">{t("paymentStatus.unpaid")}</option><option value="paid">{t("paymentStatus.paid")}</option></Select></Field>{payment==="paid"?<Field label={t("orders.paymentMethod")}><Select name="method" required><option value="cash">{t("paymentMethod.cash")}</option><option value="bank_transfer">{t("paymentMethod.bank_transfer")}</option></Select></Field>:null}</div>
-      {error?<Notice variant="error">{t.has(`errors.${error}`)?t(`errors.${error}`):t("errors.generic")}</Notice>:null}
-    </div><div className="border-t bg-muted/40 p-5"><div className="mb-4 flex items-center justify-between gap-3"><span className="text-sm text-muted-foreground">{t("counter.complete")}</span><strong className="number text-2xl">{formatVnd(total,locale)}</strong></div><Button type="submit" disabled={pending||!cart.length||event.status!=="active"} className="w-full">{pending?<LoaderCircle className="animate-spin" aria-hidden/>:null}{pending?t("common.saving"):t("counter.register")}</Button></div></fieldset></form></Card>
-  </div>{cart.length?<a href="#current-order" className="fixed inset-x-4 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-30 flex min-h-12 items-center justify-between gap-3 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-xl lg:left-64 xl:hidden"><span>{t("counter.review")} · {cart.length}</span><span className="number">{formatVnd(total,locale)}</span></a>:null}</>;
+type CartLine = { id: string; product: Product; quantity: number; options: Record<string, string> };
+export function Counter({
+  products,
+  categories,
+  tickets,
+  event,
+}: {
+  products: Product[];
+  categories: Category[];
+  tickets: Ticket[];
+  event: Event;
+}) {
+  const t = useTranslations();
+  const locale = useLocale();
+  const router = useRouter();
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("");
+  const [cart, setCart] = useState<CartLine[]>([]);
+  const [ticketMode, setTicketMode] = useState("new");
+  const [payment, setPayment] = useState("unpaid");
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<CheckoutResult | null>(null);
+  const [pending, startTransition] = useTransition();
+  const requestId = useRef<string | null>(null);
+  const filtered = useMemo(
+    () =>
+      products.filter(
+        (p) =>
+          (!category || p.category_id === category) &&
+          `${p.name} ${p.sku}`.toLowerCase().includes(search.toLowerCase()),
+      ),
+    [products, search, category],
+  );
+  const total = subtotal(
+    cart.map((line) => ({
+      quantity: line.quantity,
+      unitPriceVnd: line.product.price_vnd,
+      unitCostVnd: null,
+      category: "",
+    })),
+  );
+  function update(id: string, patch: Partial<CartLine>) {
+    setCart((previous) => previous.map((line) => (line.id === id ? { ...line, ...patch } : line)));
+  }
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!cart.length) {
+      setError("items_required");
+      return;
+    }
+    const form = new FormData(event.currentTarget);
+    requestId.current ??= crypto.randomUUID();
+    form.set("request_id", requestId.current);
+    form.set(
+      "items",
+      JSON.stringify(
+        cart.map((line) => ({
+          product_id: line.product.id,
+          quantity: line.quantity,
+          options: line.options,
+          expected_price_vnd: line.product.price_vnd,
+        })),
+      ),
+    );
+    if (ticketMode === "new") form.set("register_ticket", "on");
+    setError(null);
+    startTransition(async () => {
+      const response = await mutate("orderCreate", form);
+      if (response.ok && response.checkout) {
+        setResult(response.checkout);
+        router.refresh();
+      } else setError(response.error ?? "generic");
+    });
+  }
+  if (result)
+    return (
+      <>
+        <PageTitle title={t("counter.success")} />
+        <Card className="mx-auto max-w-lg">
+          <CardContent className="py-12 text-center">
+            <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <Check className="size-8" aria-hidden />
+            </div>
+            <h2 className="text-2xl font-semibold">
+              {result.ticket_number
+                ? t("counter.ticketCreated", { number: result.ticket_number })
+                : t("counter.orderCreated")}
+            </h2>
+            {result.total_vnd !== undefined ? (
+              <p className="number mt-4 text-3xl font-semibold">
+                {formatVnd(result.total_vnd, locale)}
+              </p>
+            ) : null}
+            <p className="mt-3 break-all font-mono text-xs text-muted-foreground">
+              {result.order_id}
+            </p>
+            <div className="mt-8 grid gap-3">
+              {result.ticket_id ? (
+                <Button asChild>
+                  <Link href={`/tickets/${result.ticket_id}/print`}>{t("common.print")}</Link>
+                </Button>
+              ) : null}
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setResult(null);
+                  setCart([]);
+                  requestId.current = null;
+                  setError(null);
+                }}
+              >
+                {t("counter.another")}
+                <ArrowRight aria-hidden />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </>
+    );
+  return (
+    <>
+      <PageTitle title={t("counter.title")} description={t("counter.description")} />
+      {event.status !== "active" ? <Notice>{t("counter.eventClosed")}</Notice> : null}
+      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_400px]">
+        <section aria-label={t("counter.catalogue")}>
+          <div className="mb-5 flex flex-wrap gap-3">
+            <div className="relative min-w-0 flex-1">
+              <Search
+                aria-hidden
+                className="absolute left-3 top-3.5 size-4 text-muted-foreground"
+              />
+              <Input
+                className="pl-9"
+                aria-label={t("common.search")}
+                placeholder={t("common.search")}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            <Select
+              aria-label={t("common.category")}
+              className="w-auto max-w-44"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <option value="">{t("common.all")}</option>
+              {categories.map((row) => (
+                <option key={row.id} value={row.id}>
+                  {row.name}
+                </option>
+              ))}
+            </Select>
+          </div>
+          {!filtered.length ? (
+            <Card>
+              <CardContent className="py-12 text-center text-sm text-muted-foreground">
+                {t("counter.activeProductsEmpty")}
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3">
+              {filtered.map((product) => (
+                <button
+                  type="button"
+                  key={product.id}
+                  disabled={pending || event.status !== "active"}
+                  aria-label={t("counter.addItem", { name: product.name })}
+                  onClick={() =>
+                    setCart((previous) => [
+                      ...previous,
+                      { id: crypto.randomUUID(), product, quantity: 1, options: {} },
+                    ])
+                  }
+                  className="group flex min-h-40 flex-col items-start rounded-2xl border bg-card p-4 text-left transition hover:border-primary/40 hover:shadow-md disabled:opacity-50"
+                >
+                  <span className="mb-4 flex size-9 items-center justify-center rounded-xl bg-muted text-primary">
+                    <ShoppingBag className="size-4" aria-hidden />
+                  </span>
+                  <span className="text-sm font-semibold leading-snug">{product.name}</span>
+                  <span className="mt-2 text-[10px] text-muted-foreground">{product.sku}</span>
+                  <span className="mt-auto flex w-full items-center justify-between gap-2 pt-4">
+                    <span className="number text-sm font-semibold text-primary">
+                      {formatVnd(product.price_vnd, locale)}
+                    </span>
+                    <Plus aria-hidden className="size-4 shrink-0" />
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+        </section>
+        <Card id="current-order" className="scroll-mt-40 overflow-hidden">
+          <CardHeader className="flex items-center justify-between">
+            <h2 className="font-semibold">{t("counter.basket")}</h2>
+            <Badge>{cart.length}</Badge>
+          </CardHeader>
+          <form onSubmit={submit}>
+            <fieldset disabled={pending} className="contents">
+              <div className="space-y-4 p-4 sm:p-5">
+                {!cart.length ? (
+                  <div className="py-10 text-center">
+                    <ShoppingBag
+                      className="mx-auto mb-4 size-8 text-muted-foreground/50"
+                      aria-hidden
+                    />
+                    <p className="text-sm font-semibold">{t("counter.empty")}</p>
+                    <p className="mt-2 text-xs text-muted-foreground">{t("counter.emptyBody")}</p>
+                  </div>
+                ) : (
+                  cart.map((line) => (
+                    <div key={line.id} className="rounded-xl border p-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="text-sm font-semibold">{line.product.name}</p>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          type="button"
+                          aria-label={t("counter.removeItem", { name: line.product.name })}
+                          onClick={() =>
+                            setCart((previous) => previous.filter((row) => row.id !== line.id))
+                          }
+                          className="-mr-2 -mt-2 shrink-0"
+                        >
+                          <Trash2 className="size-3.5" />
+                        </Button>
+                      </div>
+                      <div className="mt-2 flex items-center justify-between gap-3">
+                        <div className="flex items-center">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            disabled={line.quantity <= 1}
+                            aria-label={t("counter.quantityFor", { name: line.product.name })}
+                            onClick={() => update(line.id, { quantity: line.quantity - 1 })}
+                          >
+                            <Minus />
+                          </Button>
+                          <Input
+                            type="number"
+                            aria-label={t("counter.quantityFor", { name: line.product.name })}
+                            className="w-16 px-1 text-center"
+                            min={1}
+                            max={999}
+                            value={line.quantity}
+                            onChange={(e) => {
+                              const number = Number(e.target.value);
+                              if (number >= 1 && number <= 999)
+                                update(line.id, { quantity: number });
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            disabled={line.quantity >= 999}
+                            aria-label={t("counter.quantityFor", { name: line.product.name })}
+                            onClick={() => update(line.id, { quantity: line.quantity + 1 })}
+                          >
+                            <Plus />
+                          </Button>
+                        </div>
+                        <span className="number text-sm font-medium">
+                          {formatVnd(
+                            subtotal([
+                              {
+                                quantity: line.quantity,
+                                unitPriceVnd: line.product.price_vnd,
+                                unitCostVnd: null,
+                                category: "",
+                              },
+                            ]),
+                            locale,
+                          )}
+                        </span>
+                      </div>
+                      <details className="mt-3 border-t pt-3">
+                        <summary className="min-h-8 text-xs font-medium text-primary">
+                          {t("counter.itemDetails")}
+                        </summary>
+                        <div className="mt-4">
+                          <OptionsEditor
+                            value={line.options}
+                            onChange={(options) => update(line.id, { options })}
+                          />
+                        </div>
+                      </details>
+                    </div>
+                  ))
+                )}
+                <div className="space-y-4 border-t pt-5">
+                  <Field label={t("counter.customer")}>
+                    <Select value={ticketMode} onChange={(e) => setTicketMode(e.target.value)}>
+                      <option value="new">{t("counter.createTicket")}</option>
+                      <option value="existing">{t("counter.existingTicket")}</option>
+                      <option value="none">{t("common.none")}</option>
+                    </Select>
+                  </Field>
+                  {ticketMode === "new" ? (
+                    <>
+                      <Field label={t("counter.customerName")}>
+                        <Input name="customer_name" autoComplete="off" required maxLength={150} />
+                      </Field>
+                      <Field label={`${t("counter.phone")} · ${t("common.optional")}`}>
+                        <Input name="phone_zalo" type="tel" autoComplete="off" maxLength={50} />
+                      </Field>
+                    </>
+                  ) : ticketMode === "existing" ? (
+                    <Field label={t("tickets.number")}>
+                      <Select name="ticket_id" required defaultValue="">
+                        <option value="" disabled>
+                          {t("common.choose")}
+                        </option>
+                        {tickets
+                          .filter((row) => row.status !== "cancelled")
+                          .map((row) => (
+                            <option key={row.id} value={row.id}>
+                              {row.ticket_number} · {row.customer_name}
+                            </option>
+                          ))}
+                      </Select>
+                    </Field>
+                  ) : null}
+                  <Field label={t("counter.payment")}>
+                    <Select
+                      name="payment_status"
+                      value={payment}
+                      onChange={(e) => setPayment(e.target.value)}
+                    >
+                      <option value="unpaid">{t("paymentStatus.unpaid")}</option>
+                      <option value="paid">{t("paymentStatus.paid")}</option>
+                    </Select>
+                  </Field>
+                  {payment === "paid" ? (
+                    <Field label={t("orders.paymentMethod")}>
+                      <Select name="method" required>
+                        <option value="cash">{t("paymentMethod.cash")}</option>
+                        <option value="bank_transfer">{t("paymentMethod.bank_transfer")}</option>
+                      </Select>
+                    </Field>
+                  ) : null}
+                </div>
+                {error ? (
+                  <Notice variant="error">
+                    {t.has(`errors.${error}`) ? t(`errors.${error}`) : t("errors.generic")}
+                  </Notice>
+                ) : null}
+              </div>
+              <div className="border-t bg-muted/40 p-5">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <span className="text-sm text-muted-foreground">{t("counter.complete")}</span>
+                  <strong className="number text-2xl">{formatVnd(total, locale)}</strong>
+                </div>
+                <Button
+                  type="submit"
+                  disabled={pending || !cart.length || event.status !== "active"}
+                  className="w-full"
+                >
+                  {pending ? <LoaderCircle className="animate-spin" aria-hidden /> : null}
+                  {pending ? t("common.saving") : t("counter.register")}
+                </Button>
+              </div>
+            </fieldset>
+          </form>
+        </Card>
+      </div>
+      {cart.length ? (
+        <a
+          href="#current-order"
+          className="fixed inset-x-4 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-30 flex min-h-12 items-center justify-between gap-3 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-xl lg:left-64 xl:hidden"
+        >
+          <span>
+            {t("counter.review")} · {cart.length}
+          </span>
+          <span className="number">{formatVnd(total, locale)}</span>
+        </a>
+      ) : null}
+    </>
+  );
 }

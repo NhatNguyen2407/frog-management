@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import { desiredStockUsage, stockAdjustment, stockSummary } from "../../src/lib/domain/stock.ts";
 
 test("Paid, Unpaid and Refunded orders consume physical stock", () => {
-  for (const status of ["paid", "unpaid", "refunded"] as const) assert.equal(desiredStockUsage(3, 0.5, status), 1.5);
+  for (const status of ["paid", "unpaid", "refunded"] as const)
+    assert.equal(desiredStockUsage(3, 0.5, status), 1.5);
 });
 
 test("cancellation, deletion and voiding reverse usage", () => {

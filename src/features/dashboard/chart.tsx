@@ -1,9 +1,88 @@
 "use client";
 import { useLocale, useTranslations } from "next-intl";
-import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from "recharts";
 import { formatVnd } from "@/lib/formatting";
-export default function RevenueChart({rows}:{rows:{local_hour:string;revenue_vnd:number}[]}) {
-  const locale=useLocale();const t=useTranslations("dashboard");
-  const data=rows.map(row=>({hour:row.local_hour.slice(11,16),revenue:Number(row.revenue_vnd)}));
-  return <div className="h-72 w-full min-w-0" role="img" aria-label={t("chartTitle")}><ResponsiveContainer width="100%" height="100%"><AreaChart data={data} margin={{top:15,right:15,left:0,bottom:0}}><defs><linearGradient id="revenue-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--primary)" stopOpacity={0.2}/><stop offset="100%" stopColor="var(--primary)" stopOpacity={0.01}/></linearGradient></defs><CartesianGrid stroke="var(--border)" strokeDasharray="4 6" vertical={false}/><XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{fill:"var(--muted-foreground)",fontSize:11}} tickMargin={12}/><YAxis axisLine={false} tickLine={false} width={65} tick={{fill:"var(--muted-foreground)",fontSize:11}} tickFormatter={value=>new Intl.NumberFormat(locale,{notation:"compact",maximumFractionDigits:1}).format(value)}/><Tooltip contentStyle={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:12,color:"var(--foreground)",fontSize:12}} formatter={value=>[formatVnd(Number(value??0),locale),t("revenue")]}/><Area type="monotone" dataKey="revenue" name={t("revenue")} stroke="var(--primary)" strokeWidth={2.5} fill="url(#revenue-fill)" isAnimationActive={false}/></AreaChart></ResponsiveContainer><table className="sr-only"><caption>{t("chartTitle")}</caption><tbody>{data.map((row,index)=><tr key={index}><th>{row.hour}</th><td>{formatVnd(row.revenue,locale)}</td></tr>)}</tbody></table></div>;
+export default function RevenueChart({
+  rows,
+}: {
+  rows: { local_hour: string; revenue_vnd: number }[];
+}) {
+  const locale = useLocale();
+  const t = useTranslations("dashboard");
+  const data = rows.map((row) => ({
+    hour: row.local_hour.slice(11, 16),
+    revenue: Number(row.revenue_vnd),
+  }));
+  return (
+    <div className="h-72 w-full min-w-0" role="img" aria-label={t("chartTitle")}>
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={data} margin={{ top: 15, right: 15, left: 0, bottom: 0 }}>
+          <defs>
+            <linearGradient id="revenue-fill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.2} />
+              <stop offset="100%" stopColor="var(--primary)" stopOpacity={0.01} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid stroke="var(--border)" strokeDasharray="4 6" vertical={false} />
+          <XAxis
+            dataKey="hour"
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+            tickMargin={12}
+          />
+          <YAxis
+            axisLine={false}
+            tickLine={false}
+            width={65}
+            tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+            tickFormatter={(value) =>
+              new Intl.NumberFormat(locale, {
+                notation: "compact",
+                maximumFractionDigits: 1,
+              }).format(value)
+            }
+          />
+          <Tooltip
+            contentStyle={{
+              background: "var(--card)",
+              border: "1px solid var(--border)",
+              borderRadius: 12,
+              color: "var(--foreground)",
+              fontSize: 12,
+            }}
+            formatter={(value) => [formatVnd(Number(value ?? 0), locale), t("revenue")]}
+          />
+          <Area
+            type="monotone"
+            dataKey="revenue"
+            name={t("revenue")}
+            stroke="var(--primary)"
+            strokeWidth={2.5}
+            fill="url(#revenue-fill)"
+            isAnimationActive={false}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+      <table className="sr-only">
+        <caption>{t("chartTitle")}</caption>
+        <tbody>
+          {data.map((row, index) => (
+            <tr key={index}>
+              <th>{row.hour}</th>
+              <td>{formatVnd(row.revenue, locale)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }

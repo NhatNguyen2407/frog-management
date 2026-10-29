@@ -3,7 +3,24 @@ import { useState, useTransition, type ReactNode } from "react";
 import { Dialog } from "radix-ui";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter as useNextRouter } from "next/navigation";
-import { Leaf, LayoutDashboard, ShoppingBag, Ticket, ListOrdered, ReceiptText, CalendarDays, Package, Boxes, Wallet, Settings, Monitor, Menu, X, LogOut, ChevronRight } from "lucide-react";
+import {
+  Leaf,
+  LayoutDashboard,
+  ShoppingBag,
+  Ticket,
+  ListOrdered,
+  ReceiptText,
+  CalendarDays,
+  Package,
+  Boxes,
+  Wallet,
+  Settings,
+  Monitor,
+  Menu,
+  X,
+  LogOut,
+  ChevronRight,
+} from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { signOut } from "@/features/auth/actions";
 import { mutate } from "@/features/actions";
@@ -14,22 +31,264 @@ import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Preferences } from "@/components/preferences";
-const operational = [{href:"/",key:"dashboard",icon:LayoutDashboard},{href:"/counter",key:"counter",icon:ShoppingBag},{href:"/tickets",key:"tickets",icon:Ticket},{href:"/queue",key:"queue",icon:ListOrdered},{href:"/orders",key:"orders",icon:ReceiptText}];
-const management = [{href:"/events",key:"events",icon:CalendarDays},{href:"/products",key:"products",icon:Package},{href:"/inventory",key:"inventory",icon:Boxes},{href:"/costs",key:"costs",icon:Wallet},{href:"/settings",key:"settings",icon:Settings}];
-function Navigation({owner,onNavigate}:{owner:boolean;onNavigate?:()=>void}) {
-  const t=useTranslations("nav");const pathname=usePathname();
-  return <nav aria-label={t("operations")} className="flex-1 space-y-6 overflow-y-auto px-4 py-6">{[operational,...(owner?[management]:[])].map((group,index)=><div key={index}><p className="mb-3 px-3 text-[10px] font-bold tracking-[0.15em] text-muted-foreground">{t(index?"management":"operations")}</p><div className="space-y-1">{group.map(({href,key,icon:Icon})=><Link key={href} href={href} onClick={onNavigate} aria-current={pathname===href?"page":undefined} className={cn("flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",pathname===href?"bg-primary/10 text-primary":"text-muted-foreground hover:bg-muted hover:text-foreground")}><Icon aria-hidden className="size-[18px]"/>{t(key)}{pathname===href?<ChevronRight className="ml-auto size-3.5" aria-hidden/>:null}</Link>)}</div></div>)}<Link href="/display" target="_blank" rel="noopener" onClick={onNavigate} className="flex min-h-11 items-center gap-3 rounded-xl border border-dashed px-3 text-sm text-muted-foreground"><Monitor aria-hidden className="size-[18px]"/>{t("display")}</Link></nav>;
+const operational = [
+  { href: "/", key: "dashboard", icon: LayoutDashboard },
+  { href: "/counter", key: "counter", icon: ShoppingBag },
+  { href: "/tickets", key: "tickets", icon: Ticket },
+  { href: "/queue", key: "queue", icon: ListOrdered },
+  { href: "/orders", key: "orders", icon: ReceiptText },
+];
+const management = [
+  { href: "/events", key: "events", icon: CalendarDays },
+  { href: "/products", key: "products", icon: Package },
+  { href: "/inventory", key: "inventory", icon: Boxes },
+  { href: "/costs", key: "costs", icon: Wallet },
+  { href: "/settings", key: "settings", icon: Settings },
+];
+function Navigation({ owner, onNavigate }: { owner: boolean; onNavigate?: () => void }) {
+  const t = useTranslations("nav");
+  const pathname = usePathname();
+  return (
+    <nav aria-label={t("operations")} className="flex-1 space-y-6 overflow-y-auto px-4 py-6">
+      {[operational, ...(owner ? [management] : [])].map((group, index) => (
+        <div key={index}>
+          <p className="mb-3 px-3 text-[10px] font-bold tracking-[0.15em] text-muted-foreground">
+            {t(index ? "management" : "operations")}
+          </p>
+          <div className="space-y-1">
+            {group.map(({ href, key, icon: Icon }) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={onNavigate}
+                aria-current={pathname === href ? "page" : undefined}
+                className={cn(
+                  "flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                  pathname === href
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                )}
+              >
+                <Icon aria-hidden className="size-[18px]" />
+                {t(key)}
+                {pathname === href ? (
+                  <ChevronRight className="ml-auto size-3.5" aria-hidden />
+                ) : null}
+              </Link>
+            ))}
+          </div>
+        </div>
+      ))}
+      <Link
+        href="/display"
+        target="_blank"
+        rel="noopener"
+        onClick={onNavigate}
+        className="flex min-h-11 items-center gap-3 rounded-xl border border-dashed px-3 text-sm text-muted-foreground"
+      >
+        <Monitor aria-hidden className="size-[18px]" />
+        {t("display")}
+      </Link>
+    </nav>
+  );
 }
-export function Shell({children,units,unit,events,event,email}:{children:ReactNode;units:Membership[];unit:Membership;events:Event[];event:Event|null;email:string}) {
-  const [open,setOpen]=useState(false);const [pending,startTransition]=useTransition();const [contextError,setContextError]=useState(false);const t=useTranslations();const locale=useLocale();const router=useNextRouter();
-  function selectContext(unitId:string,eventId:string){const data=new FormData();data.set("unit_id",unitId);data.set("selected_event",eventId);startTransition(async()=>{const result=await mutate("context",data);setContextError(!result.ok);if(result.ok)router.refresh();});}
-  const brand=<div className="flex h-24 shrink-0 items-center gap-3 border-b px-7"><div className="rounded-xl bg-primary p-2.5 text-primary-foreground"><Leaf className="size-5" aria-hidden/></div><div><p className="text-lg font-semibold tracking-tight">{t("common.appName")}</p><p className="text-[11px] font-medium tracking-[0.15em] text-muted-foreground">{t("common.appSubtitle")}</p></div></div>;
-  const profile=<div className="border-t p-5"><div className="mb-4 flex items-center gap-3"><div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">{email.slice(0,1).toUpperCase()}</div><div className="min-w-0"><p className="truncate text-xs font-medium">{email}</p><p className="mt-1 text-xs text-muted-foreground">{t(`common.${unit.role}`)}</p></div></div><form action={signOut}><input type="hidden" name="locale" value={locale}/><Button type="submit" variant="ghost" className="w-full justify-start px-0"><LogOut aria-hidden/>{t("common.signOut")}</Button></form></div>;
-  return <><a href="#main-content" className="fixed left-4 top-2 z-[100] -translate-y-24 rounded-lg bg-primary p-3 text-primary-foreground focus:translate-y-0">{t("common.skip")}</a><aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col border-r bg-card lg:flex">{brand}<Navigation owner={unit.role==="owner"}/>{profile}</aside>
-    <Dialog.Root open={open} onOpenChange={setOpen}><Dialog.Portal><Dialog.Overlay className="fixed inset-0 z-50 bg-black/45"/><Dialog.Content className="fixed inset-y-0 left-0 z-50 flex w-[min(85vw,320px)] flex-col border-r bg-card"><Dialog.Title className="sr-only">{t("common.menu")}</Dialog.Title><Dialog.Description className="sr-only">{t("nav.operations")}</Dialog.Description>{brand}<Dialog.Close asChild><Button variant="ghost" size="icon" className="absolute right-2 top-6" aria-label={t("common.close")}><X/></Button></Dialog.Close><Navigation owner={unit.role==="owner"} onNavigate={()=>setOpen(false)}/>{profile}</Dialog.Content></Dialog.Portal></Dialog.Root>
-    <div className="lg:pl-60"><header className="sticky top-0 z-20 border-b bg-card/95 px-4 py-3 backdrop-blur-md sm:px-7"><div className="flex flex-wrap items-center justify-between gap-3"><div className="flex min-w-0 flex-1 items-center gap-3"><Button className="lg:hidden" variant="ghost" size="icon" onClick={()=>setOpen(true)} aria-label={t("common.menu")}><Menu/></Button><div className="min-w-0"><div className="flex items-center gap-2"><span className="hidden text-xs font-medium text-muted-foreground sm:inline">{t("common.businessUnit")}</span>{units.length>1?<Select className="max-w-40 py-1" aria-label={t("common.businessUnit")} value={unit.id} disabled={pending} onChange={e=>selectContext(e.target.value,"")}>{units.map(row=><option key={row.id} value={row.id}>{row.name}</option>)}</Select>:<span className="text-sm font-semibold">{unit.name}</span>}</div><p className="mt-0.5 text-[11px] text-muted-foreground">{event?formatDate(event.event_date):t("common.noEvent")}</p></div></div><Preferences/></div>
-      <div className="mt-3 flex items-center gap-3"><CalendarDays className="size-4 shrink-0 text-muted-foreground" aria-hidden/><Select value={event?.id??""} disabled={pending||!events.length} aria-label={t("common.event")} onChange={e=>selectContext(unit.id,e.target.value)} className="max-w-xl border-0 bg-muted/60 text-sm font-medium"><option value="" disabled>{t("common.noEvent")}</option>{events.map(row=><option key={row.id} value={row.id}>{row.name}</option>)}</Select>{event?<Badge tone={event.status==="active"?"green":"neutral"} className="hidden sm:inline-flex">{t(`eventStatus.${event.status}`)}</Badge>:null}</div>{contextError?<p role="alert" className="mt-2 text-sm text-destructive">{t("errors.generic")}</p>:null}
-    </header><main id="main-content" className="mx-auto max-w-[1600px] px-4 pb-28 pt-7 sm:px-7 sm:pt-9 lg:px-9 lg:pb-12">{children}</main></div>
-    <nav aria-label={t("nav.operations")} className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t bg-card/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden">{operational.slice(1).map(({href,key,icon:Icon})=><Link key={href} href={href} className="flex min-h-18 flex-col items-center justify-center gap-1 text-[10px] font-semibold text-muted-foreground"><Icon aria-hidden className="size-5"/>{t(`nav.${key}`)}</Link>)}</nav>
-  </>;
+export function Shell({
+  children,
+  units,
+  unit,
+  events,
+  event,
+  email,
+}: {
+  children: ReactNode;
+  units: Membership[];
+  unit: Membership;
+  events: Event[];
+  event: Event | null;
+  email: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [pending, startTransition] = useTransition();
+  const [contextError, setContextError] = useState(false);
+  const t = useTranslations();
+  const locale = useLocale();
+  const router = useNextRouter();
+  function selectContext(unitId: string, eventId: string) {
+    const data = new FormData();
+    data.set("unit_id", unitId);
+    data.set("selected_event", eventId);
+    startTransition(async () => {
+      const result = await mutate("context", data);
+      setContextError(!result.ok);
+      if (result.ok) router.refresh();
+    });
+  }
+  const brand = (
+    <div className="flex h-24 shrink-0 items-center gap-3 border-b px-7">
+      <div className="rounded-xl bg-primary p-2.5 text-primary-foreground">
+        <Leaf className="size-5" aria-hidden />
+      </div>
+      <div>
+        <p className="text-lg font-semibold tracking-tight">{t("common.appName")}</p>
+        <p className="text-[11px] font-medium tracking-[0.15em] text-muted-foreground">
+          {t("common.appSubtitle")}
+        </p>
+      </div>
+    </div>
+  );
+  const profile = (
+    <div className="border-t p-5">
+      <div className="mb-4 flex items-center gap-3">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+          {email.slice(0, 1).toUpperCase()}
+        </div>
+        <div className="min-w-0">
+          <p className="truncate text-xs font-medium">{email}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{t(`common.${unit.role}`)}</p>
+        </div>
+      </div>
+      <form action={signOut}>
+        <input type="hidden" name="locale" value={locale} />
+        <Button type="submit" variant="ghost" className="w-full justify-start px-0">
+          <LogOut aria-hidden />
+          {t("common.signOut")}
+        </Button>
+      </form>
+    </div>
+  );
+  return (
+    <>
+      <a
+        href="#main-content"
+        className="fixed left-4 top-2 z-[100] -translate-y-24 rounded-lg bg-primary p-3 text-primary-foreground focus:translate-y-0"
+      >
+        {t("common.skip")}
+      </a>
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col border-r bg-card lg:flex">
+        {brand}
+        <Navigation owner={unit.role === "owner"} />
+        {profile}
+      </aside>
+      <Dialog.Root open={open} onOpenChange={setOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 z-50 bg-black/45" />
+          <Dialog.Content className="fixed inset-y-0 left-0 z-50 flex w-[min(85vw,320px)] flex-col border-r bg-card">
+            <Dialog.Title className="sr-only">{t("common.menu")}</Dialog.Title>
+            <Dialog.Description className="sr-only">{t("nav.operations")}</Dialog.Description>
+            {brand}
+            <Dialog.Close asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-2 top-6"
+                aria-label={t("common.close")}
+              >
+                <X />
+              </Button>
+            </Dialog.Close>
+            <Navigation owner={unit.role === "owner"} onNavigate={() => setOpen(false)} />
+            {profile}
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+      <div className="lg:pl-60">
+        <header className="sticky top-0 z-20 border-b bg-card/95 px-4 py-3 backdrop-blur-md sm:px-7">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex min-w-0 flex-1 items-center gap-3">
+              <Button
+                className="lg:hidden"
+                variant="ghost"
+                size="icon"
+                onClick={() => setOpen(true)}
+                aria-label={t("common.menu")}
+              >
+                <Menu />
+              </Button>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="hidden text-xs font-medium text-muted-foreground sm:inline">
+                    {t("common.businessUnit")}
+                  </span>
+                  {units.length > 1 ? (
+                    <Select
+                      className="max-w-40 py-1"
+                      aria-label={t("common.businessUnit")}
+                      value={unit.id}
+                      disabled={pending}
+                      onChange={(e) => selectContext(e.target.value, "")}
+                    >
+                      {units.map((row) => (
+                        <option key={row.id} value={row.id}>
+                          {row.name}
+                        </option>
+                      ))}
+                    </Select>
+                  ) : (
+                    <span className="text-sm font-semibold">{unit.name}</span>
+                  )}
+                </div>
+                <p className="mt-0.5 text-[11px] text-muted-foreground">
+                  {event ? formatDate(event.event_date) : t("common.noEvent")}
+                </p>
+              </div>
+            </div>
+            <Preferences />
+          </div>
+          <div className="mt-3 flex items-center gap-3">
+            <CalendarDays className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+            <Select
+              value={event?.id ?? ""}
+              disabled={pending || !events.length}
+              aria-label={t("common.event")}
+              onChange={(e) => selectContext(unit.id, e.target.value)}
+              className="max-w-xl border-0 bg-muted/60 text-sm font-medium"
+            >
+              <option value="" disabled>
+                {t("common.noEvent")}
+              </option>
+              {events.map((row) => (
+                <option key={row.id} value={row.id}>
+                  {row.name}
+                </option>
+              ))}
+            </Select>
+            {event ? (
+              <Badge
+                tone={event.status === "active" ? "green" : "neutral"}
+                className="hidden sm:inline-flex"
+              >
+                {t(`eventStatus.${event.status}`)}
+              </Badge>
+            ) : null}
+          </div>
+          {contextError ? (
+            <p role="alert" className="mt-2 text-sm text-destructive">
+              {t("errors.generic")}
+            </p>
+          ) : null}
+        </header>
+        <main
+          id="main-content"
+          className="mx-auto max-w-[1600px] px-4 pb-28 pt-7 sm:px-7 sm:pt-9 lg:px-9 lg:pb-12"
+        >
+          {children}
+        </main>
+      </div>
+      <nav
+        aria-label={t("nav.operations")}
+        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t bg-card/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
+      >
+        {operational.slice(1).map(({ href, key, icon: Icon }) => (
+          <Link
+            key={href}
+            href={href}
+            className="flex min-h-18 flex-col items-center justify-center gap-1 text-[10px] font-semibold text-muted-foreground"
+          >
+            <Icon aria-hidden className="size-5" />
+            {t(`nav.${key}`)}
+          </Link>
+        ))}
+      </nav>
+    </>
+  );
 }

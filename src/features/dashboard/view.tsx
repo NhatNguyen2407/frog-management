@@ -1,6 +1,16 @@
 import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
-import { ArrowUpRight, ShoppingBag, Banknote, Wallet, TrendingUp, Ticket, Clock3, CircleCheck, ArrowRight } from "lucide-react";
+import {
+  ArrowUpRight,
+  ShoppingBag,
+  Banknote,
+  Wallet,
+  TrendingUp,
+  Ticket,
+  Clock3,
+  CircleCheck,
+  ArrowRight,
+} from "lucide-react";
 import { getWorkspace } from "@/lib/permissions/context";
 import { requireData, loadQueue } from "@/lib/supabase/query";
 import { formatVnd } from "@/lib/formatting";
@@ -11,31 +21,326 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, Notice, PageTitle, StatusBadge } from "@/components/shared";
 import { LazyRevenueChart } from "./lazy-chart";
-function Stat({label,value,icon,detail,primary=false}:{label:string;value:string|number;icon:ReactNode;detail?:string;primary?:boolean}) {return <Card className={primary?"border-primary bg-primary text-primary-foreground":""}><CardContent><div className="flex items-start justify-between gap-3"><p className={`text-xs font-medium ${primary?"text-primary-foreground/80":"text-muted-foreground"}`}>{label}</p><span className={primary?"text-primary-foreground/70":"text-muted-foreground"}>{icon}</span></div><p className="number mt-5 break-words text-xl font-semibold tracking-tight sm:text-2xl 2xl:text-3xl">{value}</p>{detail?<p className={`mt-3 text-xs ${primary?"text-primary-foreground/80":"text-muted-foreground"}`}>{detail}</p>:null}</CardContent></Card>;}
+function Stat({
+  label,
+  value,
+  icon,
+  detail,
+  primary = false,
+}: {
+  label: string;
+  value: string | number;
+  icon: ReactNode;
+  detail?: string;
+  primary?: boolean;
+}) {
+  return (
+    <Card className={primary ? "border-primary bg-primary text-primary-foreground" : ""}>
+      <CardContent>
+        <div className="flex items-start justify-between gap-3">
+          <p
+            className={`text-xs font-medium ${primary ? "text-primary-foreground/80" : "text-muted-foreground"}`}
+          >
+            {label}
+          </p>
+          <span className={primary ? "text-primary-foreground/70" : "text-muted-foreground"}>
+            {icon}
+          </span>
+        </div>
+        <p className="number mt-5 break-words text-xl font-semibold tracking-tight sm:text-2xl 2xl:text-3xl">
+          {value}
+        </p>
+        {detail ? (
+          <p
+            className={`mt-3 text-xs ${primary ? "text-primary-foreground/80" : "text-muted-foreground"}`}
+          >
+            {detail}
+          </p>
+        ) : null}
+      </CardContent>
+    </Card>
+  );
+}
 export async function DashboardView() {
-  const [w,t]=await Promise.all([getWorkspace(),getTranslations()]);
-  if(!w.event)return <EmptyState title={t("common.noEvent")} description={t("common.noEventBody")} action={w.owner?<Button asChild><Link href="/events">{t("events.create")}</Link></Button>:undefined}/>;
-  const eventId=w.event.id;
-  const [operations,queue]=await Promise.all([
-    requireData<Operations>(w.client.from("operations_summary").select("*").eq("event_id",eventId).single<Operations>()),
-    loadQueue(w.client,eventId),
+  const [w, t] = await Promise.all([getWorkspace(), getTranslations()]);
+  if (!w.event)
+    return (
+      <EmptyState
+        title={t("common.noEvent")}
+        description={t("common.noEventBody")}
+        action={
+          w.owner ? (
+            <Button asChild>
+              <Link href="/events">{t("events.create")}</Link>
+            </Button>
+          ) : undefined
+        }
+      />
+    );
+  const eventId = w.event.id;
+  const [operations, queue] = await Promise.all([
+    requireData<Operations>(
+      w.client.from("operations_summary").select("*").eq("event_id", eventId).single<Operations>(),
+    ),
+    loadQueue(w.client, eventId),
   ]);
-  const waiting=queue.filter(row=>row.status==="waiting").slice(0,5);
-  const queuePanel=<Card><CardHeader className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-semibold">{t("dashboard.queueTitle")}</h2><p className="mt-1 text-xs text-muted-foreground">{t("dashboard.queueDescription")}</p></div><Button asChild variant="ghost" size="sm"><Link href="/queue">{t("common.view")}<ArrowUpRight aria-hidden/></Link></Button></CardHeader><CardContent>{!waiting.length?<div className="py-8 text-center"><CircleCheck aria-hidden className="mx-auto mb-3 size-7 text-primary"/><p className="text-sm font-medium">{t("dashboard.queueEmpty")}</p><p className="mt-2 text-xs text-muted-foreground">{t("dashboard.queueEmptyBody")}</p></div>:<div className="space-y-4">{waiting.map(row=><div key={row.id} className="flex items-center justify-between gap-3 border-b pb-4 last:border-0 last:pb-0"><div><p className="number text-sm font-bold">{row.ticket_number}</p><p className="mt-1 text-xs text-muted-foreground">{row.display_name}</p></div><StatusBadge status="waiting" label={t("ticketStatus.waiting")}/></div>)}</div>}</CardContent></Card>;
-  const quickPanel=<Card className="bg-muted/50"><CardContent><div className="mb-6 flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary"><ShoppingBag aria-hidden className="size-5"/></div><h2 className="text-lg font-semibold">{t("dashboard.quickCounter")}</h2><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t("dashboard.quickCounterBody")}</p><Button asChild className="mt-6"><Link href="/counter">{t("common.goCounter")}<ArrowRight aria-hidden/></Link></Button></CardContent></Card>;
-  if(!w.owner)return <><PageTitle title={t("dashboard.opsTitle")} description={t("dashboard.opsDescription")}/><div className="mb-7 grid grid-cols-2 gap-4 xl:grid-cols-4"><Stat label={t("dashboard.registered")} value={operations.registered_count} icon={<Ticket className="size-4" aria-hidden/>}/><Stat label={t("dashboard.waiting")} value={operations.waiting_count} icon={<Clock3 className="size-4" aria-hidden/>}/><Stat label={t("dashboard.inProgress")} value={operations.in_progress_count} icon={<ShoppingBag className="size-4" aria-hidden/>}/><Stat label={t("dashboard.completed")} value={operations.completed_count} icon={<CircleCheck className="size-4" aria-hidden/>} primary/></div><div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">{queuePanel}{quickPanel}</div></>;
-  const [summary,products,times,stock]=await Promise.all([
-    requireData<EventFinancials>(w.client.from("event_financials").select("*").eq("event_id",eventId).single<EventFinancials>()),
-    requireData(w.client.from("product_revenue").select("*").eq("event_id",eventId).order("revenue_vnd",{ascending:false})),
-    requireData(w.client.from("revenue_over_time").select("*").eq("event_id",eventId).order("local_hour")),
-    requireData(w.client.from("inventory_status").select("stock_status").eq("event_id",eventId).neq("stock_status","ok")),
+  const waiting = queue.filter((row) => row.status === "waiting").slice(0, 5);
+  const queuePanel = (
+    <Card>
+      <CardHeader className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="font-semibold">{t("dashboard.queueTitle")}</h2>
+          <p className="mt-1 text-xs text-muted-foreground">{t("dashboard.queueDescription")}</p>
+        </div>
+        <Button asChild variant="ghost" size="sm">
+          <Link href="/queue">
+            {t("common.view")}
+            <ArrowUpRight aria-hidden />
+          </Link>
+        </Button>
+      </CardHeader>
+      <CardContent>
+        {!waiting.length ? (
+          <div className="py-8 text-center">
+            <CircleCheck aria-hidden className="mx-auto mb-3 size-7 text-primary" />
+            <p className="text-sm font-medium">{t("dashboard.queueEmpty")}</p>
+            <p className="mt-2 text-xs text-muted-foreground">{t("dashboard.queueEmptyBody")}</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {waiting.map((row) => (
+              <div
+                key={row.id}
+                className="flex items-center justify-between gap-3 border-b pb-4 last:border-0 last:pb-0"
+              >
+                <div>
+                  <p className="number text-sm font-bold">{row.ticket_number}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{row.display_name}</p>
+                </div>
+                <StatusBadge status="waiting" label={t("ticketStatus.waiting")} />
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+  const quickPanel = (
+    <Card className="bg-muted/50">
+      <CardContent>
+        <div className="mb-6 flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <ShoppingBag aria-hidden className="size-5" />
+        </div>
+        <h2 className="text-lg font-semibold">{t("dashboard.quickCounter")}</h2>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          {t("dashboard.quickCounterBody")}
+        </p>
+        <Button asChild className="mt-6">
+          <Link href="/counter">
+            {t("common.goCounter")}
+            <ArrowRight aria-hidden />
+          </Link>
+        </Button>
+      </CardContent>
+    </Card>
+  );
+  if (!w.owner)
+    return (
+      <>
+        <PageTitle title={t("dashboard.opsTitle")} description={t("dashboard.opsDescription")} />
+        <div className="mb-7 grid grid-cols-2 gap-4 xl:grid-cols-4">
+          <Stat
+            label={t("dashboard.registered")}
+            value={operations.registered_count}
+            icon={<Ticket className="size-4" aria-hidden />}
+          />
+          <Stat
+            label={t("dashboard.waiting")}
+            value={operations.waiting_count}
+            icon={<Clock3 className="size-4" aria-hidden />}
+          />
+          <Stat
+            label={t("dashboard.inProgress")}
+            value={operations.in_progress_count}
+            icon={<ShoppingBag className="size-4" aria-hidden />}
+          />
+          <Stat
+            label={t("dashboard.completed")}
+            value={operations.completed_count}
+            icon={<CircleCheck className="size-4" aria-hidden />}
+            primary
+          />
+        </div>
+        <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
+          {queuePanel}
+          {quickPanel}
+        </div>
+      </>
+    );
+  const [summary, products, times, stock] = await Promise.all([
+    requireData<EventFinancials>(
+      w.client
+        .from("event_financials")
+        .select("*")
+        .eq("event_id", eventId)
+        .single<EventFinancials>(),
+    ),
+    requireData(
+      w.client
+        .from("product_revenue")
+        .select("*")
+        .eq("event_id", eventId)
+        .order("revenue_vnd", { ascending: false }),
+    ),
+    requireData(
+      w.client.from("revenue_over_time").select("*").eq("event_id", eventId).order("local_hour"),
+    ),
+    requireData(
+      w.client
+        .from("inventory_status")
+        .select("stock_status")
+        .eq("event_id", eventId)
+        .neq("stock_status", "ok"),
+    ),
   ]);
-  const number=(value:number|string)=>new Intl.NumberFormat(w.locale,{maximumFractionDigits:1}).format(Number(value));
-  return <><PageTitle title={t("dashboard.title")} description={t("dashboard.description")} action={<Button asChild><Link href="/counter"><ShoppingBag aria-hidden/>{t("common.goCounter")}</Link></Button>}/>
-    {Number(summary.missing_unit_cost_count)>0?<Notice>{t("dashboard.missingCosts")}</Notice>:null}{stock.length?<Notice><Link href="/inventory" className="font-semibold underline underline-offset-4">{t("dashboard.lowStock")}</Link><p>{t("dashboard.lowStockBody",{count:stock.length})}</p></Notice>:null}
-    <div className="grid grid-cols-2 gap-4 xl:grid-cols-4"><Stat label={t("dashboard.revenue")} value={formatVnd(summary.revenue_vnd,w.locale)} icon={<Banknote className="size-4" aria-hidden/>} detail={t("dashboard.paidOnly")} primary/><Stat label={t("dashboard.costs")} value={formatVnd(summary.total_costs_vnd,w.locale)} icon={<Wallet className="size-4" aria-hidden/>} detail={`${t("dashboard.eventCosts")}: ${formatVnd(summary.event_costs_vnd,w.locale)}`}/><Stat label={t("dashboard.profit")} value={summary.profit_vnd===null?t("common.notAvailable"):formatVnd(summary.profit_vnd,w.locale)} icon={<TrendingUp className="size-4" aria-hidden/>} detail={`${t("dashboard.margin")}: ${summary.margin_percent===null?t("common.notAvailable"):`${number(summary.margin_percent)}%`}`}/><Stat label={t("dashboard.itemsSold")} value={number(summary.items_sold)} icon={<ShoppingBag className="size-4" aria-hidden/>} detail={`${t("dashboard.paidOrders")}: ${number(summary.paid_order_count)} · ${t("dashboard.unpaidOrders")}: ${number(summary.unpaid_order_count)}`}/></div>
-    <div className="mt-4 grid grid-cols-2 gap-4"><Card><CardContent className="flex flex-wrap items-center justify-between gap-2"><span className="text-xs text-muted-foreground">{t("dashboard.workshop")}</span><strong className="number text-base">{formatVnd(summary.workshop_revenue_vnd,w.locale)}</strong></CardContent></Card><Card><CardContent className="flex flex-wrap items-center justify-between gap-2"><span className="text-xs text-muted-foreground">{t("dashboard.food")}</span><strong className="number text-base">{formatVnd(summary.food_beverage_revenue_vnd,w.locale)}</strong></CardContent></Card></div>
-    <div className="mt-7 grid items-start gap-6 xl:grid-cols-[1.8fr_1fr]"><Card className="min-w-0"><CardHeader><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="font-semibold">{t("dashboard.chartTitle")}</h2><Badge tone="green">{t("dashboard.paidOnly")}</Badge></div><p className="mt-2 text-xs text-muted-foreground">{t("dashboard.chartDescription")}</p></CardHeader><CardContent>{times.length?<LazyRevenueChart rows={times}/>:<div className="flex h-72 flex-col items-center justify-center text-center"><TrendingUp aria-hidden className="mb-4 size-8 text-muted-foreground/50"/><h3 className="text-sm font-semibold">{t("dashboard.noSales")}</h3><p className="mt-2 max-w-xs text-xs leading-relaxed text-muted-foreground">{t("dashboard.noSalesBody")}</p></div>}</CardContent></Card>{queuePanel}</div>
-    <Card className="mt-7 overflow-hidden"><CardHeader><h2 className="font-semibold">{t("dashboard.productTitle")}</h2></CardHeader>{!products.length?<CardContent><p className="py-6 text-center text-sm text-muted-foreground">{t("dashboard.noSalesBody")}</p></CardContent>:<div className="table-wrap"><table className="data-table"><thead><tr><th>{t("common.name")}</th><th>{t("products.sku")}</th><th>{t("dashboard.sold")}</th><th>{t("dashboard.revenue")}</th><th>{t("dashboard.share")}</th></tr></thead><tbody>{products.map(row=><tr key={row.product_id}><td className="font-medium">{row.name_snapshot}</td><td className="font-mono text-xs text-muted-foreground">{row.sku_snapshot}</td><td className="number">{number(row.items_sold)}</td><td className="number">{formatVnd(row.revenue_vnd,w.locale)}</td><td className="number">{number(row.revenue_percent??0)}%</td></tr>)}</tbody></table></div>}</Card>
-  </>;
+  const number = (value: number | string) =>
+    new Intl.NumberFormat(w.locale, { maximumFractionDigits: 1 }).format(Number(value));
+  return (
+    <>
+      <PageTitle
+        title={t("dashboard.title")}
+        description={t("dashboard.description")}
+        action={
+          <Button asChild>
+            <Link href="/counter">
+              <ShoppingBag aria-hidden />
+              {t("common.goCounter")}
+            </Link>
+          </Button>
+        }
+      />
+      {Number(summary.missing_unit_cost_count) > 0 ? (
+        <Notice>{t("dashboard.missingCosts")}</Notice>
+      ) : null}
+      {stock.length ? (
+        <Notice>
+          <Link href="/inventory" className="font-semibold underline underline-offset-4">
+            {t("dashboard.lowStock")}
+          </Link>
+          <p>{t("dashboard.lowStockBody", { count: stock.length })}</p>
+        </Notice>
+      ) : null}
+      <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+        <Stat
+          label={t("dashboard.revenue")}
+          value={formatVnd(summary.revenue_vnd, w.locale)}
+          icon={<Banknote className="size-4" aria-hidden />}
+          detail={t("dashboard.paidOnly")}
+          primary
+        />
+        <Stat
+          label={t("dashboard.costs")}
+          value={formatVnd(summary.total_costs_vnd, w.locale)}
+          icon={<Wallet className="size-4" aria-hidden />}
+          detail={`${t("dashboard.eventCosts")}: ${formatVnd(summary.event_costs_vnd, w.locale)}`}
+        />
+        <Stat
+          label={t("dashboard.profit")}
+          value={
+            summary.profit_vnd === null
+              ? t("common.notAvailable")
+              : formatVnd(summary.profit_vnd, w.locale)
+          }
+          icon={<TrendingUp className="size-4" aria-hidden />}
+          detail={`${t("dashboard.margin")}: ${summary.margin_percent === null ? t("common.notAvailable") : `${number(summary.margin_percent)}%`}`}
+        />
+        <Stat
+          label={t("dashboard.itemsSold")}
+          value={number(summary.items_sold)}
+          icon={<ShoppingBag className="size-4" aria-hidden />}
+          detail={`${t("dashboard.paidOrders")}: ${number(summary.paid_order_count)} · ${t("dashboard.unpaidOrders")}: ${number(summary.unpaid_order_count)}`}
+        />
+      </div>
+      <div className="mt-4 grid grid-cols-2 gap-4">
+        <Card>
+          <CardContent className="flex flex-wrap items-center justify-between gap-2">
+            <span className="text-xs text-muted-foreground">{t("dashboard.workshop")}</span>
+            <strong className="number text-base">
+              {formatVnd(summary.workshop_revenue_vnd, w.locale)}
+            </strong>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="flex flex-wrap items-center justify-between gap-2">
+            <span className="text-xs text-muted-foreground">{t("dashboard.food")}</span>
+            <strong className="number text-base">
+              {formatVnd(summary.food_beverage_revenue_vnd, w.locale)}
+            </strong>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="mt-7 grid items-start gap-6 xl:grid-cols-[1.8fr_1fr]">
+        <Card className="min-w-0">
+          <CardHeader>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="font-semibold">{t("dashboard.chartTitle")}</h2>
+              <Badge tone="green">{t("dashboard.paidOnly")}</Badge>
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">{t("dashboard.chartDescription")}</p>
+          </CardHeader>
+          <CardContent>
+            {times.length ? (
+              <LazyRevenueChart rows={times} />
+            ) : (
+              <div className="flex h-72 flex-col items-center justify-center text-center">
+                <TrendingUp aria-hidden className="mb-4 size-8 text-muted-foreground/50" />
+                <h3 className="text-sm font-semibold">{t("dashboard.noSales")}</h3>
+                <p className="mt-2 max-w-xs text-xs leading-relaxed text-muted-foreground">
+                  {t("dashboard.noSalesBody")}
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+        {queuePanel}
+      </div>
+      <Card className="mt-7 overflow-hidden">
+        <CardHeader>
+          <h2 className="font-semibold">{t("dashboard.productTitle")}</h2>
+        </CardHeader>
+        {!products.length ? (
+          <CardContent>
+            <p className="py-6 text-center text-sm text-muted-foreground">
+              {t("dashboard.noSalesBody")}
+            </p>
+          </CardContent>
+        ) : (
+          <div className="table-wrap">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>{t("common.name")}</th>
+                  <th>{t("products.sku")}</th>
+                  <th>{t("dashboard.sold")}</th>
+                  <th>{t("dashboard.revenue")}</th>
+                  <th>{t("dashboard.share")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((row) => (
+                  <tr key={row.product_id}>
+                    <td className="font-medium">{row.name_snapshot}</td>
+                    <td className="font-mono text-xs text-muted-foreground">{row.sku_snapshot}</td>
+                    <td className="number">{number(row.items_sold)}</td>
+                    <td className="number">{formatVnd(row.revenue_vnd, w.locale)}</td>
+                    <td className="number">{number(row.revenue_percent ?? 0)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Card>
+    </>
+  );
 }

@@ -2,237 +2,1361 @@
   "use strict";
   const STORAGE = "frog-management-prototype-v1";
   const vi = {
-    workspace:"WORKSPACE",demoMode:"Không gian demo",demoInfo:"Dữ liệu giả - không phải đơn bán thật",event:"Sự kiện",products:"Sản phẩm",dashboard:"Tổng quan",pos:"Bán hàng",orders:"Đơn hàng",events:"Workshop",queue:"Hàng đợi",inventory:"Kho hàng",reports:"Báo cáo",settings:"Cài đặt",
-    hello:"Một ngày sáng tạo cùng Frog ✳",greeting:"Theo dõi hoạt động workshop và đơn hàng tại một nơi.",newSale:"Tạo đơn mới",all:"Tất cả",today:"Dữ liệu mẫu",revenue:"Doanh thu",profit:"Lợi nhuận tạm tính",orderCount:"Đơn đã thanh toán",waiting:"Đang chờ",revenueHint:"Chỉ tính đơn đã thanh toán",profitHint:"Doanh thu - giá vốn - chi phí",orderHint:"Đơn Paid trong sự kiện",waitingHint:"Khách chờ thực hiện",salesChart:"Doanh thu 7 ngày",salesChartHint:"Minh họa dữ liệu theo ngày",activity:"Hoạt động gần đây",activityHint:"Các giao dịch và ticket mới nhất",salesMix:"Nguồn doanh thu",salesMixHint:"Workshop và đồ ăn kèm",shortcut:"Thao tác nhanh",quickHint:"Bắt đầu từ quầy bán hàng",quickText:"Tạo order, ticket và xem hàng đợi mà không cần kết nối database.",openRegister:"Mở quầy POS",
-    posTitle:"Quầy bán hàng",posDesc:"Chọn sản phẩm, ghi nhận đơn và phát vé workshop.",search:"Tìm sản phẩm hoặc SKU...",workshop:"Workshop",food:"Đồ ăn & uống",cart:"Giỏ hàng",cartDesc:"Tạo đơn hàng thử với dữ liệu mẫu",emptyCart:"Chưa có sản phẩm",emptyCartHint:"Chọn sản phẩm bên trái để bắt đầu",customer:"Tên khách (nếu cần ticket)",customerPh:"Ví dụ: Minh Anh",paymentMethod:"Phương thức thanh toán",cash:"Tiền mặt",bank:"Chuyển khoản",paymentStatus:"Thanh toán",paid:"Đã thanh toán",unpaid:"Chưa thanh toán",total:"Tổng cộng",checkout:"Tạo đơn hàng",withTicket:"Tạo ticket workshop",note:"Ghi chú / tùy chỉnh",notePh:"Màu vải, size, font, yêu cầu riêng...",back:"Quay lại",cancel:"Hủy",confirm:"Xác nhận",success:"Đã tạo đơn demo",successText:"Đơn hàng đã được thêm vào dữ liệu mẫu. Không có giao dịch thực.",ticket:"Mã vé",orderId:"Mã đơn",print:"In vé",another:"Tạo đơn khác",
-    orderTitle:"Đơn hàng",orderDesc:"Theo dõi các giao dịch trong sự kiện đang chọn.",filterAll:"Mọi trạng thái",refunded:"Đã hoàn tiền",cancelled:"Đã hủy",view:"Xem",refund:"Hoàn tiền",noOrders:"Không có đơn hàng phù hợp",customerLabel:"Khách hàng",items:"Sản phẩm",date:"Thời gian",status:"Trạng thái",actions:"Thao tác",refundConfirm:"Đổi đơn demo này sang trạng thái hoàn tiền?",ticketFlow:"Điều phối ticket",
-    eventsTitle:"Sự kiện / Workshop",eventsDesc:"Quản lý các buổi sáng tạo và chọn sự kiện hiện hành.",active:"Đang mở",planned:"Sắp diễn ra",selected:"Đang chọn",choose:"Chọn sự kiện",capacity:"Sức chứa",registered:"Đã đăng ký",eventNotice:"Dữ liệu demo dùng chung trong trình duyệt này. Bạn có thể thử chuyển sự kiện.",queueTitle:"Live queue",queueDesc:"Theo dõi ticket và chuyển trạng thái ngay trên giao diện.",inProgress:"Đang thực hiện",upNext:"Tiếp theo",completed:"Hoàn thành",emptyQueue:"Chưa có ticket",next:"Bước tiếp",tv:"Chế độ TV",exitTv:"Thoát TV",ticketPrinted:"Đã in vé",ticketRegistered:"Đã đăng ký",queueTip:"In vé từ danh sách ticket rồi chuyển trạng thái để xem hiệu ứng trong queue.",
-    inventoryTitle:"Kho nguyên liệu",inventoryDesc:"Tồn kho mẫu được cập nhật khi phát sinh đơn demo.",product:"Sản phẩm",sku:"Mã SKU",stock:"Còn lại",threshold:"Ngưỡng thấp",stockLow:"Sắp hết",stockOk:"Đủ hàng",stockOut:"Hết hàng",stockEdit:"Chỉnh tồn",save:"Lưu",inventoryHint:"Tồn kho của prototype được mô phỏng theo sản phẩm, không phải sổ kho thực.",
-    reportsTitle:"Báo cáo",reportsDesc:"Quan sát doanh thu và chi phí mô phỏng theo sự kiện.",expense:"Chi phí hoạt động",costOfGoods:"Giá vốn hàng bán",margin:"Biên lợi nhuận",productReport:"Doanh thu theo sản phẩm",share:"Tỉ trọng",settingsTitle:"Cài đặt demo",settingsDesc:"Tùy chỉnh giao diện prototype và dữ liệu giả.",appearance:"Giao diện",language:"Ngôn ngữ",role:"Vai trò xem thử",owner:"Chủ cửa hàng",staff:"Nhân viên",light:"Sáng",dark:"Tối",reset:"Đặt lại dữ liệu demo",resetConfirm:"Xóa các thay đổi demo trên trình duyệt này và khôi phục dữ liệu ban đầu?",securityNotice:"Chế độ Owner/Staff ở đây chỉ mô phỏng giao diện, không có xác thực hay phân quyền bảo mật.",mockNotice:"PROTOTYPE ONLY - Không dùng cho giao dịch thật.",noFinance:"Chế độ nhân viên không hiển thị dữ liệu tài chính.",errorCustomer:"Hãy nhập tên khách để tạo ticket.",errorCart:"Chọn ít nhất một sản phẩm.",done:"Hoàn tất",updated:"Đã cập nhật",resetDone:"Đã khôi phục dữ liệu mẫu",nextStatus:"Chuyển trạng thái",printHint:"Trình duyệt sẽ mở cửa sổ in. Đây là vé demo.",fallbackCustomer:"Khách lẻ",lowCount:"Mục sắp hết",noData:"Không có dữ liệu"
+    workspace: "WORKSPACE",
+    demoMode: "Không gian demo",
+    demoInfo: "Dữ liệu giả - không phải đơn bán thật",
+    event: "Sự kiện",
+    products: "Sản phẩm",
+    dashboard: "Tổng quan",
+    pos: "Bán hàng",
+    orders: "Đơn hàng",
+    events: "Workshop",
+    queue: "Hàng đợi",
+    inventory: "Kho hàng",
+    reports: "Báo cáo",
+    settings: "Cài đặt",
+    hello: "Một ngày sáng tạo cùng Frog ✳",
+    greeting: "Theo dõi hoạt động workshop và đơn hàng tại một nơi.",
+    newSale: "Tạo đơn mới",
+    all: "Tất cả",
+    today: "Dữ liệu mẫu",
+    revenue: "Doanh thu",
+    profit: "Lợi nhuận tạm tính",
+    orderCount: "Đơn đã thanh toán",
+    waiting: "Đang chờ",
+    revenueHint: "Chỉ tính đơn đã thanh toán",
+    profitHint: "Doanh thu - giá vốn - chi phí",
+    orderHint: "Đơn Paid trong sự kiện",
+    waitingHint: "Khách chờ thực hiện",
+    salesChart: "Doanh thu 7 ngày",
+    salesChartHint: "Minh họa dữ liệu theo ngày",
+    activity: "Hoạt động gần đây",
+    activityHint: "Các giao dịch và ticket mới nhất",
+    salesMix: "Nguồn doanh thu",
+    salesMixHint: "Workshop và đồ ăn kèm",
+    shortcut: "Thao tác nhanh",
+    quickHint: "Bắt đầu từ quầy bán hàng",
+    quickText: "Tạo order, ticket và xem hàng đợi mà không cần kết nối database.",
+    openRegister: "Mở quầy POS",
+    posTitle: "Quầy bán hàng",
+    posDesc: "Chọn sản phẩm, ghi nhận đơn và phát vé workshop.",
+    search: "Tìm sản phẩm hoặc SKU...",
+    workshop: "Workshop",
+    food: "Đồ ăn & uống",
+    cart: "Giỏ hàng",
+    cartDesc: "Tạo đơn hàng thử với dữ liệu mẫu",
+    emptyCart: "Chưa có sản phẩm",
+    emptyCartHint: "Chọn sản phẩm bên trái để bắt đầu",
+    customer: "Tên khách (nếu cần ticket)",
+    customerPh: "Ví dụ: Minh Anh",
+    paymentMethod: "Phương thức thanh toán",
+    cash: "Tiền mặt",
+    bank: "Chuyển khoản",
+    paymentStatus: "Thanh toán",
+    paid: "Đã thanh toán",
+    unpaid: "Chưa thanh toán",
+    total: "Tổng cộng",
+    checkout: "Tạo đơn hàng",
+    withTicket: "Tạo ticket workshop",
+    note: "Ghi chú / tùy chỉnh",
+    notePh: "Màu vải, size, font, yêu cầu riêng...",
+    back: "Quay lại",
+    cancel: "Hủy",
+    confirm: "Xác nhận",
+    success: "Đã tạo đơn demo",
+    successText: "Đơn hàng đã được thêm vào dữ liệu mẫu. Không có giao dịch thực.",
+    ticket: "Mã vé",
+    orderId: "Mã đơn",
+    print: "In vé",
+    another: "Tạo đơn khác",
+    orderTitle: "Đơn hàng",
+    orderDesc: "Theo dõi các giao dịch trong sự kiện đang chọn.",
+    filterAll: "Mọi trạng thái",
+    refunded: "Đã hoàn tiền",
+    cancelled: "Đã hủy",
+    view: "Xem",
+    refund: "Hoàn tiền",
+    noOrders: "Không có đơn hàng phù hợp",
+    customerLabel: "Khách hàng",
+    items: "Sản phẩm",
+    date: "Thời gian",
+    status: "Trạng thái",
+    actions: "Thao tác",
+    refundConfirm: "Đổi đơn demo này sang trạng thái hoàn tiền?",
+    ticketFlow: "Điều phối ticket",
+    eventsTitle: "Sự kiện / Workshop",
+    eventsDesc: "Quản lý các buổi sáng tạo và chọn sự kiện hiện hành.",
+    active: "Đang mở",
+    planned: "Sắp diễn ra",
+    selected: "Đang chọn",
+    choose: "Chọn sự kiện",
+    capacity: "Sức chứa",
+    registered: "Đã đăng ký",
+    eventNotice: "Dữ liệu demo dùng chung trong trình duyệt này. Bạn có thể thử chuyển sự kiện.",
+    queueTitle: "Live queue",
+    queueDesc: "Theo dõi ticket và chuyển trạng thái ngay trên giao diện.",
+    inProgress: "Đang thực hiện",
+    upNext: "Tiếp theo",
+    completed: "Hoàn thành",
+    emptyQueue: "Chưa có ticket",
+    next: "Bước tiếp",
+    tv: "Chế độ TV",
+    exitTv: "Thoát TV",
+    ticketPrinted: "Đã in vé",
+    ticketRegistered: "Đã đăng ký",
+    queueTip: "In vé từ danh sách ticket rồi chuyển trạng thái để xem hiệu ứng trong queue.",
+    inventoryTitle: "Kho nguyên liệu",
+    inventoryDesc: "Tồn kho mẫu được cập nhật khi phát sinh đơn demo.",
+    product: "Sản phẩm",
+    sku: "Mã SKU",
+    stock: "Còn lại",
+    threshold: "Ngưỡng thấp",
+    stockLow: "Sắp hết",
+    stockOk: "Đủ hàng",
+    stockOut: "Hết hàng",
+    stockEdit: "Chỉnh tồn",
+    save: "Lưu",
+    inventoryHint: "Tồn kho của prototype được mô phỏng theo sản phẩm, không phải sổ kho thực.",
+    reportsTitle: "Báo cáo",
+    reportsDesc: "Quan sát doanh thu và chi phí mô phỏng theo sự kiện.",
+    expense: "Chi phí hoạt động",
+    costOfGoods: "Giá vốn hàng bán",
+    margin: "Biên lợi nhuận",
+    productReport: "Doanh thu theo sản phẩm",
+    share: "Tỉ trọng",
+    settingsTitle: "Cài đặt demo",
+    settingsDesc: "Tùy chỉnh giao diện prototype và dữ liệu giả.",
+    appearance: "Giao diện",
+    language: "Ngôn ngữ",
+    role: "Vai trò xem thử",
+    owner: "Chủ cửa hàng",
+    staff: "Nhân viên",
+    light: "Sáng",
+    dark: "Tối",
+    reset: "Đặt lại dữ liệu demo",
+    resetConfirm: "Xóa các thay đổi demo trên trình duyệt này và khôi phục dữ liệu ban đầu?",
+    securityNotice:
+      "Chế độ Owner/Staff ở đây chỉ mô phỏng giao diện, không có xác thực hay phân quyền bảo mật.",
+    mockNotice: "PROTOTYPE ONLY - Không dùng cho giao dịch thật.",
+    noFinance: "Chế độ nhân viên không hiển thị dữ liệu tài chính.",
+    errorCustomer: "Hãy nhập tên khách để tạo ticket.",
+    errorCart: "Chọn ít nhất một sản phẩm.",
+    done: "Hoàn tất",
+    updated: "Đã cập nhật",
+    resetDone: "Đã khôi phục dữ liệu mẫu",
+    nextStatus: "Chuyển trạng thái",
+    printHint: "Trình duyệt sẽ mở cửa sổ in. Đây là vé demo.",
+    fallbackCustomer: "Khách lẻ",
+    lowCount: "Mục sắp hết",
+    noData: "Không có dữ liệu",
   };
   const en = {
-    workspace:"WORKSPACE",demoMode:"Demo workspace",demoInfo:"Mock data - no real sales",event:"Event",products:"Products",dashboard:"Overview",pos:"Point of sale",orders:"Orders",events:"Workshops",queue:"Live queue",inventory:"Inventory",reports:"Reports",settings:"Settings",
-    hello:"A creative day with Frog ✳",greeting:"Keep track of workshops and sales in one place.",newSale:"New sale",all:"All",today:"Sample data",revenue:"Revenue",profit:"Estimated profit",orderCount:"Paid orders",waiting:"Waiting",revenueHint:"Paid orders only",profitHint:"Revenue - COGS - expenses",orderHint:"Paid orders for this event",waitingHint:"Tickets in the queue",salesChart:"Last 7 days of sales",salesChartHint:"Sample daily sales",activity:"Recent activity",activityHint:"Latest orders and tickets",salesMix:"Revenue breakdown",salesMixHint:"Workshops and refreshments",shortcut:"Quick action",quickHint:"Get started at the counter",quickText:"Create orders and tickets and run the queue without a database.",openRegister:"Open register",
-    posTitle:"Point of sale",posDesc:"Choose products, record sales and issue workshop tickets.",search:"Search by product or SKU...",workshop:"Workshop",food:"Food & drinks",cart:"Your cart",cartDesc:"Create a sample order",emptyCart:"Your cart is empty",emptyCartHint:"Choose products on the left",customer:"Customer name (for ticket)",customerPh:"e.g. Minh Anh",paymentMethod:"Payment method",cash:"Cash",bank:"Bank transfer",paymentStatus:"Payment",paid:"Paid",unpaid:"Unpaid",total:"Total",checkout:"Create order",withTicket:"Create workshop ticket",note:"Notes / customization",notePh:"Fabric color, size, font or special requests...",back:"Back",cancel:"Cancel",confirm:"Confirm",success:"Sample order created",successText:"Added to demo data only. No real payment was processed.",ticket:"Ticket",orderId:"Order",print:"Print ticket",another:"New order",
-    orderTitle:"Orders",orderDesc:"Track orders for the selected event.",filterAll:"All statuses",refunded:"Refunded",cancelled:"Cancelled",view:"View",refund:"Refund",noOrders:"No matching orders",customerLabel:"Customer",items:"Items",date:"Date",status:"Status",actions:"Actions",refundConfirm:"Mark this sample order as refunded?",ticketFlow:"Ticket workflow",
-    eventsTitle:"Workshops & events",eventsDesc:"Browse creative sessions and select the current event.",active:"Active",planned:"Upcoming",selected:"Selected",choose:"Select event",capacity:"Capacity",registered:"Registered",eventNotice:"Demo data is saved in this browser. Switch between sample events to explore.",queueTitle:"Live queue",queueDesc:"Manage tickets and advance their status.",inProgress:"In progress",upNext:"Up next",completed:"Completed",emptyQueue:"No tickets yet",next:"Next step",tv:"TV mode",exitTv:"Exit TV",ticketPrinted:"Printed",ticketRegistered:"Registered",queueTip:"Print a ticket from the order view and move it through the queue.",
-    inventoryTitle:"Inventory",inventoryDesc:"Sample stock updates when you create mock sales.",product:"Product",sku:"SKU",stock:"Remaining",threshold:"Low threshold",stockLow:"Low",stockOk:"In stock",stockOut:"Out",stockEdit:"Edit stock",save:"Save",inventoryHint:"Prototype inventory is simplified to product stock, not a real ledger.",
-    reportsTitle:"Reports",reportsDesc:"Explore mock revenue and costs by event.",expense:"Operating expenses",costOfGoods:"Cost of goods",margin:"Profit margin",productReport:"Revenue by product",share:"Share",settingsTitle:"Demo settings",settingsDesc:"Customize the prototype and mock data.",appearance:"Appearance",language:"Language",role:"Preview role",owner:"Owner",staff:"Staff",light:"Light",dark:"Dark",reset:"Reset demo data",resetConfirm:"Reset all mock data in this browser to the starting values?",securityNotice:"Owner/Staff is a visual preview only. It does not enforce authentication or security.",mockNotice:"PROTOTYPE ONLY - Not for real transactions.",noFinance:"Staff preview hides financial reporting.",errorCustomer:"Enter a customer name to issue a ticket.",errorCart:"Add a product to your cart.",done:"Done",updated:"Updated",resetDone:"Sample data restored",nextStatus:"Move forward",printHint:"A demo receipt will open in the browser print dialog.",fallbackCustomer:"Walk-in",lowCount:"Low stock",noData:"No data"
+    workspace: "WORKSPACE",
+    demoMode: "Demo workspace",
+    demoInfo: "Mock data - no real sales",
+    event: "Event",
+    products: "Products",
+    dashboard: "Overview",
+    pos: "Point of sale",
+    orders: "Orders",
+    events: "Workshops",
+    queue: "Live queue",
+    inventory: "Inventory",
+    reports: "Reports",
+    settings: "Settings",
+    hello: "A creative day with Frog ✳",
+    greeting: "Keep track of workshops and sales in one place.",
+    newSale: "New sale",
+    all: "All",
+    today: "Sample data",
+    revenue: "Revenue",
+    profit: "Estimated profit",
+    orderCount: "Paid orders",
+    waiting: "Waiting",
+    revenueHint: "Paid orders only",
+    profitHint: "Revenue - COGS - expenses",
+    orderHint: "Paid orders for this event",
+    waitingHint: "Tickets in the queue",
+    salesChart: "Last 7 days of sales",
+    salesChartHint: "Sample daily sales",
+    activity: "Recent activity",
+    activityHint: "Latest orders and tickets",
+    salesMix: "Revenue breakdown",
+    salesMixHint: "Workshops and refreshments",
+    shortcut: "Quick action",
+    quickHint: "Get started at the counter",
+    quickText: "Create orders and tickets and run the queue without a database.",
+    openRegister: "Open register",
+    posTitle: "Point of sale",
+    posDesc: "Choose products, record sales and issue workshop tickets.",
+    search: "Search by product or SKU...",
+    workshop: "Workshop",
+    food: "Food & drinks",
+    cart: "Your cart",
+    cartDesc: "Create a sample order",
+    emptyCart: "Your cart is empty",
+    emptyCartHint: "Choose products on the left",
+    customer: "Customer name (for ticket)",
+    customerPh: "e.g. Minh Anh",
+    paymentMethod: "Payment method",
+    cash: "Cash",
+    bank: "Bank transfer",
+    paymentStatus: "Payment",
+    paid: "Paid",
+    unpaid: "Unpaid",
+    total: "Total",
+    checkout: "Create order",
+    withTicket: "Create workshop ticket",
+    note: "Notes / customization",
+    notePh: "Fabric color, size, font or special requests...",
+    back: "Back",
+    cancel: "Cancel",
+    confirm: "Confirm",
+    success: "Sample order created",
+    successText: "Added to demo data only. No real payment was processed.",
+    ticket: "Ticket",
+    orderId: "Order",
+    print: "Print ticket",
+    another: "New order",
+    orderTitle: "Orders",
+    orderDesc: "Track orders for the selected event.",
+    filterAll: "All statuses",
+    refunded: "Refunded",
+    cancelled: "Cancelled",
+    view: "View",
+    refund: "Refund",
+    noOrders: "No matching orders",
+    customerLabel: "Customer",
+    items: "Items",
+    date: "Date",
+    status: "Status",
+    actions: "Actions",
+    refundConfirm: "Mark this sample order as refunded?",
+    ticketFlow: "Ticket workflow",
+    eventsTitle: "Workshops & events",
+    eventsDesc: "Browse creative sessions and select the current event.",
+    active: "Active",
+    planned: "Upcoming",
+    selected: "Selected",
+    choose: "Select event",
+    capacity: "Capacity",
+    registered: "Registered",
+    eventNotice: "Demo data is saved in this browser. Switch between sample events to explore.",
+    queueTitle: "Live queue",
+    queueDesc: "Manage tickets and advance their status.",
+    inProgress: "In progress",
+    upNext: "Up next",
+    completed: "Completed",
+    emptyQueue: "No tickets yet",
+    next: "Next step",
+    tv: "TV mode",
+    exitTv: "Exit TV",
+    ticketPrinted: "Printed",
+    ticketRegistered: "Registered",
+    queueTip: "Print a ticket from the order view and move it through the queue.",
+    inventoryTitle: "Inventory",
+    inventoryDesc: "Sample stock updates when you create mock sales.",
+    product: "Product",
+    sku: "SKU",
+    stock: "Remaining",
+    threshold: "Low threshold",
+    stockLow: "Low",
+    stockOk: "In stock",
+    stockOut: "Out",
+    stockEdit: "Edit stock",
+    save: "Save",
+    inventoryHint: "Prototype inventory is simplified to product stock, not a real ledger.",
+    reportsTitle: "Reports",
+    reportsDesc: "Explore mock revenue and costs by event.",
+    expense: "Operating expenses",
+    costOfGoods: "Cost of goods",
+    margin: "Profit margin",
+    productReport: "Revenue by product",
+    share: "Share",
+    settingsTitle: "Demo settings",
+    settingsDesc: "Customize the prototype and mock data.",
+    appearance: "Appearance",
+    language: "Language",
+    role: "Preview role",
+    owner: "Owner",
+    staff: "Staff",
+    light: "Light",
+    dark: "Dark",
+    reset: "Reset demo data",
+    resetConfirm: "Reset all mock data in this browser to the starting values?",
+    securityNotice:
+      "Owner/Staff is a visual preview only. It does not enforce authentication or security.",
+    mockNotice: "PROTOTYPE ONLY - Not for real transactions.",
+    noFinance: "Staff preview hides financial reporting.",
+    errorCustomer: "Enter a customer name to issue a ticket.",
+    errorCart: "Add a product to your cart.",
+    done: "Done",
+    updated: "Updated",
+    resetDone: "Sample data restored",
+    nextStatus: "Move forward",
+    printHint: "A demo receipt will open in the browser print dialog.",
+    fallbackCustomer: "Walk-in",
+    lowCount: "Low stock",
+    noData: "No data",
   };
   const productSeed = [
-    ["WS-TOTE-L-100","Tote Large 40×35",100000,35000,"workshop","👜",18,5],
-    ["WS-TOTE-S-060","Tote Small 25×20",60000,22000,"workshop","🛍️",21,5],
-    ["WS-PENCIL-060","Pencil case 20×14",60000,25000,"workshop","🖍️",13,4],
-    ["WS-VELBOA-A3-120","Velboa Print A3 + DIY",120000,47000,"workshop","🧸",12,4],
-    ["WS-VELBOA-A4-100","Velboa Print A4 + DIY",100000,37000,"workshop","🎨",15,4],
-    ["WS-EMBROIDERY-150","Name Embroidery + DIY",150000,60000,"workshop","🧵",8,3],
-    ["FB-OREO-025","Oreo Choco Chip",25000,9000,"food","🍪",25,8],
-    ["FB-ORIGINAL-025","Original Choco Chip",25000,9000,"food","🍪",22,8],
-    ["FB-CHEESE-025","Cheese Cookies",25000,10000,"food","🥨",17,6],
-    ["FB-CHOCO-015","Choco Crinkle",15000,6000,"food","🍫",28,10],
-    ["FB-MATCHA-015","Matcha Crinkle",15000,6000,"food","🍵",19,7],
+    ["WS-TOTE-L-100", "Tote Large 40×35", 100000, 35000, "workshop", "👜", 18, 5],
+    ["WS-TOTE-S-060", "Tote Small 25×20", 60000, 22000, "workshop", "🛍️", 21, 5],
+    ["WS-PENCIL-060", "Pencil case 20×14", 60000, 25000, "workshop", "🖍️", 13, 4],
+    ["WS-VELBOA-A3-120", "Velboa Print A3 + DIY", 120000, 47000, "workshop", "🧸", 12, 4],
+    ["WS-VELBOA-A4-100", "Velboa Print A4 + DIY", 100000, 37000, "workshop", "🎨", 15, 4],
+    ["WS-EMBROIDERY-150", "Name Embroidery + DIY", 150000, 60000, "workshop", "🧵", 8, 3],
+    ["FB-OREO-025", "Oreo Choco Chip", 25000, 9000, "food", "🍪", 25, 8],
+    ["FB-ORIGINAL-025", "Original Choco Chip", 25000, 9000, "food", "🍪", 22, 8],
+    ["FB-CHEESE-025", "Cheese Cookies", 25000, 10000, "food", "🥨", 17, 6],
+    ["FB-CHOCO-015", "Choco Crinkle", 15000, 6000, "food", "🍫", 28, 10],
+    ["FB-MATCHA-015", "Matcha Crinkle", 15000, 6000, "food", "🍵", 19, 7],
   ];
   const fixedNow = () => new Date().toISOString();
   const initial = () => {
-    const products = productSeed.map(([id,name,price,cost,category,emoji,stock,threshold]) => ({id,name,price,cost,category,emoji,stock,threshold}));
-    const events = [{id:"cozy",name:"Cozy Workshop",date:"2026-10-25",prefix:"COZY",capacity:40,status:"active",expense:120000},{id:"autumn",name:"Autumn Art Weekend",date:"2026-11-01",prefix:"ART",capacity:35,status:"planned",expense:0}];
-    const names = ["Minh Anh","Hà Linh","Quỳnh Chi","Ngọc Hân","Tuấn Minh","Bảo Trân","Khánh Vy"];
-    const combinations = [[0,6],[3,9],[1,7],[5,8],[4,10],[2,6],[0,9]];
-    const orders = combinations.map((indices,i)=>({id:`FG-${String(i+1).padStart(4,"0")}`,eventId:"cozy",customer:names[i],status:i===5?"unpaid":"paid",method:i%2?"bank":"cash",createdAt:new Date(Date.now()-(i*53+15)*60000).toISOString(),items:indices.map(p=>({productId:products[p].id,qty:1,price:products[p].price,cost:products[p].cost,note:""})),ticketId:`COZY-${String(i+1).padStart(3,"0")}`}));
-    const statuses=["waiting","in_progress","completed","completed","waiting","registered","completed"];
-    const tickets=names.map((customer,i)=>({id:`COZY-${String(i+1).padStart(3,"0")}`,eventId:"cozy",customer,status:statuses[i],createdAt:orders[i].createdAt,orderId:orders[i].id}));
-    return {products,events,orders,tickets,selectedEvent:"cozy",nextOrder:8,nextTicket:{cozy:8,autumn:1},role:"owner",theme:"light",locale:"vi"};
+    const products = productSeed.map(
+      ([id, name, price, cost, category, emoji, stock, threshold]) => ({
+        id,
+        name,
+        price,
+        cost,
+        category,
+        emoji,
+        stock,
+        threshold,
+      }),
+    );
+    const events = [
+      {
+        id: "cozy",
+        name: "Cozy Workshop",
+        date: "2026-10-25",
+        prefix: "COZY",
+        capacity: 40,
+        status: "active",
+        expense: 120000,
+      },
+      {
+        id: "autumn",
+        name: "Autumn Art Weekend",
+        date: "2026-11-01",
+        prefix: "ART",
+        capacity: 35,
+        status: "planned",
+        expense: 0,
+      },
+    ];
+    const names = [
+      "Minh Anh",
+      "Hà Linh",
+      "Quỳnh Chi",
+      "Ngọc Hân",
+      "Tuấn Minh",
+      "Bảo Trân",
+      "Khánh Vy",
+    ];
+    const combinations = [
+      [0, 6],
+      [3, 9],
+      [1, 7],
+      [5, 8],
+      [4, 10],
+      [2, 6],
+      [0, 9],
+    ];
+    const orders = combinations.map((indices, i) => ({
+      id: `FG-${String(i + 1).padStart(4, "0")}`,
+      eventId: "cozy",
+      customer: names[i],
+      status: i === 5 ? "unpaid" : "paid",
+      method: i % 2 ? "bank" : "cash",
+      createdAt: new Date(Date.now() - (i * 53 + 15) * 60000).toISOString(),
+      items: indices.map((p) => ({
+        productId: products[p].id,
+        qty: 1,
+        price: products[p].price,
+        cost: products[p].cost,
+        note: "",
+      })),
+      ticketId: `COZY-${String(i + 1).padStart(3, "0")}`,
+    }));
+    const statuses = [
+      "waiting",
+      "in_progress",
+      "completed",
+      "completed",
+      "waiting",
+      "registered",
+      "completed",
+    ];
+    const tickets = names.map((customer, i) => ({
+      id: `COZY-${String(i + 1).padStart(3, "0")}`,
+      eventId: "cozy",
+      customer,
+      status: statuses[i],
+      createdAt: orders[i].createdAt,
+      orderId: orders[i].id,
+    }));
+    return {
+      products,
+      events,
+      orders,
+      tickets,
+      selectedEvent: "cozy",
+      nextOrder: 8,
+      nextTicket: { cozy: 8, autumn: 1 },
+      role: "owner",
+      theme: "light",
+      locale: "vi",
+    };
   };
-  let state;try { const stored=JSON.parse(localStorage.getItem(STORAGE));state=stored&&Array.isArray(stored.orders)&&Array.isArray(stored.products)?stored:initial(); }catch {state=initial();}
-  for(const order of state.orders)for(const item of order.items||[])item.name ||= state.products.find(p=>p.id===item.productId)?.name||item.productId;
-  let page="dashboard", catalogQuery="", catalogFilter="active", category="all", query="",cart=[],nextCartKey=0,customer="",method="cash",payment="paid",createTicket=true,orderFilter="all",saleResult=null,display=false;
-  const $ = (s,root=document)=>root.querySelector(s);
-  const esc = (value="") => String(value??"").replace(/[&<>"']/g, ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
-  const t = key => (state.locale==="en"?en:vi)[key]||key;
-  const money = n => `${new Intl.NumberFormat(state.locale==="en"?"en-US":"vi-VN").format(n||0)} ₫`;
-  const date = value => new Intl.DateTimeFormat(state.locale==="en"?"en-GB":"vi-VN",{timeZone:"Asia/Ho_Chi_Minh",day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date(value));
-  const time = value => new Intl.DateTimeFormat("vi-VN",{timeZone:"Asia/Ho_Chi_Minh",hour:"2-digit",minute:"2-digit"}).format(new Date(value));
-  const currentEvent = () => state.events.find(e=>e.id===state.selectedEvent)||state.events[0];
-  const eventOrders = () => state.orders.filter(o=>o.eventId===state.selectedEvent);
-  const eventTickets = () => state.tickets.filter(t=>t.eventId===state.selectedEvent);
-  const lineTotal = o => o.items.reduce((n,i)=>n+i.qty*i.price,0);
-  const itemCost = o => o.items.reduce((n,i)=>n+i.qty*i.cost,0);
-  const paidOrders = () => eventOrders().filter(o=>o.status==="paid");
-  const finance = () => ({...FrogOrders.financialTotals(eventOrders(),currentEvent().expense),waiting:eventTickets().filter(k=>k.status==="waiting").length});
-  const product = id => state.products.find(p=>p.id===id);
-  const persist = () => localStorage.setItem(STORAGE,JSON.stringify(state));
-  const toast = text => {const el=$("#toast");el.textContent=text;el.classList.add("show");clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove("show"),2600);};
-  const navs=[ ["dashboard","▦"],["pos","▣"],["products","◈"],["orders","▤"],["events","▧"],["queue","◫"],["inventory","◈"],["reports","▥"],["settings","⚙"] ];
-  function navRender(){
-    $("#side-nav").innerHTML=`<div class="side-nav">${navs.filter(([key])=>state.role==="owner"||key!=="products").map(([key,icon])=>`<button type="button" data-nav="${key}" class="nav-link ${page===key?"active":""}"><span class="ico">${icon}</span>${t(key)}</button>`).join("")}</div>`;
-    $("#mobile-nav").innerHTML=["dashboard","pos","orders","queue"].map(k=>{const n=navs.find(x=>x[0]===k);return `<button type="button" data-nav="${k}" class="${page===k?"active":""}"><span>${n[1]}</span>${t(k)}</button>`}).join("");
-    $("#breadcrumb").textContent=t(page);
-    $("#event-select").innerHTML=state.events.map(e=>`<option value="${e.id}" ${state.selectedEvent===e.id?"selected":""}>${esc(e.name)}</option>`).join("");
-    $("#role-label").textContent=`${t(state.role)} / Demo`;
-    $("#theme-toggle").textContent=state.theme==="light"?"☾":"☀";
-    $("#language-toggle").textContent=state.locale==="vi"?"EN":"VI";
-    document.documentElement.dataset.theme=state.theme;document.documentElement.lang=state.locale;
-    document.querySelectorAll("[data-i18n]").forEach(el=>{el.textContent=t(el.dataset.i18n)});
+  let state;
+  try {
+    const stored = JSON.parse(localStorage.getItem(STORAGE));
+    state =
+      stored && Array.isArray(stored.orders) && Array.isArray(stored.products) ? stored : initial();
+  } catch {
+    state = initial();
   }
-  const pageHead=(eyebrow,title,description,action="")=>`<div class="page-header"><div><div class="eyebrow">${eyebrow}</div><h1 class="page-title">${title}</h1><p class="page-description">${description}</p></div>${action?`<div class="header-action">${action}</div>`:""}</div>`;
-  const btn=(label,act,cls="secondary",extra="")=>`<button type="button" class="btn ${cls}" data-act="${act}" ${extra}>${label}</button>`;
-  const badge=(label,type="gray")=>`<span class="pill ${type}">${label}</span>`;
-  const labelStatus=status=>({paid:t("paid"),unpaid:t("unpaid"),refunded:t("refunded"),cancelled:t("cancelled"),waiting:t("waiting"),in_progress:t("inProgress"),completed:t("completed"),ticket_printed:t("ticketPrinted"),registered:t("ticketRegistered")})[status]||status;
-  const badgeStatus=s=>badge(labelStatus(s),({paid:"green",completed:"green",in_progress:"purple",waiting:"amber",unpaid:"amber",refunded:"red",cancelled:"red",registered:"gray"})[s]||"gray");
-  const card=(title,subtitle,content,right="")=>`<section class="panel"><div class="panel-head"><div><h3>${title}</h3>${subtitle?`<p>${subtitle}</p>`:""}</div>${right}</div><div class="panel-body">${content}</div></section>`;
-  function mix(){const total=finance().revenue||1;return ["workshop","food"].map((cat,index)=>{let sum=paidOrders().reduce((n,o)=>n+o.items.filter(i=>(i.category||product(i.productId)?.category)===cat).reduce((a,b)=>a+b.qty*b.price,0),0);return `<div class="category-total"><span class="category-dot ${index?"green":""}"></span><div class="grow"><strong>${t(cat)}</strong><div class="progress ${index?"green":""}"><span style="width:${Math.round(sum/total*100)}%"></span></div></div><div class="amount">${money(sum)}</div></div>`}).join("")}
-  function chart(){const amounts=[32,47,37,69,45,83,72].map((n,i)=>Math.round(n/100*(finance().revenue||200000)));const max=Math.max(...amounts,1);return `<div class="summary-chart">${amounts.map((v,i)=>`<div class="bar-wrap"><div class="bar ${i===6?"today":""}" style="height:${Math.max(4,v/max*165)}px"></div><span class="bar-label">${["T2","T3","T4","T5","T6","T7","CN"][i]}</span></div>`).join("")}</div><p style="font-size:9px;color:var(--sub);margin:34px 0 0">${t("salesChartHint")} · ${t("today")}</p>`}
-  function dashboard(){const f=finance();return pageHead("FROG OPERATIONS",t("hello"),t("greeting"),btn("＋ "+t("newSale"),"goto-pos",""))+`<section class="frog-welcome"><div class="frog-welcome-copy"><span class="welcome-kicker">DIOXYZINE FROG / ART SPACE</span><h2>${state.locale==="vi"?"Một chút phép màu cho mỗi workshop":"A little magic in every workshop"}</h2><p>${state.locale==="vi"?"Một không gian sáng tạo, mọi thao tác ngay trong tầm tay.":"Your creative workshop, all in one place."}</p><span class="welcome-tag">✳ ${t("demoMode")}</span></div><img class="welcome-logo" src="./assets/frog-logo.png" alt="Dioxyzine Frog" /></section>`+
-    (state.role==="staff"?`<div class="note" style="margin-bottom:18px">${t("noFinance")}</div>`:`<div class="grid-kpi">
-      ${[[t("revenue"),money(f.revenue),t("revenueHint"),"↗"],[t("profit"),money(f.profit),t("profitHint"),"✳"],[t("orderCount"),f.paid,t("orderHint"),"▣"],[t("waiting"),f.waiting,t("waitingHint"),"◷"]].map(([name,val,hint,icon],i)=>`<div class="panel kpi ${i===0?"kpi-primary":""}"><div class="kpi-top">${name}<span class="kpi-icon">${icon}</span></div><div class="kpi-value number">${val}</div><div class="kpi-foot">${hint}</div></div>`).join("")}
-    </div>`)+`<div class="dashboard-grid">${state.role==="staff"?card(t("activity"),t("activityHint"),activity()):card(t("salesChart"),t("salesChartHint"),chart())}${card(t("activity"),t("activityHint"),activity())}</div>
-    <div class="bottom-grid">${state.role==="staff"?card(t("shortcut"),t("quickHint"),`<p>${t("quickText")}</p>${btn(t("openRegister"),"goto-pos","")}`):card(t("salesMix"),t("salesMixHint"),mix())}${card(t("shortcut"),t("quickHint"),`<div style="background:var(--mint);border-radius:13px;padding:22px;margin-bottom:16px"><div style="font-size:27px;margin-bottom:8px">🎨 ✳ 🧸</div><strong style="font-size:12px">The Frog Art Space</strong><p style="font-size:10px;line-height:1.8;color:var(--sub);max-width:290px">${t("quickText")}</p></div>${btn(t("openRegister")+" →","goto-pos","")}`)}</div>`;
+  for (const order of state.orders)
+    for (const item of order.items || [])
+      item.name ||= state.products.find((p) => p.id === item.productId)?.name || item.productId;
+  let page = "dashboard",
+    catalogQuery = "",
+    catalogFilter = "active",
+    category = "all",
+    query = "",
+    cart = [],
+    nextCartKey = 0,
+    customer = "",
+    method = "cash",
+    payment = "paid",
+    createTicket = true,
+    orderFilter = "all",
+    saleResult = null,
+    display = false;
+  const $ = (s, root = document) => root.querySelector(s);
+  const esc = (value = "") =>
+    String(value ?? "").replace(
+      /[&<>"']/g,
+      (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch],
+    );
+  const t = (key) => (state.locale === "en" ? en : vi)[key] || key;
+  const money = (n) =>
+    `${new Intl.NumberFormat(state.locale === "en" ? "en-US" : "vi-VN").format(n || 0)} ₫`;
+  const date = (value) =>
+    new Intl.DateTimeFormat(state.locale === "en" ? "en-GB" : "vi-VN", {
+      timeZone: "Asia/Ho_Chi_Minh",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).format(new Date(value));
+  const time = (value) =>
+    new Intl.DateTimeFormat("vi-VN", {
+      timeZone: "Asia/Ho_Chi_Minh",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date(value));
+  const currentEvent = () =>
+    state.events.find((e) => e.id === state.selectedEvent) || state.events[0];
+  const eventOrders = () => state.orders.filter((o) => o.eventId === state.selectedEvent);
+  const eventTickets = () => state.tickets.filter((t) => t.eventId === state.selectedEvent);
+  const lineTotal = (o) => o.items.reduce((n, i) => n + i.qty * i.price, 0);
+  const itemCost = (o) => o.items.reduce((n, i) => n + i.qty * i.cost, 0);
+  const paidOrders = () => eventOrders().filter((o) => o.status === "paid");
+  const finance = () => ({
+    ...FrogOrders.financialTotals(eventOrders(), currentEvent().expense),
+    waiting: eventTickets().filter((k) => k.status === "waiting").length,
+  });
+  const product = (id) => state.products.find((p) => p.id === id);
+  const persist = () => localStorage.setItem(STORAGE, JSON.stringify(state));
+  const toast = (text) => {
+    const el = $("#toast");
+    el.textContent = text;
+    el.classList.add("show");
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => el.classList.remove("show"), 2600);
+  };
+  const navs = [
+    ["dashboard", "▦"],
+    ["pos", "▣"],
+    ["products", "◈"],
+    ["orders", "▤"],
+    ["events", "▧"],
+    ["queue", "◫"],
+    ["inventory", "◈"],
+    ["reports", "▥"],
+    ["settings", "⚙"],
+  ];
+  function navRender() {
+    $("#side-nav").innerHTML = `<div class="side-nav">${navs
+      .filter(([key]) => state.role === "owner" || key !== "products")
+      .map(
+        ([key, icon]) =>
+          `<button type="button" data-nav="${key}" class="nav-link ${page === key ? "active" : ""}"><span class="ico">${icon}</span>${t(key)}</button>`,
+      )
+      .join("")}</div>`;
+    $("#mobile-nav").innerHTML = ["dashboard", "pos", "orders", "queue"]
+      .map((k) => {
+        const n = navs.find((x) => x[0] === k);
+        return `<button type="button" data-nav="${k}" class="${page === k ? "active" : ""}"><span>${n[1]}</span>${t(k)}</button>`;
+      })
+      .join("");
+    $("#breadcrumb").textContent = t(page);
+    $("#event-select").innerHTML = state.events
+      .map(
+        (e) =>
+          `<option value="${e.id}" ${state.selectedEvent === e.id ? "selected" : ""}>${esc(e.name)}</option>`,
+      )
+      .join("");
+    $("#role-label").textContent = `${t(state.role)} / Demo`;
+    $("#theme-toggle").textContent = state.theme === "light" ? "☾" : "☀";
+    $("#language-toggle").textContent = state.locale === "vi" ? "EN" : "VI";
+    document.documentElement.dataset.theme = state.theme;
+    document.documentElement.lang = state.locale;
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      el.textContent = t(el.dataset.i18n);
+    });
   }
-  function activity(){return `<div class="quick-list">${eventOrders().slice().reverse().slice(0,4).map(o=>`<div class="quick-item"><div class="flex"><span class="icon-circle">${product(o.items[0]?.productId)?.emoji||"🛍️"}</span><div><strong>${esc(o.customer||t("fallbackCustomer"))}</strong><span>${esc(o.id)} · ${time(o.createdAt)}</span></div></div>${badgeStatus(o.status)}</div>`).join("")||`<p class="muted">${t("noData")}</p>`}</div>`}
-  function pos(){if(saleResult)return pageHead("COUNTER",t("success"),t("successText"))+`<section class="panel" style="max-width:610px;margin:auto"><div class="panel-body" style="text-align:center;padding:54px 22px"><div style="font-size:48px">🎉</div><h2>${t("success")}</h2><p class="muted">${t("orderId")}: <b>${esc(saleResult.id)}</b></p>${saleResult.ticketId?`<p>${t("ticket")}: <strong style="color:var(--primary-deep)">${esc(saleResult.ticketId)}</strong></p>`:""}<h2>${money(lineTotal(saleResult))}</h2><div class="flex wrap" style="justify-content:center;margin-top:22px">${btn("In 2 phiếu",`print-both:${saleResult.id}`,"")}${btn("In bill khách",`customer-bill:${saleResult.id}`,"secondary")}${btn(t("another"),"new-sale","")}</div></div></section>`;
-    const products=state.products.filter(p=>p.active!==false&&(category==="all"||p.category===category)&&`${p.name} ${p.id}`.toLowerCase().includes(query.toLowerCase()));const total=cart.reduce((sum,line)=>sum+line.qty*product(line.id).price,0);const reg=FrogRegister.labels[state.locale];
-    const categoryButton=(id,label)=>`<button type="button" class="filter ${category===id?"active":""}" data-act="cat:${id}">${label}</button>`;
-    return pageHead("THE FROG / POS",t("posTitle"),t("posDesc"),badge(t("mockNotice"),"purple"))+`<div class="pos-layout"><div><div class="filter-row">${categoryButton("all",t("all"))}${categoryButton("workshop",t("workshop"))}${categoryButton("food",t("food"))}</div><input id="pos-search" class="search" placeholder="${t("search")}" value="${esc(query)}" aria-label="${t("search")}"/><div class="products-grid" style="margin-top:16px">${products.map((p,i)=>`<button type="button" class="product" data-act="add:${p.id}" ${FrogRegister.canAdd(cart,p)?"":"disabled"}><div class="product-art ${p.category==="food"?"peach":i%2?"mint":""}">${p.emoji}</div><span class="product-name">${esc(p.name)}</span><span class="product-price">${money(p.price)}</span><span class="product-sku">${esc(p.id)}</span><span class="product-availability">${p.stock?`${reg.inStock}: ${p.stock-FrogRegister.quantity(cart,p.id)}`:reg.soldOut}</span></button>`).join("")}</div></div><section class="panel cart"><div class="panel-head"><div><h3>🛒 ${t("cart")}</h3><p>${t("cartDesc")}</p></div>${badge(String(cart.reduce((n,i)=>n+i.qty,0)),"purple")}</div><div class="panel-body"><div class="cart-items">${cart.length?cart.map(line=>{const p=product(line.id);return `<div class="cart-line"><div class="cart-line-head"><div><strong>${esc(p.name)}</strong><small>${money(p.price)}</small></div><strong>${money(p.price*line.qty)}</strong></div><div class="qty"><button type="button" data-act="minus:${line.key}" aria-label="Decrease">−</button><b>${line.qty}</b><button type="button" data-act="plus:${line.key}" aria-label="Increase" ${FrogRegister.canAdd(cart,p)?"":"disabled"}>+</button><button type="button" class="trash" data-act="remove:${line.key}" aria-label="Remove">×</button></div><label class="line-note" for="note-${line.key}">${reg.options}<input id="note-${line.key}" class="field" data-line-note="${line.key}" value="${esc(line.note||"")}" maxlength="160" placeholder="${reg.placeholder}" /></label></div>`}).join(""):`<div class="cart-empty"><div>🛍️</div><b>${t("emptyCart")}</b><p>${t("emptyCartHint")}</p></div>`}</div><div style="padding-top:15px"><div class="form-field"><label for="customer-name">${t("customer")}</label><input id="customer-name" class="field" placeholder="${t("customerPh")}" value="${esc(customer)}" maxlength="80" /></div><div class="form-grid"><div class="form-field"><label for="payment-status">${t("paymentStatus")}</label><select id="payment-status" class="field"><option value="paid" ${payment==="paid"?"selected":""}>${t("paid")}</option><option value="unpaid" ${payment==="unpaid"?"selected":""}>${t("unpaid")}</option></select></div><div class="form-field"><label for="payment-method">${t("paymentMethod")}</label><select id="payment-method" class="field"><option value="cash" ${method==="cash"?"selected":""}>${t("cash")}</option><option value="bank" ${method==="bank"?"selected":""}>${t("bank")}</option></select></div></div>${FrogRegister.hasWorkshop(cart,state.products)?`<label style="display:flex;align-items:center;gap:9px;font-size:10px;font-weight:700;margin-top:3px"><input id="with-ticket" type="checkbox" ${createTicket?"checked":""}/> ${t("withTicket")}</label>`:""}<div class="cart-summary"><strong>${t("total")}</strong><strong class="number">${money(total)}</strong></div><button type="button" class="btn checkout-btn" data-act="checkout" ${!cart.length?"disabled":""}>${t("checkout")} →</button></div></div></section></div>`;
+  const pageHead = (eyebrow, title, description, action = "") =>
+    `<div class="page-header"><div><div class="eyebrow">${eyebrow}</div><h1 class="page-title">${title}</h1><p class="page-description">${description}</p></div>${action ? `<div class="header-action">${action}</div>` : ""}</div>`;
+  const btn = (label, act, cls = "secondary", extra = "") =>
+    `<button type="button" class="btn ${cls}" data-act="${act}" ${extra}>${label}</button>`;
+  const badge = (label, type = "gray") => `<span class="pill ${type}">${label}</span>`;
+  const labelStatus = (status) =>
+    ({
+      paid: t("paid"),
+      unpaid: t("unpaid"),
+      refunded: t("refunded"),
+      cancelled: t("cancelled"),
+      waiting: t("waiting"),
+      in_progress: t("inProgress"),
+      completed: t("completed"),
+      ticket_printed: t("ticketPrinted"),
+      registered: t("ticketRegistered"),
+    })[status] || status;
+  const badgeStatus = (s) =>
+    badge(
+      labelStatus(s),
+      {
+        paid: "green",
+        completed: "green",
+        in_progress: "purple",
+        waiting: "amber",
+        unpaid: "amber",
+        refunded: "red",
+        cancelled: "red",
+        registered: "gray",
+      }[s] || "gray",
+    );
+  const card = (title, subtitle, content, right = "") =>
+    `<section class="panel"><div class="panel-head"><div><h3>${title}</h3>${subtitle ? `<p>${subtitle}</p>` : ""}</div>${right}</div><div class="panel-body">${content}</div></section>`;
+  function mix() {
+    const total = finance().revenue || 1;
+    return ["workshop", "food"]
+      .map((cat, index) => {
+        let sum = paidOrders().reduce(
+          (n, o) =>
+            n +
+            o.items
+              .filter((i) => (i.category || product(i.productId)?.category) === cat)
+              .reduce((a, b) => a + b.qty * b.price, 0),
+          0,
+        );
+        return `<div class="category-total"><span class="category-dot ${index ? "green" : ""}"></span><div class="grow"><strong>${t(cat)}</strong><div class="progress ${index ? "green" : ""}"><span style="width:${Math.round((sum / total) * 100)}%"></span></div></div><div class="amount">${money(sum)}</div></div>`;
+      })
+      .join("");
   }
-  function products(){
-    const l=FrogCatalogue.labels[state.locale==="en"?"en":"vi"];
-    if(state.role!=="owner")return pageHead("CATALOGUE",l.title,l.desc)+`<div class="note">${t("noFinance")}</div>`;
-    return pageHead("CATALOGUE",l.title,l.desc,btn("＋ "+l.add,"catalog-new",""))+FrogCatalogue.view(state.products,state.locale,esc,money,catalogQuery,catalogFilter);
+  function chart() {
+    const amounts = [32, 47, 37, 69, 45, 83, 72].map((n, i) =>
+      Math.round((n / 100) * (finance().revenue || 200000)),
+    );
+    const max = Math.max(...amounts, 1);
+    return `<div class="summary-chart">${amounts.map((v, i) => `<div class="bar-wrap"><div class="bar ${i === 6 ? "today" : ""}" style="height:${Math.max(4, (v / max) * 165)}px"></div><span class="bar-label">${["T2", "T3", "T4", "T5", "T6", "T7", "CN"][i]}</span></div>`).join("")}</div><p style="font-size:9px;color:var(--sub);margin:34px 0 0">${t("salesChartHint")} · ${t("today")}</p>`;
+  }
+  function dashboard() {
+    const f = finance();
+    return (
+      pageHead(
+        "FROG OPERATIONS",
+        t("hello"),
+        t("greeting"),
+        btn("＋ " + t("newSale"), "goto-pos", ""),
+      ) +
+      `<section class="frog-welcome"><div class="frog-welcome-copy"><span class="welcome-kicker">DIOXYZINE FROG / ART SPACE</span><h2>${state.locale === "vi" ? "Một chút phép màu cho mỗi workshop" : "A little magic in every workshop"}</h2><p>${state.locale === "vi" ? "Một không gian sáng tạo, mọi thao tác ngay trong tầm tay." : "Your creative workshop, all in one place."}</p><span class="welcome-tag">✳ ${t("demoMode")}</span></div><img class="welcome-logo" src="./assets/frog-logo.png" alt="Dioxyzine Frog" /></section>` +
+      (state.role === "staff"
+        ? `<div class="note" style="margin-bottom:18px">${t("noFinance")}</div>`
+        : `<div class="grid-kpi">
+      ${[
+        [t("revenue"), money(f.revenue), t("revenueHint"), "↗"],
+        [t("profit"), money(f.profit), t("profitHint"), "✳"],
+        [t("orderCount"), f.paid, t("orderHint"), "▣"],
+        [t("waiting"), f.waiting, t("waitingHint"), "◷"],
+      ]
+        .map(
+          ([name, val, hint, icon], i) =>
+            `<div class="panel kpi ${i === 0 ? "kpi-primary" : ""}"><div class="kpi-top">${name}<span class="kpi-icon">${icon}</span></div><div class="kpi-value number">${val}</div><div class="kpi-foot">${hint}</div></div>`,
+        )
+        .join("")}
+    </div>`) +
+      `<div class="dashboard-grid">${state.role === "staff" ? card(t("activity"), t("activityHint"), activity()) : card(t("salesChart"), t("salesChartHint"), chart())}${card(t("activity"), t("activityHint"), activity())}</div>
+    <div class="bottom-grid">${state.role === "staff" ? card(t("shortcut"), t("quickHint"), `<p>${t("quickText")}</p>${btn(t("openRegister"), "goto-pos", "")}`) : card(t("salesMix"), t("salesMixHint"), mix())}${card(t("shortcut"), t("quickHint"), `<div style="background:var(--mint);border-radius:13px;padding:22px;margin-bottom:16px"><div style="font-size:27px;margin-bottom:8px">🎨 ✳ 🧸</div><strong style="font-size:12px">The Frog Art Space</strong><p style="font-size:10px;line-height:1.8;color:var(--sub);max-width:290px">${t("quickText")}</p></div>${btn(t("openRegister") + " →", "goto-pos", "")}`)}</div>`
+    );
+  }
+  function activity() {
+    return `<div class="quick-list">${
+      eventOrders()
+        .slice()
+        .reverse()
+        .slice(0, 4)
+        .map(
+          (o) =>
+            `<div class="quick-item"><div class="flex"><span class="icon-circle">${product(o.items[0]?.productId)?.emoji || "🛍️"}</span><div><strong>${esc(o.customer || t("fallbackCustomer"))}</strong><span>${esc(o.id)} · ${time(o.createdAt)}</span></div></div>${badgeStatus(o.status)}</div>`,
+        )
+        .join("") || `<p class="muted">${t("noData")}</p>`
+    }</div>`;
+  }
+  function pos() {
+    if (saleResult)
+      return (
+        pageHead("COUNTER", t("success"), t("successText")) +
+        `<section class="panel" style="max-width:610px;margin:auto"><div class="panel-body" style="text-align:center;padding:54px 22px"><div style="font-size:48px">🎉</div><h2>${t("success")}</h2><p class="muted">${t("orderId")}: <b>${esc(saleResult.id)}</b></p>${saleResult.ticketId ? `<p>${t("ticket")}: <strong style="color:var(--primary-deep)">${esc(saleResult.ticketId)}</strong></p>` : ""}<h2>${money(lineTotal(saleResult))}</h2><div class="flex wrap" style="justify-content:center;margin-top:22px">${btn("In 2 phiếu", `print-both:${saleResult.id}`, "")}${btn("In bill khách", `customer-bill:${saleResult.id}`, "secondary")}${btn(t("another"), "new-sale", "")}</div></div></section>`
+      );
+    const products = state.products.filter(
+      (p) =>
+        p.active !== false &&
+        (category === "all" || p.category === category) &&
+        `${p.name} ${p.id}`.toLowerCase().includes(query.toLowerCase()),
+    );
+    const total = cart.reduce((sum, line) => sum + line.qty * product(line.id).price, 0);
+    const reg = FrogRegister.labels[state.locale];
+    const categoryButton = (id, label) =>
+      `<button type="button" class="filter ${category === id ? "active" : ""}" data-act="cat:${id}">${label}</button>`;
+    return (
+      pageHead("THE FROG / POS", t("posTitle"), t("posDesc"), badge(t("mockNotice"), "purple")) +
+      `<div class="pos-layout"><div><div class="filter-row">${categoryButton("all", t("all"))}${categoryButton("workshop", t("workshop"))}${categoryButton("food", t("food"))}</div><input id="pos-search" class="search" placeholder="${t("search")}" value="${esc(query)}" aria-label="${t("search")}"/><div class="products-grid" style="margin-top:16px">${products.map((p, i) => `<button type="button" class="product" data-act="add:${p.id}" ${FrogRegister.canAdd(cart, p) ? "" : "disabled"}><div class="product-art ${p.category === "food" ? "peach" : i % 2 ? "mint" : ""}">${p.emoji}</div><span class="product-name">${esc(p.name)}</span><span class="product-price">${money(p.price)}</span><span class="product-sku">${esc(p.id)}</span><span class="product-availability">${p.stock ? `${reg.inStock}: ${p.stock - FrogRegister.quantity(cart, p.id)}` : reg.soldOut}</span></button>`).join("")}</div></div><section class="panel cart"><div class="panel-head"><div><h3>🛒 ${t("cart")}</h3><p>${t("cartDesc")}</p></div>${badge(String(cart.reduce((n, i) => n + i.qty, 0)), "purple")}</div><div class="panel-body"><div class="cart-items">${
+        cart.length
+          ? cart
+              .map((line) => {
+                const p = product(line.id);
+                return `<div class="cart-line"><div class="cart-line-head"><div><strong>${esc(p.name)}</strong><small>${money(p.price)}</small></div><strong>${money(p.price * line.qty)}</strong></div><div class="qty"><button type="button" data-act="minus:${line.key}" aria-label="Decrease">−</button><b>${line.qty}</b><button type="button" data-act="plus:${line.key}" aria-label="Increase" ${FrogRegister.canAdd(cart, p) ? "" : "disabled"}>+</button><button type="button" class="trash" data-act="remove:${line.key}" aria-label="Remove">×</button></div><label class="line-note" for="note-${line.key}">${reg.options}<input id="note-${line.key}" class="field" data-line-note="${line.key}" value="${esc(line.note || "")}" maxlength="160" placeholder="${reg.placeholder}" /></label></div>`;
+              })
+              .join("")
+          : `<div class="cart-empty"><div>🛍️</div><b>${t("emptyCart")}</b><p>${t("emptyCartHint")}</p></div>`
+      }</div><div style="padding-top:15px"><div class="form-field"><label for="customer-name">${t("customer")}</label><input id="customer-name" class="field" placeholder="${t("customerPh")}" value="${esc(customer)}" maxlength="80" /></div><div class="form-grid"><div class="form-field"><label for="payment-status">${t("paymentStatus")}</label><select id="payment-status" class="field"><option value="paid" ${payment === "paid" ? "selected" : ""}>${t("paid")}</option><option value="unpaid" ${payment === "unpaid" ? "selected" : ""}>${t("unpaid")}</option></select></div><div class="form-field"><label for="payment-method">${t("paymentMethod")}</label><select id="payment-method" class="field"><option value="cash" ${method === "cash" ? "selected" : ""}>${t("cash")}</option><option value="bank" ${method === "bank" ? "selected" : ""}>${t("bank")}</option></select></div></div>${FrogRegister.hasWorkshop(cart, state.products) ? `<label style="display:flex;align-items:center;gap:9px;font-size:10px;font-weight:700;margin-top:3px"><input id="with-ticket" type="checkbox" ${createTicket ? "checked" : ""}/> ${t("withTicket")}</label>` : ""}<div class="cart-summary"><strong>${t("total")}</strong><strong class="number">${money(total)}</strong></div><button type="button" class="btn checkout-btn" data-act="checkout" ${!cart.length ? "disabled" : ""}>${t("checkout")} →</button></div></div></section></div>`
+    );
+  }
+  function products() {
+    const l = FrogCatalogue.labels[state.locale === "en" ? "en" : "vi"];
+    if (state.role !== "owner")
+      return pageHead("CATALOGUE", l.title, l.desc) + `<div class="note">${t("noFinance")}</div>`;
+    return (
+      pageHead("CATALOGUE", l.title, l.desc, btn("＋ " + l.add, "catalog-new", "")) +
+      FrogCatalogue.view(state.products, state.locale, esc, money, catalogQuery, catalogFilter)
+    );
   }
   function orderButtons(o) {
-    const l=FrogOrders.labels(state.locale), buttons=[];
-    if(FrogOrders.can(o,"paid"))buttons.push(btn(l.payButton,"pay-order:"+o.id,"soft small"));
-    if(FrogOrders.can(o,"cancel"))buttons.push(btn(l.cancelButton,"cancel-order:"+o.id,"secondary small"));
-    if(FrogOrders.can(o,"refund"))buttons.push(btn(l.refundButton,"refund:"+o.id,"secondary small"));
+    const l = FrogOrders.labels(state.locale),
+      buttons = [];
+    if (FrogOrders.can(o, "paid"))
+      buttons.push(btn(l.payButton, "pay-order:" + o.id, "soft small"));
+    if (FrogOrders.can(o, "cancel"))
+      buttons.push(btn(l.cancelButton, "cancel-order:" + o.id, "secondary small"));
+    if (FrogOrders.can(o, "refund"))
+      buttons.push(btn(l.refundButton, "refund:" + o.id, "secondary small"));
     return buttons.join("");
   }
   function orders() {
-    const rows=eventOrders().filter(o=>orderFilter==="all"||o.status===orderFilter).slice().reverse();
-    const filters=["all","unpaid","paid","refunded","cancelled"].map(k=>'<button type="button" class="filter '+(orderFilter===k?"active":"")+'" data-act="orders:'+k+'">'+(k==="all"?t("filterAll"):labelStatus(k))+'</button>').join("");
-    const heads=[t("orderId"),t("customerLabel"),t("date"),t("items"),t("total"),t("status"),t("actions")].map(x=>"<th>"+x+"</th>").join("");
-    const body=rows.map(o=>'<tr><td><strong>'+esc(o.id)+'</strong>'+(o.ticketId?'<small>'+esc(o.ticketId)+'</small>':"")+'</td><td>'+esc(o.customer||t("fallbackCustomer"))+'</td><td>'+date(o.createdAt)+'<small>'+time(o.createdAt)+'</small></td><td>'+o.items.reduce((n,i)=>n+i.qty,0)+'</td><td><strong>'+money(lineTotal(o))+'</strong></td><td>'+badgeStatus(o.status)+'</td><td><div class="order-actions">'+btn(t("view"),"details:"+o.id,"secondary small")+orderButtons(o)+'</div></td></tr>').join("")||'<tr><td colspan="7">'+t("noOrders")+'</td></tr>';
-    return pageHead("SALES",t("orderTitle"),t("orderDesc"),btn("＋ "+t("newSale"),"goto-pos",""))+'<div class="filter-row">'+filters+'</div><section class="panel"><div class="table-scroll"><table class="data-table"><thead><tr>'+heads+'</tr></thead><tbody>'+body+'</tbody></table></div></section>';
+    const rows = eventOrders()
+      .filter((o) => orderFilter === "all" || o.status === orderFilter)
+      .slice()
+      .reverse();
+    const filters = ["all", "unpaid", "paid", "refunded", "cancelled"]
+      .map(
+        (k) =>
+          '<button type="button" class="filter ' +
+          (orderFilter === k ? "active" : "") +
+          '" data-act="orders:' +
+          k +
+          '">' +
+          (k === "all" ? t("filterAll") : labelStatus(k)) +
+          "</button>",
+      )
+      .join("");
+    const heads = [
+      t("orderId"),
+      t("customerLabel"),
+      t("date"),
+      t("items"),
+      t("total"),
+      t("status"),
+      t("actions"),
+    ]
+      .map((x) => "<th>" + x + "</th>")
+      .join("");
+    const body =
+      rows
+        .map(
+          (o) =>
+            "<tr><td><strong>" +
+            esc(o.id) +
+            "</strong>" +
+            (o.ticketId ? "<small>" + esc(o.ticketId) + "</small>" : "") +
+            "</td><td>" +
+            esc(o.customer || t("fallbackCustomer")) +
+            "</td><td>" +
+            date(o.createdAt) +
+            "<small>" +
+            time(o.createdAt) +
+            "</small></td><td>" +
+            o.items.reduce((n, i) => n + i.qty, 0) +
+            "</td><td><strong>" +
+            money(lineTotal(o)) +
+            "</strong></td><td>" +
+            badgeStatus(o.status) +
+            '</td><td><div class="order-actions">' +
+            btn(t("view"), "details:" + o.id, "secondary small") +
+            orderButtons(o) +
+            "</div></td></tr>",
+        )
+        .join("") || '<tr><td colspan="7">' + t("noOrders") + "</td></tr>";
+    return (
+      pageHead(
+        "SALES",
+        t("orderTitle"),
+        t("orderDesc"),
+        btn("＋ " + t("newSale"), "goto-pos", ""),
+      ) +
+      '<div class="filter-row">' +
+      filters +
+      '</div><section class="panel"><div class="table-scroll"><table class="data-table"><thead><tr>' +
+      heads +
+      "</tr></thead><tbody>" +
+      body +
+      "</tbody></table></div></section>"
+    );
   }
-  function events(){return pageHead("WORKSHOP SPACE",t("eventsTitle"),t("eventsDesc"))+`<div class="note" style="margin-bottom:17px">${t("eventNotice")}</div><div class="event-grid">${state.events.map(e=>`<section class="panel event-card"><span class="date-box">${date(e.date)}</span><div class="flex" style="justify-content:space-between"><h3>${esc(e.name)}</h3>${badge(e.status==="active"?t("active"):t("planned"),e.status==="active"?"green":"amber")}</div><p>✳ ${e.prefix} · ${t("capacity")}: ${e.capacity} · ${t("registered")}: ${state.tickets.filter(k=>k.eventId===e.id).length}</p><footer>${e.id===state.selectedEvent?badge(t("selected"),"purple"):`<span></span>`}${btn(e.id===state.selectedEvent?t("selected"):t("choose"),`event:${e.id}`,e.id===state.selectedEvent?"soft small":"secondary small",e.id===state.selectedEvent?"disabled":"")}</footer></section>`).join("")}</div>`}
-  function queueColumns(tv=false){const columns=[["in_progress",t("inProgress")],["waiting",t("upNext")],["completed",t("completed")]];return `<div class="queue-grid">${columns.map(([status,label])=>{const list=eventTickets().filter(k=>k.status===status).slice(0,6);return `<section class="panel queue-col"><header><h3>${label}</h3>${badge(String(list.length),status==="in_progress"?"purple":status==="waiting"?"amber":"green")}</header>${list.map(ticket=>`<div class="ticket-card"><strong>${esc(ticket.id)}</strong><small>${esc(ticket.customer)}</small>${!tv&&status!=="completed"?btn(t("next")+" →",`advance:${ticket.id}`,"secondary small"):""}</div>`).join("")||`<p class="muted" style="padding:20px 8px;font-size:10px">${t("emptyQueue")}</p>`}</section>`}).join("")}</div>`}
-  function queue(){const newly=eventTickets().filter(k=>!["waiting","in_progress","completed","cancelled"].includes(k.status));return pageHead("TICKET FLOW",t("queueTitle"),t("queueDesc"),btn("▣ "+t("tv"),"tv","secondary"))+`<div class="note" style="margin-bottom:17px">${t("queueTip")}</div>${queueColumns()}${newly.length?`<section class="panel section-gap"><div class="panel-head"><h3>${t("registered")} / ${t("ticketPrinted")}</h3></div>${newly.map(k=>`<div class="list-row"><div><strong>${esc(k.id)} · ${esc(k.customer)}</strong><small>${labelStatus(k.status)}</small></div><div class="flex wrap">${k.status==="registered"?btn(t("print"),`print:${k.id}`,"soft small"):""}${btn(t("next")+" →",`advance:${k.id}`,"secondary small")}</div></div>`).join("")}</section>`:""}`}
-  function inventory(){let low=state.products.filter(p=>p.stock<=p.threshold).length;return pageHead("STOCK",t("inventoryTitle"),t("inventoryDesc"),badge(`${low} ${t("lowCount")}`,low?"amber":"green"))+`<div class="note" style="margin-bottom:18px">${t("inventoryHint")}</div><section class="panel"><div class="table-scroll"><table class="data-table"><thead><tr><th>${t("product")}</th><th>${t("sku")}</th><th>${t("stock")}</th><th>${t("threshold")}</th><th>${t("status")}</th><th>${t("actions")}</th></tr></thead><tbody>${state.products.map(p=>`<tr><td><strong>${p.emoji} ${esc(p.name)}</strong></td><td><span class="muted">${esc(p.id)}</span></td><td><strong>${p.stock}</strong></td><td>${p.threshold}</td><td>${badge(p.stock===0?t("stockOut"):p.stock<=p.threshold?t("stockLow"):t("stockOk"),p.stock===0?"red":p.stock<=p.threshold?"amber":"green")}</td><td>${btn(t("stockEdit"),`stock:${p.id}`,"secondary small")}</td></tr>`).join("")}</tbody></table></div></section>`}
-  function reports(){if(state.role==="staff")return pageHead("REPORTING",t("reportsTitle"),t("reportsDesc"))+`<div class="note">${t("noFinance")}</div>`;const f=finance(),rows=[];for(const o of paidOrders())for(const i of o.items){const p=product(i.productId);const row=rows.find(r=>r.id===i.productId);if(row){row.qty+=i.qty;row.revenue+=i.price*i.qty}else rows.push({id:i.productId,name:i.name||p?.name||i.productId,qty:i.qty,revenue:i.price*i.qty});}rows.sort((a,b)=>b.revenue-a.revenue);return pageHead("ANALYTICS",t("reportsTitle"),t("reportsDesc"))+`<div class="grid-kpi">${[[t("revenue"),money(f.revenue)],[t("costOfGoods"),money(f.cogs)],[t("expense"),money(f.expenses)],[t("profit"),money(f.profit)]].map(([name,v])=>`<div class="panel kpi"><div class="kpi-top">${name}<span class="kpi-icon">✳</span></div><div class="kpi-value number">${v}</div></div>`).join("")}</div><div class="report-grid">${card(t("salesChart"),t("salesChartHint"),chart())}${card(t("salesMix"),t("salesMixHint"),mix()+`<div class="note">${t("margin")}: ${f.revenue?Math.round(f.profit/f.revenue*100):0}%</div>`)}</div><section class="panel section-gap"><div class="panel-head"><h3>${t("productReport")}</h3></div><div class="table-scroll"><table class="data-table"><thead><tr><th>${t("product")}</th><th>${t("items")}</th><th>${t("revenue")}</th><th>${t("share")}</th></tr></thead><tbody>${rows.map(r=>`<tr><td><strong>${esc(r.name)}</strong></td><td>${r.qty}</td><td>${money(r.revenue)}</td><td>${Math.round(r.revenue/(f.revenue||1)*100)}%</td></tr>`).join("")}</tbody></table></div></section>`}
-  function settings(){return pageHead("PREFERENCES",t("settingsTitle"),t("settingsDesc"))+`<div class="event-grid"><section class="panel"><div class="panel-head"><h3>${t("appearance")}</h3></div><div class="panel-body"><div class="form-field"><label>${t("appearance")}</label><div class="flex">${btn(t("light"),"theme:light",state.theme==="light"?"soft":"secondary")}${btn(t("dark"),"theme:dark",state.theme==="dark"?"soft":"secondary")}</div></div><div class="form-field"><label>${t("language")}</label><div class="flex">${btn("Tiếng Việt","lang:vi",state.locale==="vi"?"soft":"secondary")}${btn("English","lang:en",state.locale==="en"?"soft":"secondary")}</div></div></div></section><section class="panel"><div class="panel-head"><h3>${t("role")}</h3></div><div class="panel-body"><div class="flex wrap" style="margin-bottom:18px">${btn(t("owner"),"role:owner",state.role==="owner"?"soft":"secondary")}${btn(t("staff"),"role:staff",state.role==="staff"?"soft":"secondary")}</div><div class="note">${t("securityNotice")}</div><div style="margin-top:19px">${btn(t("reset"),"reset","warn")}</div></div></section></div>`}
-  const pages={dashboard,pos,products,orders,events,queue,inventory,reports,settings};
-  function render(){navRender();$("#main").innerHTML=pages[page]();const s=$("#pos-search");if(s&&query){/* preserve text between rerenders through state */}if(display)renderTv();}
-  function go(next){page=next;saleResult=null;display=false;$("#sidebar").classList.remove("open");$("#mobile-scrim").classList.remove("open");render();window.scrollTo(0,0);}
-  function modal(content){$("#modal-root").innerHTML=`<div class="modal-overlay"><div class="modal" role="dialog" aria-modal="true">${content}</div></div>`;}
-  const closeModal=()=>$("#modal-root").innerHTML="";
-  function completeSale(){if(!cart.length){toast(t("errorCart"));return;}
-    if(cart.some(i=>{const p=product(i.id);return !p||p.active===false||i.qty>p.stock;})){toast(state.locale==="vi"?"Sản phẩm đã ẩn hoặc không đủ tồn kho.":"Product archived or insufficient stock.");return;}const wantsTicket=createTicket&&FrogRegister.hasWorkshop(cart,state.products);
-    const error=FrogRegister.validate(cart,state.products,currentEvent(),state.tickets,wantsTicket,state.locale);
-    if(error){toast(error);return;}
-    if(wantsTicket&&!customer.trim()){toast(t("errorCustomer"));$("#customer-name")?.focus();return;}
-    const e=currentEvent(),id=`FG-${String(state.nextOrder++).padStart(4,"0")}`;const ticketId=wantsTicket?`${e.prefix}-${String(state.nextTicket[e.id]++).padStart(3,"0")}`:null;
-    const items=cart.map(i=>({productId:i.id,name:product(i.id).name,category:product(i.id).category,qty:i.qty,price:product(i.id).price,cost:product(i.id).cost,note:i.note||""}));const order={id,eventId:e.id,customer:customer.trim()||t("fallbackCustomer"),status:payment,method,createdAt:fixedNow(),items,ticketId};state.orders.push(order);
-    if(ticketId)state.tickets.push({id:ticketId,eventId:e.id,customer:customer.trim(),status:"registered",createdAt:order.createdAt,orderId:id});
-    for(const i of items){const p=product(i.productId);p.stock-=i.qty;}persist();saleResult=order;cart=[];customer="";render();toast(t("success"));}
+  function events() {
+    return (
+      pageHead("WORKSHOP SPACE", t("eventsTitle"), t("eventsDesc")) +
+      `<div class="note" style="margin-bottom:17px">${t("eventNotice")}</div><div class="event-grid">${state.events.map((e) => `<section class="panel event-card"><span class="date-box">${date(e.date)}</span><div class="flex" style="justify-content:space-between"><h3>${esc(e.name)}</h3>${badge(e.status === "active" ? t("active") : t("planned"), e.status === "active" ? "green" : "amber")}</div><p>✳ ${e.prefix} · ${t("capacity")}: ${e.capacity} · ${t("registered")}: ${state.tickets.filter((k) => k.eventId === e.id).length}</p><footer>${e.id === state.selectedEvent ? badge(t("selected"), "purple") : `<span></span>`}${btn(e.id === state.selectedEvent ? t("selected") : t("choose"), `event:${e.id}`, e.id === state.selectedEvent ? "soft small" : "secondary small", e.id === state.selectedEvent ? "disabled" : "")}</footer></section>`).join("")}</div>`
+    );
+  }
+  function queueColumns(tv = false) {
+    const columns = [
+      ["in_progress", t("inProgress")],
+      ["waiting", t("upNext")],
+      ["completed", t("completed")],
+    ];
+    return `<div class="queue-grid">${columns
+      .map(([status, label]) => {
+        const list = eventTickets()
+          .filter((k) => k.status === status)
+          .slice(0, 6);
+        return `<section class="panel queue-col"><header><h3>${label}</h3>${badge(String(list.length), status === "in_progress" ? "purple" : status === "waiting" ? "amber" : "green")}</header>${list.map((ticket) => `<div class="ticket-card"><strong>${esc(ticket.id)}</strong><small>${esc(ticket.customer)}</small>${!tv && status !== "completed" ? btn(t("next") + " →", `advance:${ticket.id}`, "secondary small") : ""}</div>`).join("") || `<p class="muted" style="padding:20px 8px;font-size:10px">${t("emptyQueue")}</p>`}</section>`;
+      })
+      .join("")}</div>`;
+  }
+  function queue() {
+    const newly = eventTickets().filter(
+      (k) => !["waiting", "in_progress", "completed", "cancelled"].includes(k.status),
+    );
+    return (
+      pageHead(
+        "TICKET FLOW",
+        t("queueTitle"),
+        t("queueDesc"),
+        btn("▣ " + t("tv"), "tv", "secondary"),
+      ) +
+      `<div class="note" style="margin-bottom:17px">${t("queueTip")}</div>${queueColumns()}${newly.length ? `<section class="panel section-gap"><div class="panel-head"><h3>${t("registered")} / ${t("ticketPrinted")}</h3></div>${newly.map((k) => `<div class="list-row"><div><strong>${esc(k.id)} · ${esc(k.customer)}</strong><small>${labelStatus(k.status)}</small></div><div class="flex wrap">${k.status === "registered" ? btn(t("print"), `print:${k.id}`, "soft small") : ""}${btn(t("next") + " →", `advance:${k.id}`, "secondary small")}</div></div>`).join("")}</section>` : ""}`
+    );
+  }
+  function inventory() {
+    let low = state.products.filter((p) => p.stock <= p.threshold).length;
+    return (
+      pageHead(
+        "STOCK",
+        t("inventoryTitle"),
+        t("inventoryDesc"),
+        badge(`${low} ${t("lowCount")}`, low ? "amber" : "green"),
+      ) +
+      `<div class="note" style="margin-bottom:18px">${t("inventoryHint")}</div><section class="panel"><div class="table-scroll"><table class="data-table"><thead><tr><th>${t("product")}</th><th>${t("sku")}</th><th>${t("stock")}</th><th>${t("threshold")}</th><th>${t("status")}</th><th>${t("actions")}</th></tr></thead><tbody>${state.products.map((p) => `<tr><td><strong>${p.emoji} ${esc(p.name)}</strong></td><td><span class="muted">${esc(p.id)}</span></td><td><strong>${p.stock}</strong></td><td>${p.threshold}</td><td>${badge(p.stock === 0 ? t("stockOut") : p.stock <= p.threshold ? t("stockLow") : t("stockOk"), p.stock === 0 ? "red" : p.stock <= p.threshold ? "amber" : "green")}</td><td>${btn(t("stockEdit"), `stock:${p.id}`, "secondary small")}</td></tr>`).join("")}</tbody></table></div></section>`
+    );
+  }
+  function reports() {
+    if (state.role === "staff")
+      return (
+        pageHead("REPORTING", t("reportsTitle"), t("reportsDesc")) +
+        `<div class="note">${t("noFinance")}</div>`
+      );
+    const f = finance(),
+      rows = [];
+    for (const o of paidOrders())
+      for (const i of o.items) {
+        const p = product(i.productId);
+        const row = rows.find((r) => r.id === i.productId);
+        if (row) {
+          row.qty += i.qty;
+          row.revenue += i.price * i.qty;
+        } else
+          rows.push({
+            id: i.productId,
+            name: i.name || p?.name || i.productId,
+            qty: i.qty,
+            revenue: i.price * i.qty,
+          });
+      }
+    rows.sort((a, b) => b.revenue - a.revenue);
+    return (
+      pageHead("ANALYTICS", t("reportsTitle"), t("reportsDesc")) +
+      `<div class="grid-kpi">${[
+        [t("revenue"), money(f.revenue)],
+        [t("costOfGoods"), money(f.cogs)],
+        [t("expense"), money(f.expenses)],
+        [t("profit"), money(f.profit)],
+      ]
+        .map(
+          ([name, v]) =>
+            `<div class="panel kpi"><div class="kpi-top">${name}<span class="kpi-icon">✳</span></div><div class="kpi-value number">${v}</div></div>`,
+        )
+        .join(
+          "",
+        )}</div><div class="report-grid">${card(t("salesChart"), t("salesChartHint"), chart())}${card(t("salesMix"), t("salesMixHint"), mix() + `<div class="note">${t("margin")}: ${f.revenue ? Math.round((f.profit / f.revenue) * 100) : 0}%</div>`)}</div><section class="panel section-gap"><div class="panel-head"><h3>${t("productReport")}</h3></div><div class="table-scroll"><table class="data-table"><thead><tr><th>${t("product")}</th><th>${t("items")}</th><th>${t("revenue")}</th><th>${t("share")}</th></tr></thead><tbody>${rows.map((r) => `<tr><td><strong>${esc(r.name)}</strong></td><td>${r.qty}</td><td>${money(r.revenue)}</td><td>${Math.round((r.revenue / (f.revenue || 1)) * 100)}%</td></tr>`).join("")}</tbody></table></div></section>`
+    );
+  }
+  function settings() {
+    return (
+      pageHead("PREFERENCES", t("settingsTitle"), t("settingsDesc")) +
+      `<div class="event-grid"><section class="panel"><div class="panel-head"><h3>${t("appearance")}</h3></div><div class="panel-body"><div class="form-field"><label>${t("appearance")}</label><div class="flex">${btn(t("light"), "theme:light", state.theme === "light" ? "soft" : "secondary")}${btn(t("dark"), "theme:dark", state.theme === "dark" ? "soft" : "secondary")}</div></div><div class="form-field"><label>${t("language")}</label><div class="flex">${btn("Tiếng Việt", "lang:vi", state.locale === "vi" ? "soft" : "secondary")}${btn("English", "lang:en", state.locale === "en" ? "soft" : "secondary")}</div></div></div></section><section class="panel"><div class="panel-head"><h3>${t("role")}</h3></div><div class="panel-body"><div class="flex wrap" style="margin-bottom:18px">${btn(t("owner"), "role:owner", state.role === "owner" ? "soft" : "secondary")}${btn(t("staff"), "role:staff", state.role === "staff" ? "soft" : "secondary")}</div><div class="note">${t("securityNotice")}</div><div style="margin-top:19px">${btn(t("reset"), "reset", "warn")}</div></div></section></div>`
+    );
+  }
+  const pages = { dashboard, pos, products, orders, events, queue, inventory, reports, settings };
+  function render() {
+    navRender();
+    $("#main").innerHTML = pages[page]();
+    const s = $("#pos-search");
+    if (s && query) {
+      /* preserve text between rerenders through state */
+    }
+    if (display) renderTv();
+  }
+  function go(next) {
+    page = next;
+    saleResult = null;
+    display = false;
+    $("#sidebar").classList.remove("open");
+    $("#mobile-scrim").classList.remove("open");
+    render();
+    window.scrollTo(0, 0);
+  }
+  function modal(content) {
+    $("#modal-root").innerHTML =
+      `<div class="modal-overlay"><div class="modal" role="dialog" aria-modal="true">${content}</div></div>`;
+  }
+  const closeModal = () => ($("#modal-root").innerHTML = "");
+  function completeSale() {
+    if (!cart.length) {
+      toast(t("errorCart"));
+      return;
+    }
+    if (
+      cart.some((i) => {
+        const p = product(i.id);
+        return !p || p.active === false || i.qty > p.stock;
+      })
+    ) {
+      toast(
+        state.locale === "vi"
+          ? "Sản phẩm đã ẩn hoặc không đủ tồn kho."
+          : "Product archived or insufficient stock.",
+      );
+      return;
+    }
+    const wantsTicket = createTicket && FrogRegister.hasWorkshop(cart, state.products);
+    const error = FrogRegister.validate(
+      cart,
+      state.products,
+      currentEvent(),
+      state.tickets,
+      wantsTicket,
+      state.locale,
+    );
+    if (error) {
+      toast(error);
+      return;
+    }
+    if (wantsTicket && !customer.trim()) {
+      toast(t("errorCustomer"));
+      $("#customer-name")?.focus();
+      return;
+    }
+    const e = currentEvent(),
+      id = `FG-${String(state.nextOrder++).padStart(4, "0")}`;
+    const ticketId = wantsTicket
+      ? `${e.prefix}-${String(state.nextTicket[e.id]++).padStart(3, "0")}`
+      : null;
+    const items = cart.map((i) => ({
+      productId: i.id,
+      name: product(i.id).name,
+      category: product(i.id).category,
+      qty: i.qty,
+      price: product(i.id).price,
+      cost: product(i.id).cost,
+      note: i.note || "",
+    }));
+    const order = {
+      id,
+      eventId: e.id,
+      customer: customer.trim() || t("fallbackCustomer"),
+      status: payment,
+      method,
+      createdAt: fixedNow(),
+      items,
+      ticketId,
+    };
+    state.orders.push(order);
+    if (ticketId)
+      state.tickets.push({
+        id: ticketId,
+        eventId: e.id,
+        customer: customer.trim(),
+        status: "registered",
+        createdAt: order.createdAt,
+        orderId: id,
+      });
+    for (const i of items) {
+      const p = product(i.productId);
+      p.stock -= i.qty;
+    }
+    persist();
+    saleResult = order;
+    cart = [];
+    customer = "";
+    render();
+    toast(t("success"));
+  }
   function printTicket(id) {
-    const ticket=state.tickets.find(t=>t.id===id);
-    if(!ticket)return;
+    const ticket = state.tickets.find((t) => t.id === id);
+    if (!ticket) return;
     openCustomerBill(ticket.orderId);
   }
   function openCustomerBill(orderId) {
-    if(!state.orders.some(o=>o.id===orderId))return;
-    const path="./print-bills.html?order="+encodeURIComponent(orderId)+"&mode=customer";
-    const popup=window.open(path,"_blank");
-    if(popup)popup.opener=null;
+    if (!state.orders.some((o) => o.id === orderId)) return;
+    const path = "./print-bills.html?order=" + encodeURIComponent(orderId) + "&mode=customer";
+    const popup = window.open(path, "_blank");
+    if (popup) popup.opener = null;
     else toast("Trình duyệt đang chặn popup. Hãy cho phép mở tab bill khách.");
   }
-  function openPrintBills(orderId,mode="both") {
-    if(!state.orders.some(o=>o.id===orderId))return;
-    const path="./print-bills.html?order="+encodeURIComponent(orderId)+"&mode="+encodeURIComponent(mode);
-    const popup=window.open(path,"_blank");
-    if(popup)popup.opener=null;
+  function openPrintBills(orderId, mode = "both") {
+    if (!state.orders.some((o) => o.id === orderId)) return;
+    const path =
+      "./print-bills.html?order=" +
+      encodeURIComponent(orderId) +
+      "&mode=" +
+      encodeURIComponent(mode);
+    const popup = window.open(path, "_blank");
+    if (popup) popup.opener = null;
     else toast("Trình duyệt đang chặn popup. Hãy cho phép mở tab in.");
   }
-  function advanceTicket(id){const ticket=state.tickets.find(k=>k.id===id);if(!ticket)return;const next={registered:"ticket_printed",ticket_printed:"waiting",waiting:"in_progress",in_progress:"completed"}[ticket.status];if(next){ticket.status=next;persist();render();toast(`${esc(ticket.id)} · ${labelStatus(next)}`)}}
-  function renderTv(){if(!display)return;const r=$("#modal-root");r.innerHTML=`<div class="queue-display"><div class="flex wrap" style="justify-content:space-between"><div><div class="eyebrow">FROG ART SPACE / LIVE</div><h1 class="page-title">${t("queueTitle")} · ${esc(currentEvent().name)}</h1></div>${btn("✕ "+t("exitTv"),"close-tv","secondary")}</div>${queueColumns(true)}</div>`;}
-  document.addEventListener("click",e=>{
-    const nav=e.target.closest("[data-nav]");if(nav){e.preventDefault();go(nav.dataset.nav);return;}
-    const action=e.target.closest("[data-act]");if(!action)return;const [name,arg]=action.dataset.act.split(":");
-    if(name==="goto-pos")go("pos");else if(name==="cat"){category=arg;render();}
-    else if(name==="add"){const p=product(arg);if(!FrogRegister.canAdd(cart,p)){toast(FrogRegister.labels[state.locale].noStock);return;}
-      const item=cart.find(i=>i.id===arg&&!i.note);if(item)item.qty++;else cart.push({id:arg,key:"L"+(++nextCartKey),qty:1,note:""});render();}
-    else if(name==="plus"){const i=cart.find(k=>k.key===arg);if(i&&FrogRegister.canAdd(cart,product(i.id)))i.qty++;else toast(FrogRegister.labels[state.locale].noStock);render();}
-    else if(name==="minus"){const i=cart.find(k=>k.key===arg);if(i){i.qty--;if(i.qty===0)cart=cart.filter(k=>k.key!==arg)}render();}
-    else if(name==="remove"){cart=cart.filter(k=>k.key!==arg);render();}else if(name==="checkout")completeSale();else if(name==="new-sale"){saleResult=null;render();}else if(name==="catalog-new")openProductEditor();
-    else if(name==="catalog-edit")openProductEditor(arg);
-    else if(name==="catalog-filter"){catalogFilter=arg;render();}
-    else if(name==="catalog-toggle")toggleProduct(arg);
-    else if(name==="catalog-confirm")applyProductToggle(arg);
-    else if(name==="orders"){orderFilter=arg;render();}else if(name==="event"){state.selectedEvent=arg;persist();render();toast(t("updated"));}else if(name==="details")showDetails(arg);else if(name==="refund")promptOrderAction(arg,"refund");else if(name==="pay-order")promptOrderAction(arg,"paid");else if(name==="cancel-order")promptOrderAction(arg,"cancel");else if(name==="order-confirm-paid")applyOrderAction(arg,"paid");else if(name==="order-confirm-cancel")applyOrderAction(arg,"cancel");else if(name==="order-confirm-refund")applyOrderAction(arg,"refund");else if(name==="advance")advanceTicket(arg);else if(name==="print")printTicket(arg);else if(name==="customer-bill")openCustomerBill(arg);else if(name==="print-both")openPrintBills(arg);else if(name==="print-staff")openPrintBills(arg,"staff");else if(name==="window-print")window.print();else if(name==="close")closeModal();else if(name==="tv"){display=true;renderTv();}else if(name==="close-tv"){display=false;closeModal();}else if(name==="stock")editStock(arg);else if(name==="save-stock")saveStock(arg);else if(name==="lang"){state.locale=arg;persist();render();}else if(name==="theme"){state.theme=arg;persist();render();}else if(name==="role"){state.role=arg;persist();render();}else if(name==="reset")reset();
+  function advanceTicket(id) {
+    const ticket = state.tickets.find((k) => k.id === id);
+    if (!ticket) return;
+    const next = {
+      registered: "ticket_printed",
+      ticket_printed: "waiting",
+      waiting: "in_progress",
+      in_progress: "completed",
+    }[ticket.status];
+    if (next) {
+      ticket.status = next;
+      persist();
+      render();
+      toast(`${esc(ticket.id)} · ${labelStatus(next)}`);
+    }
+  }
+  function renderTv() {
+    if (!display) return;
+    const r = $("#modal-root");
+    r.innerHTML = `<div class="queue-display"><div class="flex wrap" style="justify-content:space-between"><div><div class="eyebrow">FROG ART SPACE / LIVE</div><h1 class="page-title">${t("queueTitle")} · ${esc(currentEvent().name)}</h1></div>${btn("✕ " + t("exitTv"), "close-tv", "secondary")}</div>${queueColumns(true)}</div>`;
+  }
+  document.addEventListener("click", (e) => {
+    const nav = e.target.closest("[data-nav]");
+    if (nav) {
+      e.preventDefault();
+      go(nav.dataset.nav);
+      return;
+    }
+    const action = e.target.closest("[data-act]");
+    if (!action) return;
+    const [name, arg] = action.dataset.act.split(":");
+    if (name === "goto-pos") go("pos");
+    else if (name === "cat") {
+      category = arg;
+      render();
+    } else if (name === "add") {
+      const p = product(arg);
+      if (!FrogRegister.canAdd(cart, p)) {
+        toast(FrogRegister.labels[state.locale].noStock);
+        return;
+      }
+      const item = cart.find((i) => i.id === arg && !i.note);
+      if (item) item.qty++;
+      else cart.push({ id: arg, key: "L" + ++nextCartKey, qty: 1, note: "" });
+      render();
+    } else if (name === "plus") {
+      const i = cart.find((k) => k.key === arg);
+      if (i && FrogRegister.canAdd(cart, product(i.id))) i.qty++;
+      else toast(FrogRegister.labels[state.locale].noStock);
+      render();
+    } else if (name === "minus") {
+      const i = cart.find((k) => k.key === arg);
+      if (i) {
+        i.qty--;
+        if (i.qty === 0) cart = cart.filter((k) => k.key !== arg);
+      }
+      render();
+    } else if (name === "remove") {
+      cart = cart.filter((k) => k.key !== arg);
+      render();
+    } else if (name === "checkout") completeSale();
+    else if (name === "new-sale") {
+      saleResult = null;
+      render();
+    } else if (name === "catalog-new") openProductEditor();
+    else if (name === "catalog-edit") openProductEditor(arg);
+    else if (name === "catalog-filter") {
+      catalogFilter = arg;
+      render();
+    } else if (name === "catalog-toggle") toggleProduct(arg);
+    else if (name === "catalog-confirm") applyProductToggle(arg);
+    else if (name === "orders") {
+      orderFilter = arg;
+      render();
+    } else if (name === "event") {
+      state.selectedEvent = arg;
+      persist();
+      render();
+      toast(t("updated"));
+    } else if (name === "details") showDetails(arg);
+    else if (name === "refund") promptOrderAction(arg, "refund");
+    else if (name === "pay-order") promptOrderAction(arg, "paid");
+    else if (name === "cancel-order") promptOrderAction(arg, "cancel");
+    else if (name === "order-confirm-paid") applyOrderAction(arg, "paid");
+    else if (name === "order-confirm-cancel") applyOrderAction(arg, "cancel");
+    else if (name === "order-confirm-refund") applyOrderAction(arg, "refund");
+    else if (name === "advance") advanceTicket(arg);
+    else if (name === "print") printTicket(arg);
+    else if (name === "customer-bill") openCustomerBill(arg);
+    else if (name === "print-both") openPrintBills(arg);
+    else if (name === "print-staff") openPrintBills(arg, "staff");
+    else if (name === "window-print") window.print();
+    else if (name === "close") closeModal();
+    else if (name === "tv") {
+      display = true;
+      renderTv();
+    } else if (name === "close-tv") {
+      display = false;
+      closeModal();
+    } else if (name === "stock") editStock(arg);
+    else if (name === "save-stock") saveStock(arg);
+    else if (name === "lang") {
+      state.locale = arg;
+      persist();
+      render();
+    } else if (name === "theme") {
+      state.theme = arg;
+      persist();
+      render();
+    } else if (name === "role") {
+      state.role = arg;
+      persist();
+      render();
+    } else if (name === "reset") reset();
   });
-  document.addEventListener("change",e=>{if(e.target.id==="event-select"){state.selectedEvent=e.target.value;persist();render();}if(e.target.id==="payment-status")payment=e.target.value;if(e.target.id==="payment-method")method=e.target.value;if(e.target.id==="with-ticket")createTicket=e.target.checked;});
-  document.addEventListener("input",e=>{if(e.target.id==="customer-name")customer=e.target.value;if(e.target.dataset.lineNote){const line=cart.find(i=>i.key===e.target.dataset.lineNote);if(line)line.note=e.target.value;}if(e.target.id==="catalog-search"){catalogQuery=e.target.value;const pos=e.target.selectionStart;render();const field=$("#catalog-search");if(field){field.focus();field.setSelectionRange(pos,pos);}}
-    if(e.target.id==="pos-search"){query=e.target.value;const pos=e.target.selectionStart;render();const search=$("#pos-search");if(search){search.focus();search.setSelectionRange(pos,pos);}}});
-  $("#theme-toggle").addEventListener("click",()=>{state.theme=state.theme==="light"?"dark":"light";persist();render();});
-  $("#language-toggle").addEventListener("click",()=>{state.locale=state.locale==="vi"?"en":"vi";persist();render();});
-  $("#profile-switch").addEventListener("click",()=>{state.role=state.role==="owner"?"staff":"owner";persist();render();toast(`${t("role")}: ${t(state.role)}`);});
-  $("#mobile-menu").addEventListener("click",()=>{$("#sidebar").classList.add("open");$("#mobile-scrim").classList.add("open");});
-  $("#mobile-scrim").addEventListener("click",()=>{$("#sidebar").classList.remove("open");$("#mobile-scrim").classList.remove("open");});
-  $("#modal-root").addEventListener("click",e=>{if(e.target.classList.contains("modal-overlay"))closeModal();});
-  window.addEventListener("keydown",e=>{if(e.key==="Escape"){display=false;closeModal();}});
-  window.addEventListener("storage",e=>{if(e.key===STORAGE){try{state=JSON.parse(e.newValue)||initial();render();}catch{}}});
-  function openProductEditor(id=null){
-    if(state.role!=="owner")return;
-    const p=id?product(id):null;if(id&&!p)return;
-    modal(FrogCatalogue.editor(p,state.locale,esc));$("#catalog-form").dataset.original=id||"";
+  document.addEventListener("change", (e) => {
+    if (e.target.id === "event-select") {
+      state.selectedEvent = e.target.value;
+      persist();
+      render();
+    }
+    if (e.target.id === "payment-status") payment = e.target.value;
+    if (e.target.id === "payment-method") method = e.target.value;
+    if (e.target.id === "with-ticket") createTicket = e.target.checked;
+  });
+  document.addEventListener("input", (e) => {
+    if (e.target.id === "customer-name") customer = e.target.value;
+    if (e.target.dataset.lineNote) {
+      const line = cart.find((i) => i.key === e.target.dataset.lineNote);
+      if (line) line.note = e.target.value;
+    }
+    if (e.target.id === "catalog-search") {
+      catalogQuery = e.target.value;
+      const pos = e.target.selectionStart;
+      render();
+      const field = $("#catalog-search");
+      if (field) {
+        field.focus();
+        field.setSelectionRange(pos, pos);
+      }
+    }
+    if (e.target.id === "pos-search") {
+      query = e.target.value;
+      const pos = e.target.selectionStart;
+      render();
+      const search = $("#pos-search");
+      if (search) {
+        search.focus();
+        search.setSelectionRange(pos, pos);
+      }
+    }
+  });
+  $("#theme-toggle").addEventListener("click", () => {
+    state.theme = state.theme === "light" ? "dark" : "light";
+    persist();
+    render();
+  });
+  $("#language-toggle").addEventListener("click", () => {
+    state.locale = state.locale === "vi" ? "en" : "vi";
+    persist();
+    render();
+  });
+  $("#profile-switch").addEventListener("click", () => {
+    state.role = state.role === "owner" ? "staff" : "owner";
+    persist();
+    render();
+    toast(`${t("role")}: ${t(state.role)}`);
+  });
+  $("#mobile-menu").addEventListener("click", () => {
+    $("#sidebar").classList.add("open");
+    $("#mobile-scrim").classList.add("open");
+  });
+  $("#mobile-scrim").addEventListener("click", () => {
+    $("#sidebar").classList.remove("open");
+    $("#mobile-scrim").classList.remove("open");
+  });
+  $("#modal-root").addEventListener("click", (e) => {
+    if (e.target.classList.contains("modal-overlay")) closeModal();
+  });
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      display = false;
+      closeModal();
+    }
+  });
+  window.addEventListener("storage", (e) => {
+    if (e.key === STORAGE) {
+      try {
+        state = JSON.parse(e.newValue) || initial();
+        render();
+      } catch {}
+    }
+  });
+  function openProductEditor(id = null) {
+    if (state.role !== "owner") return;
+    const p = id ? product(id) : null;
+    if (id && !p) return;
+    modal(FrogCatalogue.editor(p, state.locale, esc));
+    $("#catalog-form").dataset.original = id || "";
   }
-  function toggleProduct(id){
-    if(state.role!=="owner")return;
-    const p=product(id);if(!p)return;
-    if(p.active===false)return applyProductToggle(id);
-    const l=FrogCatalogue.labels[state.locale==="en"?"en":"vi"];
-    modal(`<h2>${l.hide}</h2><p>${l.confirmation}</p><div class="modal-footer">${btn(l.cancel,"close","secondary")}${btn(l.confirm,`catalog-confirm:${id}`,"warn")}</div>`);
+  function toggleProduct(id) {
+    if (state.role !== "owner") return;
+    const p = product(id);
+    if (!p) return;
+    if (p.active === false) return applyProductToggle(id);
+    const l = FrogCatalogue.labels[state.locale === "en" ? "en" : "vi"];
+    modal(
+      `<h2>${l.hide}</h2><p>${l.confirmation}</p><div class="modal-footer">${btn(l.cancel, "close", "secondary")}${btn(l.confirm, `catalog-confirm:${id}`, "warn")}</div>`,
+    );
   }
-  function applyProductToggle(id){
-    if(state.role!=="owner")return;
-    const p=product(id);if(!p)return;
-    p.active=p.active===false;
-    if(!p.active)cart=cart.filter(i=>i.id!==id);
-    persist();closeModal();render();toast(t("updated"));
+  function applyProductToggle(id) {
+    if (state.role !== "owner") return;
+    const p = product(id);
+    if (!p) return;
+    p.active = p.active === false;
+    if (!p.active) cart = cart.filter((i) => i.id !== id);
+    persist();
+    closeModal();
+    render();
+    toast(t("updated"));
   }
-  function saveProduct(){
-    if(state.role!=="owner")return;
-    const form=$("#catalog-form");if(!form||!form.reportValidity())return;
-    const result=FrogCatalogue.validate(Object.fromEntries(new FormData(form)),state.products,form.dataset.original||null,state.locale);
-    if(result.error){const el=$("#catalog-error");el.textContent=result.error;el.hidden=false;return;}
-    const existing=form.dataset.original?product(form.dataset.original):null;
-    if(existing)Object.assign(existing,result.data);
-    else state.products.push({...result.data,stock:0,threshold:5,active:true,emoji:result.data.category==="food"?"🍪":"🎨"});
-    persist();closeModal();render();toast(t("updated"));
+  function saveProduct() {
+    if (state.role !== "owner") return;
+    const form = $("#catalog-form");
+    if (!form || !form.reportValidity()) return;
+    const result = FrogCatalogue.validate(
+      Object.fromEntries(new FormData(form)),
+      state.products,
+      form.dataset.original || null,
+      state.locale,
+    );
+    if (result.error) {
+      const el = $("#catalog-error");
+      el.textContent = result.error;
+      el.hidden = false;
+      return;
+    }
+    const existing = form.dataset.original ? product(form.dataset.original) : null;
+    if (existing) Object.assign(existing, result.data);
+    else
+      state.products.push({
+        ...result.data,
+        stock: 0,
+        threshold: 5,
+        active: true,
+        emoji: result.data.category === "food" ? "🍪" : "🎨",
+      });
+    persist();
+    closeModal();
+    render();
+    toast(t("updated"));
   }
-  document.addEventListener("submit",e=>{if(e.target.id==="catalog-form"){e.preventDefault();saveProduct();}});
-  function showDetails(id){
-    const o=state.orders.find(x=>x.id===id);if(!o)return;
-    const ticket=state.tickets.find(x=>x.orderId===id), stamp=o.refundedAt||o.cancelledAt||o.paidAt||o.updatedAt;
-    const entry=(label,value)=>'<div><small>'+label+'</small><strong>'+value+'</strong></div>';
-    const meta=entry(t("customerLabel"),esc(o.customer||t("fallbackCustomer")))+entry(t("status"),badgeStatus(o.status))+entry(t("date"),date(o.createdAt)+' '+time(o.createdAt))+entry(t("paymentMethod"),o.method==="bank"?t("bank"):t("cash"))+(stamp?entry(t("updated"),date(stamp)+' '+time(stamp)):"")+(ticket?entry(t("ticket"),esc(ticket.id)+' - '+labelStatus(ticket.status)):"");
-    const lines=o.items.map(i=>'<div class="list-row" style="padding:10px 0"><div><strong>'+esc(i.name||product(i.productId)?.name||i.productId)+'</strong><small>× '+i.qty+'</small>'+(i.note?'<p class="order-note">'+esc(i.note)+'</p>':"")+'</div><b>'+money(i.price*i.qty)+'</b></div>').join("");
-    modal('<h2>'+t("orderId")+' · '+esc(id)+'</h2><div class="order-detail-meta">'+meta+'</div><div class="stack" style="margin-top:20px">'+lines+'</div><div class="cart-summary"><strong>'+t("total")+'</strong><strong>'+money(lineTotal(o))+'</strong></div><div class="modal-footer flex wrap">'+btn("In 2 phiếu","print-both:"+o.id,"soft small")+btn("In bill khách","customer-bill:"+o.id,"secondary small")+btn("Phiếu nhân viên","print-staff:"+o.id,"secondary small")+orderButtons(o)+btn(t("back"),"close","secondary small")+'</div>');
+  document.addEventListener("submit", (e) => {
+    if (e.target.id === "catalog-form") {
+      e.preventDefault();
+      saveProduct();
+    }
+  });
+  function showDetails(id) {
+    const o = state.orders.find((x) => x.id === id);
+    if (!o) return;
+    const ticket = state.tickets.find((x) => x.orderId === id),
+      stamp = o.refundedAt || o.cancelledAt || o.paidAt || o.updatedAt;
+    const entry = (label, value) =>
+      "<div><small>" + label + "</small><strong>" + value + "</strong></div>";
+    const meta =
+      entry(t("customerLabel"), esc(o.customer || t("fallbackCustomer"))) +
+      entry(t("status"), badgeStatus(o.status)) +
+      entry(t("date"), date(o.createdAt) + " " + time(o.createdAt)) +
+      entry(t("paymentMethod"), o.method === "bank" ? t("bank") : t("cash")) +
+      (stamp ? entry(t("updated"), date(stamp) + " " + time(stamp)) : "") +
+      (ticket ? entry(t("ticket"), esc(ticket.id) + " - " + labelStatus(ticket.status)) : "");
+    const lines = o.items
+      .map(
+        (i) =>
+          '<div class="list-row" style="padding:10px 0"><div><strong>' +
+          esc(i.name || product(i.productId)?.name || i.productId) +
+          "</strong><small>× " +
+          i.qty +
+          "</small>" +
+          (i.note ? '<p class="order-note">' + esc(i.note) + "</p>" : "") +
+          "</div><b>" +
+          money(i.price * i.qty) +
+          "</b></div>",
+      )
+      .join("");
+    modal(
+      "<h2>" +
+        t("orderId") +
+        " · " +
+        esc(id) +
+        '</h2><div class="order-detail-meta">' +
+        meta +
+        '</div><div class="stack" style="margin-top:20px">' +
+        lines +
+        '</div><div class="cart-summary"><strong>' +
+        t("total") +
+        "</strong><strong>" +
+        money(lineTotal(o)) +
+        '</strong></div><div class="modal-footer flex wrap">' +
+        btn("In 2 phiếu", "print-both:" + o.id, "soft small") +
+        btn("In bill khách", "customer-bill:" + o.id, "secondary small") +
+        btn("Phiếu nhân viên", "print-staff:" + o.id, "secondary small") +
+        orderButtons(o) +
+        btn(t("back"), "close", "secondary small") +
+        "</div>",
+    );
   }
-  function promptOrderAction(id,action){
-    const o=state.orders.find(x=>x.id===id);if(!FrogOrders.can(o,action))return;
-    const l=FrogOrders.labels(state.locale);
-    const select=action==="paid"?'<label class="form-field"><span>'+t("paymentMethod")+'</span><select id="pay-order-method" class="field"><option value="cash" '+(o.method==="cash"?"selected":"")+'>'+t("cash")+'</option><option value="bank" '+(o.method==="bank"?"selected":"")+'>'+t("bank")+'</option></select></label>':"";
-    modal('<h2>'+l[action]+'</h2><p>'+l[action+"Help"]+'</p><div class="note">'+esc(id)+' · '+money(lineTotal(o))+'</div><div style="margin-top:16px">'+select+'</div><div class="modal-footer">'+btn(t("cancel"),"close","secondary")+btn(t("confirm"),"order-confirm-"+action+":"+id,action==="paid"?"":"warn")+'</div>');
+  function promptOrderAction(id, action) {
+    const o = state.orders.find((x) => x.id === id);
+    if (!FrogOrders.can(o, action)) return;
+    const l = FrogOrders.labels(state.locale);
+    const select =
+      action === "paid"
+        ? '<label class="form-field"><span>' +
+          t("paymentMethod") +
+          '</span><select id="pay-order-method" class="field"><option value="cash" ' +
+          (o.method === "cash" ? "selected" : "") +
+          ">" +
+          t("cash") +
+          '</option><option value="bank" ' +
+          (o.method === "bank" ? "selected" : "") +
+          ">" +
+          t("bank") +
+          "</option></select></label>"
+        : "";
+    modal(
+      "<h2>" +
+        l[action] +
+        "</h2><p>" +
+        l[action + "Help"] +
+        '</p><div class="note">' +
+        esc(id) +
+        " · " +
+        money(lineTotal(o)) +
+        '</div><div style="margin-top:16px">' +
+        select +
+        '</div><div class="modal-footer">' +
+        btn(t("cancel"), "close", "secondary") +
+        btn(t("confirm"), "order-confirm-" + action + ":" + id, action === "paid" ? "" : "warn") +
+        "</div>",
+    );
   }
-  function applyOrderAction(id,action){
-    const result=FrogOrders.apply(state,id,action,{locale:state.locale,method:$("#pay-order-method")?.value,at:fixedNow()});
-    if(result.error){toast(result.error);return;}
-    persist();closeModal();render();toast(t("updated"));
+  function applyOrderAction(id, action) {
+    const result = FrogOrders.apply(state, id, action, {
+      locale: state.locale,
+      method: $("#pay-order-method")?.value,
+      at: fixedNow(),
+    });
+    if (result.error) {
+      toast(result.error);
+      return;
+    }
+    persist();
+    closeModal();
+    render();
+    toast(t("updated"));
   }
-  function editStock(id){const p=product(id);if(!p)return;modal(`<h2>${t("stockEdit")}</h2><p>${esc(p.name)}</p><label class="form-field"><span>${t("stock")}</span><input id="new-stock" class="field" type="number" min="0" step="1" value="${p.stock}" /></label><div class="modal-footer">${btn(t("cancel"),"close","secondary")}${btn(t("save"),`save-stock:${id}`,"")}</div>`)}
-  function saveStock(id){const p=product(id);const n=Number($("#new-stock")?.value);if(!p||!Number.isInteger(n)||n<0)return;p.stock=n;persist();closeModal();render();toast(t("updated"));}
-  function reset(){modal(`<h2>${t("reset")}</h2><p>${t("resetConfirm")}</p><div class="modal-footer">${btn(t("cancel"),"close","secondary")}${btn(t("confirm"),"confirm-reset","warn")}</div>`)}
-  document.addEventListener("click",e=>{const act=e.target.closest("[data-act]")?.dataset.act||"";if(act==="confirm-reset"){state=initial();persist();cart=[];nextCartKey=0;customer="";saleResult=null;page="dashboard";display=false;closeModal();render();toast(t("resetDone"));}});
-  if(window.location.hash){const desired=window.location.hash.slice(1);if(pages[desired])page=desired;}
+  function editStock(id) {
+    const p = product(id);
+    if (!p) return;
+    modal(
+      `<h2>${t("stockEdit")}</h2><p>${esc(p.name)}</p><label class="form-field"><span>${t("stock")}</span><input id="new-stock" class="field" type="number" min="0" step="1" value="${p.stock}" /></label><div class="modal-footer">${btn(t("cancel"), "close", "secondary")}${btn(t("save"), `save-stock:${id}`, "")}</div>`,
+    );
+  }
+  function saveStock(id) {
+    const p = product(id);
+    const n = Number($("#new-stock")?.value);
+    if (!p || !Number.isInteger(n) || n < 0) return;
+    p.stock = n;
+    persist();
+    closeModal();
+    render();
+    toast(t("updated"));
+  }
+  function reset() {
+    modal(
+      `<h2>${t("reset")}</h2><p>${t("resetConfirm")}</p><div class="modal-footer">${btn(t("cancel"), "close", "secondary")}${btn(t("confirm"), "confirm-reset", "warn")}</div>`,
+    );
+  }
+  document.addEventListener("click", (e) => {
+    const act = e.target.closest("[data-act]")?.dataset.act || "";
+    if (act === "confirm-reset") {
+      state = initial();
+      persist();
+      cart = [];
+      nextCartKey = 0;
+      customer = "";
+      saleResult = null;
+      page = "dashboard";
+      display = false;
+      closeModal();
+      render();
+      toast(t("resetDone"));
+    }
+  });
+  if (window.location.hash) {
+    const desired = window.location.hash.slice(1);
+    if (pages[desired]) page = desired;
+  }
   render();
 })();

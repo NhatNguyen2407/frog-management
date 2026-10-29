@@ -1,53 +1,92 @@
 <!doctype html>
 <html lang="vi">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#F7F7EF" />
-  <title>Frog Management - Frontend Prototype</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Coiny&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="./brand.css" />
-  <link rel="stylesheet" href="./catalogue.css" />
-  <link rel="stylesheet" href="./register.css" />
-  <link rel="stylesheet" href="./orders.css" />
-  <script defer src="./catalogue.js"></script>
-  <script defer src="./register.js"></script>
-  <script defer src="./orders.js"></script>
-  <script defer src="./app.js"></script>
-</head>
-<body>
-  <div class="app" id="app">
-    <aside class="sidebar" id="sidebar">
-      <a href="#dashboard" class="brand" data-nav="dashboard" aria-label="Frog Management">
-        <span class="brand-mascot" aria-hidden="true"><img src="./assets/frog-logo.png" alt="" /></span>
-        <div class="brand-copy"><strong>Dioxyzine <span>Frog</span></strong><small>ART SPACE / MANAGEMENT</small></div>
-      </a>
-      <div class="sidebar-caption" data-i18n="workspace">WORKSPACE</div>
-      <nav id="side-nav" aria-label="Main navigation"></nav>
-      <div class="sidebar-footer">
-        <div class="sidebar-note"><span class="sparkle">✳</span><div><strong data-i18n="demoMode">Demo workspace</strong><small data-i18n="demoInfo">Mock data only - no real sales</small></div></div>
-        <button class="profile" id="profile-switch" type="button" title="Switch demo role"><span class="avatar brand-avatar" aria-hidden="true"><img src="./assets/frog-logo.png" alt="" /></span><span class="profile-info"><strong>Frog Team</strong><small id="role-label">Owner / Demo</small></span><span class="chevron">⌄</span></button>
-      </div>
-    </aside>
-    <div class="mobile-scrim" id="mobile-scrim"></div>
-    <div class="work-area">
-      <header class="topbar">
-        <div class="top-left"><button type="button" class="icon-btn mobile-menu" id="mobile-menu" aria-label="Menu">☰</button><div class="breadcrumbs">THE FROG ART SPACE <span>/</span> <strong id="breadcrumb">Dashboard</strong></div></div>
-        <div class="top-actions">
-          <span class="demo-chip"><span></span> PROTOTYPE</span>
-          <label class="event-picker"><span data-i18n="event">Sự kiện</span><select id="event-select" aria-label="Select event"></select></label>
-          <button class="icon-btn" id="language-toggle" aria-label="Toggle language" title="Language">EN</button>
-          <button class="icon-btn" id="theme-toggle" aria-label="Toggle theme" title="Theme">☾</button>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#F7F7EF" />
+    <title>Frog Management - Frontend Prototype</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Coiny&family=Montserrat:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./brand.css" />
+    <link rel="stylesheet" href="./catalogue.css" />
+    <link rel="stylesheet" href="./register.css" />
+    <link rel="stylesheet" href="./orders.css" />
+    <script defer src="./catalogue.js"></script>
+    <script defer src="./register.js"></script>
+    <script defer src="./orders.js"></script>
+    <script defer src="./app.js"></script>
+  </head>
+  <body>
+    <div class="app" id="app">
+      <aside class="sidebar" id="sidebar">
+        <a href="#dashboard" class="brand" data-nav="dashboard" aria-label="Frog Management">
+          <span class="brand-mascot" aria-hidden="true"
+            ><img src="./assets/frog-logo.png" alt=""
+          /></span>
+          <div class="brand-copy">
+            <strong>Dioxyzine <span>Frog</span></strong
+            ><small>ART SPACE / MANAGEMENT</small>
+          </div>
+        </a>
+        <div class="sidebar-caption" data-i18n="workspace">WORKSPACE</div>
+        <nav id="side-nav" aria-label="Main navigation"></nav>
+        <div class="sidebar-footer">
+          <div class="sidebar-note">
+            <span class="sparkle">✳</span>
+            <div>
+              <strong data-i18n="demoMode">Demo workspace</strong
+              ><small data-i18n="demoInfo">Mock data only - no real sales</small>
+            </div>
+          </div>
+          <button class="profile" id="profile-switch" type="button" title="Switch demo role">
+            <span class="avatar brand-avatar" aria-hidden="true"
+              ><img src="./assets/frog-logo.png" alt="" /></span
+            ><span class="profile-info"
+              ><strong>Frog Team</strong><small id="role-label">Owner / Demo</small></span
+            ><span class="chevron">⌄</span>
+          </button>
         </div>
-      </header>
-      <main class="main" id="main" tabindex="-1"></main>
+      </aside>
+      <div class="mobile-scrim" id="mobile-scrim"></div>
+      <div class="work-area">
+        <header class="topbar">
+          <div class="top-left">
+            <button type="button" class="icon-btn mobile-menu" id="mobile-menu" aria-label="Menu">
+              ☰
+            </button>
+            <div class="breadcrumbs">
+              THE FROG ART SPACE <span>/</span> <strong id="breadcrumb">Dashboard</strong>
+            </div>
+          </div>
+          <div class="top-actions">
+            <span class="demo-chip"><span></span> PROTOTYPE</span>
+            <label class="event-picker"
+              ><span data-i18n="event">Sự kiện</span
+              ><select id="event-select" aria-label="Select event"></select
+            ></label>
+            <button
+              class="icon-btn"
+              id="language-toggle"
+              aria-label="Toggle language"
+              title="Language"
+            >
+              EN
+            </button>
+            <button class="icon-btn" id="theme-toggle" aria-label="Toggle theme" title="Theme">
+              ☾
+            </button>
+          </div>
+        </header>
+        <main class="main" id="main" tabindex="-1"></main>
+      </div>
+      <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile quick navigation"></nav>
     </div>
-    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile quick navigation"></nav>
-  </div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <div class="modal-root" id="modal-root"></div>
-</body>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="modal-root" id="modal-root"></div>
+  </body>
 </html>

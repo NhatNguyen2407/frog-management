@@ -2,4 +2,7 @@
 import { createBrowserClient } from "@supabase/ssr";
 import { supabaseConfig } from "./config";
 import type { Database } from "./types";
-export function createClient() { const { url, key } = supabaseConfig(); return createBrowserClient<Database>(url, key); }
+export function createClient() {
+  const { url, key } = supabaseConfig();
+  return createBrowserClient<Database>(url, key);
+}

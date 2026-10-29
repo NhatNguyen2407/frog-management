@@ -10,7 +10,8 @@ export async function GET(request: NextRequest) {
     const { error } = await client.auth.exchangeCodeForSession(code);
     if (!error) {
       const { data, error: accessError } = await client.rpc("get_access_context", {});
-      if (!accessError && Array.isArray(data) && data.length) return NextResponse.redirect(new URL(localePath(locale), request.url));
+      if (!accessError && Array.isArray(data) && data.length)
+        return NextResponse.redirect(new URL(localePath(locale), request.url));
       await client.auth.signOut();
       destination.searchParams.set("error", "not_allowlisted");
     }

@@ -11,14 +11,21 @@ export async function signIn(form: FormData) {
   const client = await createClient();
   const callback = new URL("/auth/callback", site);
   callback.searchParams.set("locale", locale);
-  const { data, error } = await client.auth.signInWithOAuth({ provider: "google", options: {
-    redirectTo: callback.toString(), queryParams: { prompt: "select_account" },
-  } });
+  const { data, error } = await client.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: callback.toString(),
+      queryParams: { prompt: "select_account" },
+    },
+  });
   if (error || !data.url) redirect(localePath(locale, "/login?error=auth_failed"));
   redirect(data.url);
 }
 export async function signOut(form: FormData) {
   const locale = form.get("locale") === "en" ? "en" : "vi";
-  if (supabaseConfigured()) { const client = await createClient(); await client.auth.signOut(); }
+  if (supabaseConfigured()) {
+    const client = await createClient();
+    await client.auth.signOut();
+  }
   redirect(localePath(locale, "/login"));
 }

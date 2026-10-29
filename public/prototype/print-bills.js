@@ -4,8 +4,9 @@
   const storageKey = "frog-management-prototype-v1";
   const search = new URLSearchParams(location.search);
   const orderId = search.get("order");
-  const mode = ["both", "customer", "staff"].includes(search.get("mode")) ?
-    search.get("mode") : "both";
+  const mode = ["both", "customer", "staff"].includes(search.get("mode"))
+    ? search.get("mode")
+    : "both";
 
   let state;
   try {
@@ -33,11 +34,13 @@
   document.title = "Frog - " + orderId + " - " + mode;
 
   const checkFit = () => {
-    const overflow = [...pages.querySelectorAll(".sheet")]
-      .some(page => page.scrollHeight > page.clientHeight + 2);
+    const overflow = [...pages.querySelectorAll(".sheet")].some(
+      (page) => page.scrollHeight > page.clientHeight + 2,
+    );
     warning.hidden = !overflow;
-    warning.textContent = overflow ?
-      "Nội dung dài hơn khổ tem 76 × 130 mm. Chưa thể in; cần rút gọn ghi chú hoặc chọn mẫu dài hơn." : "";
+    warning.textContent = overflow
+      ? "Nội dung dài hơn khổ tem 76 × 130 mm. Chưa thể in; cần rút gọn ghi chú hoặc chọn mẫu dài hơn."
+      : "";
     printButton.disabled = overflow;
   };
 

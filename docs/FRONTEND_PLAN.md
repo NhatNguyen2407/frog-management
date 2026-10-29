@@ -17,19 +17,19 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 
 ## Progress
 
-| Step | Deliverable | Status | Implemented on |
-| --- | --- | --- | --- |
-| 1.1 | Product Management: list, search, create, edit, archive/restore | Code complete | 2026-10-26 |
-| 1.2 | POS: per-line custom notes, stock validation, workshop-ticket rules | Accepted - 7/7 manual checks | 2026-10-26 |
-| 1.3 | Orders: open/unpaid, paid, cancel/restock, refund, history | Accepted - 9/9 manual checks | 2026-10-26 |
-| 1.4a | Compact customer bill, 76 x 130 mm label | Implemented - manual printer QA pending | 2026-10-28 |
-| 1.4b | Staff preparation slip and dual-print flow | Implemented - manual QA pending | 2026-10-29 |
-| 2.1 | Workshops: create/edit, capacity, registrations, check-in | Planned | - |
-| 2.2 | Queue and inventory movements | Planned | - |
-| 2.3 | Expenses and transaction-based dashboard | Planned | - |
-| 3.1 | Reports, CSV export and customer history | Planned | - |
-| 3.2 | Responsive/UX testing and code cleanup | Planned | - |
-| 4 | Connect Supabase, authentication and deployment | Deferred | - |
+| Step | Deliverable                                                         | Status                                  | Implemented on |
+| ---- | ------------------------------------------------------------------- | --------------------------------------- | -------------- |
+| 1.1  | Product Management: list, search, create, edit, archive/restore     | Code complete                           | 2026-10-26     |
+| 1.2  | POS: per-line custom notes, stock validation, workshop-ticket rules | Accepted - 7/7 manual checks            | 2026-10-26     |
+| 1.3  | Orders: open/unpaid, paid, cancel/restock, refund, history          | Accepted - 9/9 manual checks            | 2026-10-26     |
+| 1.4a | Compact customer bill, 76 x 130 mm label                            | Implemented - manual printer QA pending | 2026-10-28     |
+| 1.4b | Staff preparation slip and dual-print flow                          | Implemented - manual QA pending         | 2026-10-29     |
+| 2.1  | Workshops: create/edit, capacity, registrations, check-in           | Planned                                 | -              |
+| 2.2  | Queue and inventory movements                                       | Planned                                 | -              |
+| 2.3  | Expenses and transaction-based dashboard                            | Planned                                 | -              |
+| 3.1  | Reports, CSV export and customer history                            | Planned                                 | -              |
+| 3.2  | Responsive/UX testing and code cleanup                              | Planned                                 | -              |
+| 4    | Connect Supabase, authentication and deployment                     | Deferred                                | -              |
 
 ## Completed increments
 
@@ -46,6 +46,7 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 
 - 2026-10-29 - Step 1.4b: Built a staff preparation slip and two-page print preview for two 76 x 130 mm labels. Each label has the same order reference, but the staff slip excludes prices and financial details. Browser and device acceptance pending.
 - 2026-10-29 - Formatting maintenance: Added a consistent Prettier configuration, npm formatting scripts and VS Code format-on-save settings. Historical TSX/JS source formatting remains pending until the formatter has run across the working tree.
+- 2026-10-29 - Project formatting verified: Prettier check passed, 28/28 unit tests passed, TypeScript typecheck passed, and no whitespace errors were detected.
 
 ## Remaining design decisions
 

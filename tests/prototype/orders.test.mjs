@@ -9,13 +9,23 @@ const { apply, can, financialTotals } = context.FrogOrders;
 
 function setup(status = "unpaid", ticketStatus = "waiting") {
   return {
-    products: [{ id: "WS-1", stock: 2 }, { id: "FB-1", stock: 4 }],
-    orders: [{
-      id: "FG-0001", eventId: "cozy", status, method: "cash",
-      items: [{ productId: "WS-1", qty: 2, price: 100000, cost: 35000, name: "Old name", note: "red" },
-        { productId: "FB-1", qty: 1, price: 25000, cost: 9000, note: "" }]
-    }],
-    tickets: [{ id: "COZY-001", orderId: "FG-0001", eventId: "cozy", status: ticketStatus }]
+    products: [
+      { id: "WS-1", stock: 2 },
+      { id: "FB-1", stock: 4 },
+    ],
+    orders: [
+      {
+        id: "FG-0001",
+        eventId: "cozy",
+        status,
+        method: "cash",
+        items: [
+          { productId: "WS-1", qty: 2, price: 100000, cost: 35000, name: "Old name", note: "red" },
+          { productId: "FB-1", qty: 1, price: 25000, cost: 9000, note: "" },
+        ],
+      },
+    ],
+    tickets: [{ id: "COZY-001", orderId: "FG-0001", eventId: "cozy", status: ticketStatus }],
   };
 }
 const at = "2026-10-26T12:00:00.000Z";
@@ -63,8 +73,13 @@ test("refund removes revenue, keeps cost and stock, cancels unfinished ticket", 
   assert.equal(state.orders[0].status, "refunded");
   assert.equal(state.products[0].stock, 2);
   assert.equal(state.tickets[0].status, "cancelled");
-  assert.deepEqual(JSON.parse(JSON.stringify(financialTotals(state.orders, 120000))),
-    { revenue: 0, cogs: 79000, expenses: 120000, profit: -199000, paid: 0 });
+  assert.deepEqual(JSON.parse(JSON.stringify(financialTotals(state.orders, 120000))), {
+    revenue: 0,
+    cogs: 79000,
+    expenses: 120000,
+    profit: -199000,
+    paid: 0,
+  });
   assert.ok(apply(state, "FG-0001", "refund").error);
 });
 

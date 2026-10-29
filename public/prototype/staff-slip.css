@@ -1,17 +1,76 @@
-.staff-header { text-align: center; }
-.staff-header > b { font-size: 10px; letter-spacing: .4px; }
-.staff-header h1 { font-size: 14px; margin: 3px 0; line-height: 1.1; }
-.staff-code { font-size: 24px; line-height: 1.1; font-weight: 800; margin: 2px 0; }
-.staff-header small { font-size: 9px; }
-.staff-rule { border-top: 1px dashed #555; margin: 6px 0; }
-.staff-meta { display: flex; justify-content: space-between; gap: 5px; margin: 3px 0; font-size: 10px; }
-.staff-meta span { flex: 0 0 auto; }
-.staff-meta b { text-align: right; overflow-wrap: anywhere; }
-.staff-group { margin: 5px 0 8px; }
-.staff-group h2 { font-size: 11px; margin: 0 0 4px; }
-.staff-item { display: flex; align-items: baseline; gap: 5px; margin: 4px 0 6px; }
-.staff-item .staff-qty { min-width: 23px; font-size: 14px; }
-.staff-item div { min-width: 0; font-size: 11px; overflow-wrap: anywhere; }
-.staff-item p { margin: 2px 0 0; font-size: 10px; }
-.staff-check { display: flex; justify-content: space-between; margin-top: 10px; font-size: 10px; }
-.staff-footer { margin-top: 8px; font-size: 9px; text-align: center; }
+.staff-header {
+  text-align: center;
+}
+.staff-header > b {
+  font-size: 10px;
+  letter-spacing: 0.4px;
+}
+.staff-header h1 {
+  font-size: 14px;
+  margin: 3px 0;
+  line-height: 1.1;
+}
+.staff-code {
+  font-size: 24px;
+  line-height: 1.1;
+  font-weight: 800;
+  margin: 2px 0;
+}
+.staff-header small {
+  font-size: 9px;
+}
+.staff-rule {
+  border-top: 1px dashed #555;
+  margin: 6px 0;
+}
+.staff-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  margin: 3px 0;
+  font-size: 10px;
+}
+.staff-meta span {
+  flex: 0 0 auto;
+}
+.staff-meta b {
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.staff-group {
+  margin: 5px 0 8px;
+}
+.staff-group h2 {
+  font-size: 11px;
+  margin: 0 0 4px;
+}
+.staff-item {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin: 4px 0 6px;
+}
+.staff-item .staff-qty {
+  min-width: 23px;
+  font-size: 14px;
+}
+.staff-item div {
+  min-width: 0;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.staff-item p {
+  margin: 2px 0 0;
+  font-size: 10px;
+}
+.staff-check {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 10px;
+}
+.staff-footer {
+  margin-top: 8px;
+  font-size: 9px;
+  text-align: center;
+}

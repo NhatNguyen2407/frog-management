@@ -9,15 +9,40 @@ const { renderStaffSlip } = context.FrogStaffSlip;
 
 const state = {
   events: [{ id: "cozy", name: "Cozy Workshop", date: "2026-10-29" }],
-  products: [{ id: "WS-1", category: "workshop" }, { id: "FB-1", category: "food" }],
-  orders: [{
-    id: "FG-0027", eventId: "cozy", customer: "Trang", ticketId: "COZY-013",
-    status: "paid", createdAt: "2026-10-29T01:00:00.000Z",
-    items: [
-      { productId: "WS-1", category: "workshop", name: "Tote Large", qty: 1, price: 100000, cost: 35000, note: "Đỏ" },
-      { productId: "FB-1", category: "food", name: "Oreo", qty: 2, price: 25000, cost: 9000, note: "" }
-    ]
-  }]
+  products: [
+    { id: "WS-1", category: "workshop" },
+    { id: "FB-1", category: "food" },
+  ],
+  orders: [
+    {
+      id: "FG-0027",
+      eventId: "cozy",
+      customer: "Trang",
+      ticketId: "COZY-013",
+      status: "paid",
+      createdAt: "2026-10-29T01:00:00.000Z",
+      items: [
+        {
+          productId: "WS-1",
+          category: "workshop",
+          name: "Tote Large",
+          qty: 1,
+          price: 100000,
+          cost: 35000,
+          note: "Đỏ",
+        },
+        {
+          productId: "FB-1",
+          category: "food",
+          name: "Oreo",
+          qty: 2,
+          price: 25000,
+          cost: 9000,
+          note: "",
+        },
+      ],
+    },
+  ],
 };
 
 test("staff slip shows order, ticket, quantities, workshop/F&B and notes", () => {
