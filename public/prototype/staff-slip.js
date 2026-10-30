@@ -36,6 +36,8 @@
     if (!order || !Array.isArray(order.items) || order.items.length === 0) return null;
 
     const event = state.events?.find((item) => item.id === order.eventId);
+    const eventName = order.eventName || event?.name;
+    const eventDate = order.eventDate || event?.date;
     const ticketId = order.ticketId;
     const products = state.products || [];
     const classified = order.items.map((item) => ({
@@ -85,12 +87,12 @@
       '<div class="staff-meta"><span>Khách</span><b>' +
       escapeText(order.customer || "Khách lẻ") +
       "</b></div>" +
-      (ticketId && event
+      (ticketId && eventName
         ? '<div class="staff-meta"><span>Workshop</span><b>' +
-          escapeText(event.name) +
-          '</b></div><div class="staff-meta"><span>Ngày</span><b>' +
-          formattedDate(event.date) +
-          "</b></div>"
+          escapeText(eventName) +
+          '</b></div>' +
+          (eventDate ? '<div class="staff-meta"><span>Ngày</span><b>' +
+            formattedDate(eventDate) + "</b></div>" : "")
         : "") +
       '<div class="staff-meta"><span>Đặt lúc</span><b>' +
       formattedDate(order.createdAt) +

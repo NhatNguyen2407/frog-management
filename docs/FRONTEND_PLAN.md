@@ -1,6 +1,6 @@
 # Frontend V1 - Plan and Progress
 
-Updated: 2026-10-29
+Updated: 2026-10-30
 
 ## Goal
 
@@ -24,7 +24,8 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | 1.3  | Orders: open/unpaid, paid, cancel/restock, refund, history          | Accepted - 9/9 manual checks            | 2026-10-26     |
 | 1.4a | Compact customer bill, 76 x 130 mm label                            | Implemented - manual printer QA pending | 2026-10-28     |
 | 1.4b | Staff preparation slip and dual-print flow                          | Implemented - manual QA pending         | 2026-10-29     |
-| 2.1  | Workshops: create/edit, capacity, registrations, check-in           | Planned                                 | -              |
+| 2.1a | Workshops: create/edit, dates, capacity, status, ticket prefixes | Implemented - browser QA pending | 2026-10-30 |
+| 2.1b | Registrations, attendee list and check-in | Next | - |
 | 2.2  | Queue and inventory movements                                       | Planned                                 | -              |
 | 2.3  | Expenses and transaction-based dashboard                            | Planned                                 | -              |
 | 3.1  | Reports, CSV export and customer history                            | Planned                                 | -              |
@@ -49,6 +50,9 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 - 2026-10-29 - Project formatting verified: Prettier check passed, 28/28 unit tests passed, TypeScript typecheck passed, and no whitespace errors were detected.
 
 - 2026-10-29 - UI maintenance: Replaced the browser-native event selector with a Frog-themed popover in the prototype topbar. Added event dates, selection indicators, theme-aware styling, click-outside/Escape handling, keyboard navigation and markup tests. Browser acceptance pending. No event business logic was changed.
+
+- 2026-10-30 - Step 2.1a: Implemented mock Workshop Management for creating/editing names, dates, ticket prefixes, capacity and active/planned status. Preserved historical order snapshots, prevented prefix reuse and capacity reductions below non-cancelled tickets. Added unit tests; browser acceptance pending.
+- 2026-10-30 - Progress review: Customer/Staff dual-label printing and Workshop Switcher still require manual acceptance. Sprint 1 remains open. Registrations/check-in is the next increment. No Supabase or database changes.
 
 ## Remaining design decisions
 

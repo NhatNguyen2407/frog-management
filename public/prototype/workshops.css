@@ -1,0 +1,13 @@
+.workshop-card-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.workshop-card-heading h3{margin:0;overflow-wrap:anywhere}
+.workshop-state{display:inline-flex;flex:none;align-items:center;min-height:25px;padding:5px 9px;border-radius:20px;background:var(--lilac);color:var(--primary-deep);font-size:10px;font-weight:800}
+.workshop-state.is-active{background:var(--mint);color:var(--fg)}
+.workshop-card p{margin-bottom:20px}
+.workshop-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px}
+.workshop-form{margin-top:20px}
+.workshop-form .form-field>span{font-size:10px;font-weight:800}
+.workshop-form [readonly]{background:var(--muted)}
+.workshop-help{color:var(--sub);font-size:11px}
+.workshop-error{padding:10px;border-radius:9px;background:#fae6e8;color:#963e4f;font-size:11px}
+.workshop-error[hidden]{display:none}
+@media(max-width:520px){.workshop-card-heading{flex-wrap:wrap}}

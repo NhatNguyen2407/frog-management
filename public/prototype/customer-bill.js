@@ -34,6 +34,8 @@
     const order = state?.orders?.find((o) => o.id === orderId);
     if (!order || !order.items?.length) return null;
     const event = state.events?.find((e) => e.id === order.eventId);
+    const eventName = order.eventName || event?.name;
+    const eventDate = order.eventDate || event?.date;
     const items = order.items.map((i) => ({
       name: i.name || state.products?.find((p) => p.id === i.productId)?.name || i.productId,
       qty: i.qty,
@@ -64,8 +66,8 @@
       (ticket ? '<p class="bill-id">Đơn ' + escapeText(order.id) + "</p>" : "") +
       '<div class="bill-rule"></div>' +
       (order.customer ? row("Khách", order.customer) : "") +
-      (ticket && event
-        ? row("Workshop", event.name) + row("Ngày tham gia", dateText(event.date))
+      (ticket && eventName
+        ? row("Workshop", eventName) + (eventDate ? row("Ngày tham gia", dateText(eventDate)) : "")
         : "") +
       row("Ngày mua", dateText(order.createdAt)) +
       '<div class="bill-rule"></div><b class="bill-heading">SẢN PHẨM</b>' +

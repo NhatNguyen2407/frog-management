@@ -744,10 +744,15 @@
     );
   }
   function events() {
-    return (
-      pageHead("WORKSHOP SPACE", t("eventsTitle"), t("eventsDesc")) +
-      `<div class="note" style="margin-bottom:17px">${t("eventNotice")}</div><div class="event-grid">${state.events.map((e) => `<section class="panel event-card"><span class="date-box">${date(e.date)}</span><div class="flex" style="justify-content:space-between"><h3>${esc(e.name)}</h3>${badge(e.status === "active" ? t("active") : t("planned"), e.status === "active" ? "green" : "amber")}</div><p>✳ ${e.prefix} · ${t("capacity")}: ${e.capacity} · ${t("registered")}: ${state.tickets.filter((k) => k.eventId === e.id).length}</p><footer>${e.id === state.selectedEvent ? badge(t("selected"), "purple") : `<span></span>`}${btn(e.id === state.selectedEvent ? t("selected") : t("choose"), `event:${e.id}`, e.id === state.selectedEvent ? "soft small" : "secondary small", e.id === state.selectedEvent ? "disabled" : "")}</footer></section>`).join("")}</div>`
-    );
+    const l = FrogWorkshops.labels[state.locale === "en" ? "en" : "vi"];
+    return pageHead(
+      "WORKSHOP SPACE",
+      t("eventsTitle"),
+      t("eventsDesc"),
+      state.role === "owner" ? btn("＋ " + l.add, "workshop-new", "") : "",
+    ) +
+      `<div class="note" style="margin-bottom:17px">${t("eventNotice")}</div>` +
+      FrogWorkshops.list(state, state.locale, state.role === "owner");
   }
   function queueColumns(tv = false) {
     const columns = [
@@ -914,6 +919,8 @@
     const order = {
       id,
       eventId: e.id,
+      eventName: e.name,
+      eventDate: e.date,
       customer: customer.trim() || t("fallbackCustomer"),
       status: payment,
       method,
@@ -1053,7 +1060,9 @@
     else if (name === "new-sale") {
       saleResult = null;
       render();
-    } else if (name === "catalog-new") openProductEditor();
+    } else if (name === "workshop-new") openWorkshopEditor();
+    else if (name === "workshop-edit") openWorkshopEditor(arg);
+    else if (name === "catalog-new") openProductEditor();
     else if (name === "catalog-edit") openProductEditor(arg);
     else if (name === "catalog-filter") {
       catalogFilter = arg;
@@ -1205,6 +1214,36 @@
       } catch {}
     }
   });
+  function openWorkshopEditor(id = null) {
+    if (state.role !== "owner") return;
+    const event = id ? state.events.find(item => item.id === id) : null;
+    if (id && !event) return;
+    modal(FrogWorkshops.editor(event, state.locale));
+    $("#workshop-form").dataset.original = id || "";
+  }
+  function saveWorkshop() {
+    if (state.role !== "owner") return;
+    const form = $("#workshop-form");
+    if (!form || !form.reportValidity()) return;
+    const original = form.dataset.original || null;
+    const result = FrogWorkshops.save(
+      state,
+      Object.fromEntries(new FormData(form)),
+      original,
+      state.locale,
+    );
+    if (result.error) {
+      const error = $("#workshop-error");
+      error.textContent = result.error;
+      error.hidden = false;
+      return;
+    }
+    if (!original) state.selectedEvent = result.event.id;
+    persist();
+    closeModal();
+    render();
+    toast(t("updated"));
+  }
   function openProductEditor(id = null) {
     if (state.role !== "owner") return;
     const p = id ? product(id) : null;
@@ -1268,6 +1307,10 @@
     if (e.target.id === "catalog-form") {
       e.preventDefault();
       saveProduct();
+    }
+    if (e.target.id === "workshop-form") {
+      e.preventDefault();
+      saveWorkshop();
     }
   });
   function showDetails(id) {
