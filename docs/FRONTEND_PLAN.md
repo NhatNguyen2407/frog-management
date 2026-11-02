@@ -27,7 +27,7 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | 2.1a | Workshops: create/edit, dates, capacity, status, ticket prefixes | Implemented - browser QA pending | 2026-10-30 |
 | 2.1b | Registrations, attendee list and check-in | Implemented - Sprint 2 QA pending | 2026-11-02 |
 | 2.2  | Queue transitions, stock movements and history                   | Implemented - Sprint 2 QA pending       | 2026-11-02     |
-| 2.3  | Expenses and transaction-based dashboard                            | Next                                    | -              |
+| 2.3  | Expenses and transaction-based dashboard                           | Implemented - Sprint 2 QA pending       | 2026-11-02     |
 | 3.1  | Reports, CSV export and customer history                            | Planned                                 | -              |
 | 3.2  | Responsive/UX testing and code cleanup                              | Planned                                 | -              |
 | 4    | Connect Supabase, authentication and deployment                     | Deferred                                | -              |
@@ -58,6 +58,8 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 
 - 2026-11-02 - Step 2.2: Added ticket transition guards using order status and selected workshop. Unpaid orders cannot enter preparation; cancelled/refunded tickets cannot progress. Ticket status history is retained. Inventory now records stock in/out, adjustments with reasons, sale consumption and cancellation restocks, including timestamps, order references and resulting quantities. The queue display shows ticket codes without customer names. Automated test cases added; browser QA deferred until Sprint 2 is complete.
 - 2026-11-02 - Stock history starts with changes made after this feature is deployed; prior browser mock data has no retroactively fabricated movements. Supabase and database unchanged.
+
+- 2026-11-02 - Step 2.3: Added workshop expense create/edit/void/restore with date, category, VND amount and description. One-time migration preserves previous demo event expenses. Revenue charts now use Paid order snapshots grouped by Vietnam local day instead of static bars. Dashboard and Reports use the same revenue, COGS, expense and profit calculation. Added module unit tests. Sprint 2 features are implemented, but end-to-end acceptance and printer QA are still pending.
 
 ## Remaining design decisions
 

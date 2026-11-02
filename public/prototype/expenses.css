@@ -1,0 +1,24 @@
+.expense-panel { margin-top: 20px; }
+.expense-panel .panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.expense-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+}
+.expense-panel .data-table td:last-child { white-space: nowrap; }
+#expense-form {
+  display: grid;
+  gap: 13px;
+  margin-top: 18px;
+}
+.expense-error { color: #a43e54; font-size: 11px; }
+.expense-error[hidden] { display: none; }
+.bar.empty { min-height: 0; }

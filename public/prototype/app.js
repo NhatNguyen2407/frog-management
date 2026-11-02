@@ -424,6 +424,7 @@
     for (const item of order.items || [])
       item.name ||= state.products.find((p) => p.id === item.productId)?.name || item.productId;
   FrogStock.journal(state);
+  FrogExpenses.ensure(state);
   let page = "dashboard",
     catalogQuery = "",
     catalogFilter = "active",
@@ -469,7 +470,7 @@
   const itemCost = (o) => o.items.reduce((n, i) => n + i.qty * i.cost, 0);
   const paidOrders = () => eventOrders().filter((o) => o.status === "paid");
   const finance = () => ({
-    ...FrogOrders.financialTotals(eventOrders(), currentEvent().expense),
+    ...FrogOrders.financialTotals(eventOrders(), FrogExpenses.total(state, state.selectedEvent)),
     waiting: eventTickets().filter((k) => k.status === "waiting").length,
   });
   const product = (id) => state.products.find((p) => p.id === id);
@@ -579,11 +580,18 @@
       .join("");
   }
   function chart() {
-    const amounts = [32, 47, 37, 69, 45, 83, 72].map((n, i) =>
-      Math.round((n / 100) * (finance().revenue || 200000)),
-    );
-    const max = Math.max(...amounts, 1);
-    return `<div class="summary-chart">${amounts.map((v, i) => `<div class="bar-wrap"><div class="bar ${i === 6 ? "today" : ""}" style="height:${Math.max(4, (v / max) * 165)}px"></div><span class="bar-label">${["T2", "T3", "T4", "T5", "T6", "T7", "CN"][i]}</span></div>`).join("")}</div><p style="font-size:9px;color:var(--sub);margin:34px 0 0">${t("salesChartHint")} · ${t("today")}</p>`;
+    const result = FrogExpenses.dailySales(eventOrders());
+    const max = Math.max(...result.days.map(d => d.value), 1);
+    const bars = result.days.map((d, i) =>
+      '<div class="bar-wrap"><div class="bar' + (i === 6 ? " today" : "") +
+      (d.value === 0 ? " empty" : "") + '" title="' + d.label + ': ' +
+      money(d.value) + '" style="height:' + (d.value ? Math.max(4, d.value / max * 165) : 0) +
+      'px"></div><span class="bar-label">' + d.label + '</span></div>'
+    ).join("");
+    return '<div class="summary-chart">' + bars + '</div>' +
+      '<p style="font-size:9px;color:var(--sub);margin:34px 0 0">' +
+      (state.locale === "vi" ? "Doanh thu Paid theo ngày" : "Daily paid revenue") +
+      ' · ' + result.start + ' - ' + result.end + '</p>';
   }
   function dashboard() {
     const f = finance();
@@ -859,7 +867,7 @@
         )
         .join(
           "",
-        )}</div><div class="report-grid">${card(t("salesChart"), t("salesChartHint"), chart())}${card(t("salesMix"), t("salesMixHint"), mix() + `<div class="note">${t("margin")}: ${f.revenue ? Math.round((f.profit / f.revenue) * 100) : 0}%</div>`)}</div><section class="panel section-gap"><div class="panel-head"><h3>${t("productReport")}</h3></div><div class="table-scroll"><table class="data-table"><thead><tr><th>${t("product")}</th><th>${t("items")}</th><th>${t("revenue")}</th><th>${t("share")}</th></tr></thead><tbody>${rows.map((r) => `<tr><td><strong>${esc(r.name)}</strong></td><td>${r.qty}</td><td>${money(r.revenue)}</td><td>${Math.round((r.revenue / (f.revenue || 1)) * 100)}%</td></tr>`).join("")}</tbody></table></div></section>`
+        )}</div><div class="report-grid">${card(t("salesChart"), t("salesChartHint"), chart())}${card(t("salesMix"), t("salesMixHint"), mix() + `<div class="note">${t("margin")}: ${f.revenue ? Math.round((f.profit / f.revenue) * 100) : 0}%</div>`)}</div><section class="panel section-gap"><div class="panel-head"><h3>${t("productReport")}</h3></div><div class="table-scroll"><table class="data-table"><thead><tr><th>${t("product")}</th><th>${t("items")}</th><th>${t("revenue")}</th><th>${t("share")}</th></tr></thead><tbody>${rows.map((r) => `<tr><td><strong>${esc(r.name)}</strong></td><td>${r.qty}</td><td>${money(r.revenue)}</td><td>${Math.round((r.revenue / (f.revenue || 1)) * 100)}%</td></tr>`).join("")}</tbody></table></div></section>${FrogExpenses.view(state, state.selectedEvent, state.locale)}`
     );
   }
   function settings() {
@@ -1088,6 +1096,14 @@
         name === "registration-check-in" ? "check-in" : "undo",
         fixedNow(), state.locale
       );
+      if (result.error) toast(result.error);
+      else { persist(); render(); toast(t("updated")); }
+    } else if (name === "expense-new") editExpense();
+    else if (name === "expense-edit") editExpense(arg);
+    else if (name === "expense-archive" || name === "expense-restore") {
+      if (state.role !== "owner") return;
+      const result = FrogExpenses.setArchived(state, state.selectedEvent, arg,
+        name === "expense-archive", state.locale);
       if (result.error) toast(result.error);
       else { persist(); render(); toast(t("updated")); }
     } else if (name === "workshop-new") openWorkshopEditor();
@@ -1356,6 +1372,10 @@
       e.preventDefault();
       saveStock();
     }
+    if (e.target.id === "expense-form") {
+      e.preventDefault();
+      saveExpense();
+    }
   });
   function showDetails(id) {
     const o = state.orders.find((x) => x.id === id);
@@ -1450,6 +1470,30 @@
     });
     if (result.error) {
       toast(result.error);
+      return;
+    }
+    persist();
+    closeModal();
+    render();
+    toast(t("updated"));
+  }
+  function editExpense(id = null) {
+    if (state.role !== "owner") return;
+    const item = id ? FrogExpenses.entries(state, state.selectedEvent).find(e => e.id === id) : null;
+    if (id && !item) return;
+    modal(FrogExpenses.editor(item, state.locale));
+    $("#expense-form").dataset.id = id || "";
+  }
+  function saveExpense() {
+    if (state.role !== "owner") return;
+    const form = $("#expense-form");
+    if (!form || !form.reportValidity()) return;
+    const result = FrogExpenses.save(state, state.selectedEvent,
+      Object.fromEntries(new FormData(form)), form.dataset.id || null, fixedNow(), state.locale);
+    if (result.error) {
+      const error = $("#expense-error");
+      error.textContent = result.error;
+      error.hidden = false;
       return;
     }
     persist();
