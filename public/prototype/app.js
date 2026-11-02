@@ -432,6 +432,7 @@
     method = "cash",
     payment = "paid",
     createTicket = true,
+    registrationQuery = "",
     orderFilter = "all",
     saleResult = null,
     display = false;
@@ -752,7 +753,8 @@
       state.role === "owner" ? btn("＋ " + l.add, "workshop-new", "") : "",
     ) +
       `<div class="note" style="margin-bottom:17px">${t("eventNotice")}</div>` +
-      FrogWorkshops.list(state, state.locale, state.role === "owner");
+      FrogWorkshops.list(state, state.locale, state.role === "owner") +
+      FrogRegistrations.view(state, state.selectedEvent, registrationQuery, state.locale);
   }
   function queueColumns(tv = false) {
     const columns = [
@@ -1060,6 +1062,14 @@
     else if (name === "new-sale") {
       saleResult = null;
       render();
+    } else if (name === "registration-check-in" || name === "registration-undo") {
+      const result = FrogRegistrations.update(
+        state, state.selectedEvent, arg,
+        name === "registration-check-in" ? "check-in" : "undo",
+        fixedNow(), state.locale
+      );
+      if (result.error) toast(result.error);
+      else { persist(); render(); toast(t("updated")); }
     } else if (name === "workshop-new") openWorkshopEditor();
     else if (name === "workshop-edit") openWorkshopEditor(arg);
     else if (name === "catalog-new") openProductEditor();
@@ -1147,6 +1157,17 @@
     if (e.target.id === "with-ticket") createTicket = e.target.checked;
   });
   document.addEventListener("input", (e) => {
+    if (e.target.id === "registration-search") {
+      registrationQuery = e.target.value;
+      const cursor = e.target.selectionStart;
+      render();
+      const field = $("#registration-search");
+      if (field) {
+        field.focus();
+        field.setSelectionRange(cursor, cursor);
+      }
+      return;
+    }
     if (e.target.id === "customer-name") customer = e.target.value;
     if (e.target.dataset.lineNote) {
       const line = cart.find((i) => i.key === e.target.dataset.lineNote);
