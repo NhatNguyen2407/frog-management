@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 
 const context = {};
+runInNewContext(readFileSync("public/prototype/stock-movements.js", "utf8"), context);
 runInNewContext(readFileSync("public/prototype/orders.js", "utf8"), context);
 const { apply, can, financialTotals } = context.FrogOrders;
 
@@ -51,6 +52,8 @@ test("cancelling unpaid restores stock and cancels ticket only once", () => {
   assert.equal(state.orders[0].cancelledAt, at);
   assert.equal(state.products[0].stock, 4);
   assert.equal(state.products[1].stock, 5);
+  assert.equal(state.stockMovements.length, 2);
+  assert.deepEqual(JSON.parse(JSON.stringify(state.stockMovements.map(item => item.delta))), [2, 1]);
   assert.equal(state.tickets[0].status, "cancelled");
   assert.equal(financialTotals(state.orders, 0).revenue, 0);
   assert.ok(apply(state, "FG-0001", "cancel").error);

@@ -26,8 +26,8 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | 1.4b | Staff preparation slip and dual-print flow                          | Implemented - manual QA pending         | 2026-10-29     |
 | 2.1a | Workshops: create/edit, dates, capacity, status, ticket prefixes | Implemented - browser QA pending | 2026-10-30 |
 | 2.1b | Registrations, attendee list and check-in | Implemented - Sprint 2 QA pending | 2026-11-02 |
-| 2.2  | Queue and inventory movements                                       | Planned                                 | -              |
-| 2.3  | Expenses and transaction-based dashboard                            | Planned                                 | -              |
+| 2.2  | Queue transitions, stock movements and history                   | Implemented - Sprint 2 QA pending       | 2026-11-02     |
+| 2.3  | Expenses and transaction-based dashboard                            | Next                                    | -              |
 | 3.1  | Reports, CSV export and customer history                            | Planned                                 | -              |
 | 3.2  | Responsive/UX testing and code cleanup                              | Planned                                 | -              |
 | 4    | Connect Supabase, authentication and deployment                     | Deferred                                | -              |
@@ -55,6 +55,9 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 - 2026-10-30 - Progress review: Customer/Staff dual-label printing and Workshop Switcher still require manual acceptance. Sprint 1 remains open. Registrations/check-in is the next increment. No Supabase or database changes.
 
 - 2026-11-02 - Step 2.1b: Added a ticket-based registration list with customer/ticket/order search, paid/unpaid/arrived counters, check-in timestamps and reversible check-in. Unpaid, cancelled and refunded tickets cannot check in. Check-in remains independent from production queue status. Module tests added; manual browser QA deferred until Sprint 2 is complete as requested.
+
+- 2026-11-02 - Step 2.2: Added ticket transition guards using order status and selected workshop. Unpaid orders cannot enter preparation; cancelled/refunded tickets cannot progress. Ticket status history is retained. Inventory now records stock in/out, adjustments with reasons, sale consumption and cancellation restocks, including timestamps, order references and resulting quantities. The queue display shows ticket codes without customer names. Automated test cases added; browser QA deferred until Sprint 2 is complete.
+- 2026-11-02 - Stock history starts with changes made after this feature is deployed; prior browser mock data has no retroactively fabricated movements. Supabase and database unchanged.
 
 ## Remaining design decisions
 

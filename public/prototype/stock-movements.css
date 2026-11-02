@@ -1,0 +1,24 @@
+.stock-history {
+  margin-top: 20px;
+}
+.stock-history .panel-head {
+  padding: 16px 20px;
+}
+.stock-history td small {
+  display: block;
+  margin-top: 3px;
+  color: var(--sub);
+  font-size: 10px;
+}
+#stock-movement-form {
+  display: grid;
+  gap: 13px;
+  margin-top: 18px;
+}
+.stock-error {
+  color: #a43e54;
+  font-size: 11px;
+}
+.stock-error[hidden] {
+  display: none;
+}

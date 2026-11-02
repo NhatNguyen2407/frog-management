@@ -405,6 +405,8 @@
       selectedEvent: "cozy",
       nextOrder: 8,
       nextTicket: { cozy: 8, autumn: 1 },
+      stockMovements: [],
+      nextStockMovement: 1,
       role: "owner",
       theme: "light",
       locale: "vi",
@@ -421,6 +423,7 @@
   for (const order of state.orders)
     for (const item of order.items || [])
       item.name ||= state.products.find((p) => p.id === item.productId)?.name || item.productId;
+  FrogStock.journal(state);
   let page = "dashboard",
     catalogQuery = "",
     catalogFilter = "active",
@@ -762,14 +765,27 @@
       ["waiting", t("upNext")],
       ["completed", t("completed")],
     ];
-    return `<div class="queue-grid">${columns
-      .map(([status, label]) => {
-        const list = eventTickets()
-          .filter((k) => k.status === status)
-          .slice(0, 6);
-        return `<section class="panel queue-col"><header><h3>${label}</h3>${badge(String(list.length), status === "in_progress" ? "purple" : status === "waiting" ? "amber" : "green")}</header>${list.map((ticket) => `<div class="ticket-card"><strong>${esc(ticket.id)}</strong><small>${esc(ticket.customer)}</small>${!tv && status !== "completed" ? btn(t("next") + " →", `advance:${ticket.id}`, "secondary small") : ""}</div>`).join("") || `<p class="muted" style="padding:20px 8px;font-size:10px">${t("emptyQueue")}</p>`}</section>`;
-      })
-      .join("")}</div>`;
+    return '<div class="queue-grid">' + columns.map(([status, label]) => {
+      const tickets = eventTickets().filter(ticket => ticket.status === status);
+      const cards = tickets.slice(0, 6).map(ticket => {
+        const next = FrogQueue.check(state, state.selectedEvent, ticket.id, state.locale);
+        const control = !tv && next.next
+          ? btn(t("next") + " →", "advance:" + ticket.id, "secondary small")
+          : "";
+        const name = tv ? "" : '<small>' + esc(ticket.customer) + '</small>';
+        const updated = !tv && ticket.updatedAt
+          ? '<small>' + date(ticket.updatedAt) + ' ' + time(ticket.updatedAt) + '</small>'
+          : "";
+        return '<div class="ticket-card"><strong>' + esc(ticket.id) +
+          '</strong>' + name + updated + control + '</div>';
+      }).join("");
+      const color = status === "in_progress" ? "purple" :
+        status === "waiting" ? "amber" : "green";
+      return '<section class="panel queue-col"><header><h3>' + label +
+        '</h3>' + badge(String(tickets.length), color) +
+        '</header>' + (cards || '<p class="muted" style="padding:20px 8px;font-size:10px">' +
+        t("emptyQueue") + '</p>') + '</section>';
+    }).join("") + '</div>';
   }
   function queue() {
     const newly = eventTickets().filter(
@@ -786,16 +802,24 @@
     );
   }
   function inventory() {
-    let low = state.products.filter((p) => p.stock <= p.threshold).length;
-    return (
-      pageHead(
-        "STOCK",
-        t("inventoryTitle"),
-        t("inventoryDesc"),
-        badge(`${low} ${t("lowCount")}`, low ? "amber" : "green"),
-      ) +
-      `<div class="note" style="margin-bottom:18px">${t("inventoryHint")}</div><section class="panel"><div class="table-scroll"><table class="data-table"><thead><tr><th>${t("product")}</th><th>${t("sku")}</th><th>${t("stock")}</th><th>${t("threshold")}</th><th>${t("status")}</th><th>${t("actions")}</th></tr></thead><tbody>${state.products.map((p) => `<tr><td><strong>${p.emoji} ${esc(p.name)}</strong></td><td><span class="muted">${esc(p.id)}</span></td><td><strong>${p.stock}</strong></td><td>${p.threshold}</td><td>${badge(p.stock === 0 ? t("stockOut") : p.stock <= p.threshold ? t("stockLow") : t("stockOk"), p.stock === 0 ? "red" : p.stock <= p.threshold ? "amber" : "green")}</td><td>${btn(t("stockEdit"), `stock:${p.id}`, "secondary small")}</td></tr>`).join("")}</tbody></table></div></section>`
-    );
+    const low = state.products.filter(p => p.stock <= p.threshold).length;
+    const headings = [t("product"), t("sku"), t("stock"), t("threshold"),
+      t("status"), t("actions")].map(label => "<th>" + label + "</th>").join("");
+    const body = state.products.map(p => '<tr><td><strong>' + esc(p.emoji) +
+      ' ' + esc(p.name) + '</strong></td><td><span class="muted">' +
+      esc(p.id) + '</span></td><td><strong>' + p.stock + '</strong></td><td>' +
+      p.threshold + '</td><td>' +
+      badge(p.stock === 0 ? t("stockOut") :
+        p.stock <= p.threshold ? t("stockLow") : t("stockOk"),
+        p.stock === 0 ? "red" : p.stock <= p.threshold ? "amber" : "green") +
+      '</td><td>' + btn(t("stockEdit"), "stock:" + p.id, "secondary small") +
+      '</td></tr>').join("");
+    return pageHead("STOCK", t("inventoryTitle"), t("inventoryDesc"),
+      badge(low + " " + t("lowCount"), low ? "amber" : "green")) +
+      '<div class="note" style="margin-bottom:18px">' + t("inventoryHint") +
+      '</div><section class="panel"><div class="table-scroll"><table class="data-table">' +
+      '<thead><tr>' + headings + '</tr></thead><tbody>' + body +
+      '</tbody></table></div></section>' + FrogStock.view(state, state.locale);
   }
   function reports() {
     if (state.role === "staff")
@@ -943,6 +967,8 @@
     for (const i of items) {
       const p = product(i.productId);
       p.stock -= i.qty;
+      FrogStock.log(state, i.productId, -i.qty, "sale",
+        "Order " + id, order.createdAt, id);
     }
     persist();
     saleResult = order;
@@ -975,20 +1001,14 @@
     else toast("Trình duyệt đang chặn popup. Hãy cho phép mở tab in.");
   }
   function advanceTicket(id) {
-    const ticket = state.tickets.find((k) => k.id === id);
-    if (!ticket) return;
-    const next = {
-      registered: "ticket_printed",
-      ticket_printed: "waiting",
-      waiting: "in_progress",
-      in_progress: "completed",
-    }[ticket.status];
-    if (next) {
-      ticket.status = next;
-      persist();
-      render();
-      toast(`${esc(ticket.id)} · ${labelStatus(next)}`);
+    const result = FrogQueue.advance(state, state.selectedEvent, id, fixedNow(), state.locale);
+    if (result.error) {
+      toast(result.error);
+      return;
     }
+    persist();
+    render();
+    toast(result.ticket.id + " · " + labelStatus(result.next));
   }
   function renderTv() {
     if (!display) return;
@@ -1108,7 +1128,6 @@
       display = false;
       closeModal();
     } else if (name === "stock") editStock(arg);
-    else if (name === "save-stock") saveStock(arg);
     else if (name === "lang") {
       state.locale = arg;
       persist();
@@ -1333,6 +1352,10 @@
       e.preventDefault();
       saveWorkshop();
     }
+    if (e.target.id === "stock-movement-form") {
+      e.preventDefault();
+      saveStock();
+    }
   });
   function showDetails(id) {
     const o = state.orders.find((x) => x.id === id);
@@ -1437,15 +1460,21 @@
   function editStock(id) {
     const p = product(id);
     if (!p) return;
-    modal(
-      `<h2>${t("stockEdit")}</h2><p>${esc(p.name)}</p><label class="form-field"><span>${t("stock")}</span><input id="new-stock" class="field" type="number" min="0" step="1" value="${p.stock}" /></label><div class="modal-footer">${btn(t("cancel"), "close", "secondary")}${btn(t("save"), `save-stock:${id}`, "")}</div>`,
-    );
+    modal(FrogStock.editor(p, state.locale));
+    $("#stock-movement-form").dataset.product = id;
   }
-  function saveStock(id) {
-    const p = product(id);
-    const n = Number($("#new-stock")?.value);
-    if (!p || !Number.isInteger(n) || n < 0) return;
-    p.stock = n;
+  function saveStock() {
+    const form = $("#stock-movement-form");
+    if (!form || !form.reportValidity()) return;
+    const fields = Object.fromEntries(new FormData(form));
+    const result = FrogStock.apply(state, form.dataset.product,
+      fields.kind, fields.quantity, fields.reason, fixedNow(), state.locale);
+    if (result.error) {
+      const error = $("#stock-error");
+      error.textContent = result.error;
+      error.hidden = false;
+      return;
+    }
     persist();
     closeModal();
     render();

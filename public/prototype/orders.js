@@ -79,15 +79,29 @@
           return { error: l.stock };
         changes.push([product, qty]);
       }
-      for (const [product, qty] of changes) product.stock += qty;
+      for (const [product, qty] of changes) {
+        product.stock += qty;
+        FrogStock.log(state, product.id, qty, "cancel",
+          "Order " + id, now, id);
+      }
       order.status = "cancelled";
       order.cancelledAt = now;
-      if (ticket) ticket.status = "cancelled";
+      if (ticket) {
+        ticket.statusHistory ||= [];
+        ticket.statusHistory.push({ from: ticket.status, to: "cancelled", at: now });
+        ticket.status = "cancelled";
+        ticket.updatedAt = now;
+      }
     } else if (action === "refund") {
       order.status = "refunded";
       order.refundedAt = now;
       // Refunds do not restore stock automatically.
-      if (ticket && ticket.status !== "completed") ticket.status = "cancelled";
+      if (ticket && !["completed", "cancelled"].includes(ticket.status)) {
+        ticket.statusHistory ||= [];
+        ticket.statusHistory.push({ from: ticket.status, to: "cancelled", at: now });
+        ticket.status = "cancelled";
+        ticket.updatedAt = now;
+      }
     }
     order.updatedAt = now;
     return { order };
