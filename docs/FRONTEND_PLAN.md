@@ -22,8 +22,8 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | 1.1  | Product Management: list, search, create, edit, archive/restore     | Code complete                           | 2026-10-26     |
 | 1.2  | POS: per-line custom notes, stock validation, workshop-ticket rules | Accepted - 7/7 manual checks            | 2026-10-26     |
 | 1.3  | Orders: open/unpaid, paid, cancel/restock, refund, history          | Accepted - 9/9 manual checks            | 2026-10-26     |
-| 1.4a | Compact customer bill, 76 x 130 mm label                            | Implemented - manual printer QA pending | 2026-10-28     |
-| 1.4b | Staff preparation slip and dual-print flow                          | Implemented - manual QA pending         | 2026-10-29     |
+| 1.4a | Compact customer bill, 76 x 130 mm label                            | Printed on A318BT - content QA pending   | 2026-10-28     |
+| 1.4b | Staff preparation slip and dual-print flow                          | Two-label print passed - full QA pending | 2026-10-29     |
 | 2.1a | Workshops: create/edit, dates, capacity, status, ticket prefixes | Implemented - browser QA pending | 2026-10-30 |
 | 2.1b | Registrations, attendee list and check-in | Implemented - Sprint 2 QA pending | 2026-11-02 |
 | 2.2  | Queue transitions, stock movements and history                   | Implemented - Sprint 2 QA pending       | 2026-11-02     |
@@ -59,7 +59,9 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 - 2026-11-02 - Step 2.2: Added ticket transition guards using order status and selected workshop. Unpaid orders cannot enter preparation; cancelled/refunded tickets cannot progress. Ticket status history is retained. Inventory now records stock in/out, adjustments with reasons, sale consumption and cancellation restocks, including timestamps, order references and resulting quantities. The queue display shows ticket codes without customer names. Automated test cases added; browser QA deferred until Sprint 2 is complete.
 - 2026-11-02 - Stock history starts with changes made after this feature is deployed; prior browser mock data has no retroactively fabricated movements. Supabase and database unchanged.
 
-- 2026-11-02 - Step 2.3: Added workshop expense create/edit/void/restore with date, category, VND amount and description. One-time migration preserves previous demo event expenses. Revenue charts now use Paid order snapshots grouped by Vietnam local day instead of static bars. Dashboard and Reports use the same revenue, COGS, expense and profit calculation. Added module unit tests. Sprint 2 features are implemented, but end-to-end acceptance and printer QA are still pending.
+- 2026-11-02 - Step 2.3: Added workshop expense create/edit/void/restore with date, category, VND amount and description. One-time migration preserves previous demo event expenses. Revenue charts now use Paid order snapshots grouped by Vietnam local day instead of static bars. Dashboard and Reports use the same revenue, COGS, expense and profit calculation. Added module unit tests. Sprint 2 features are implemented, but end-to-end acceptance is pending. Dual-label printing was subsequently confirmed on the A318BT; detailed receipt-content QA remains pending.
+
+- 2026-11-02 - Steps 1.4a/1.4b printer check: Project owner confirmed successfully printing both customer and staff labels on the Label A318BT using the established 76 x 130 mm paper. Hardware dual-print outcome is accepted. Receipt content, reprint behavior and broader functional QA have not been separately confirmed, so full Sprint 1 acceptance remains open.
 
 ## Remaining design decisions
 
