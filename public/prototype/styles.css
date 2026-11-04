@@ -1229,8 +1229,14 @@ button:disabled {
     font-size: 24px;
   }
   .page-header {
-    align-items: flex-start;
+    align-items: stretch;
     flex-direction: column;
+  }
+  .page-header > div:first-child {
+    min-width: 0;
+  }
+  .page-title {
+    overflow-wrap: anywhere;
   }
   .grid-kpi {
     grid-template-columns: repeat(2, 1fr);
@@ -1308,6 +1314,20 @@ button:disabled {
   }
 }
 @media (max-width: 420px) {
+  .top-left {
+    width: 100%;
+    max-width: 100%;
+    gap: 8px;
+  }
+  .breadcrumbs {
+    flex: 1;
+  }
+  .top-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 37px 37px;
+    gap: 6px;
+    min-width: 0;
+  }
   .kpi-value {
     font-size: 17px;
   }

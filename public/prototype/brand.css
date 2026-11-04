@@ -267,14 +267,16 @@ body {
     padding-bottom: 20px;
   }
 }
-@media (max-width: 390px) {
+@media (max-width: 420px) {
   .frog-welcome-copy {
-    max-width: 76%;
+    flex: 1;
+    max-width: none;
+    min-width: 0;
   }
   .welcome-logo {
-    height: 88px;
-    width: 96px;
-    margin-right: -10px;
+    height: 74px;
+    width: 74px;
+    margin-right: -8px;
   }
 }
 @media print {
