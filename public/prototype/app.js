@@ -583,7 +583,7 @@
     const result = FrogExpenses.dailySales(eventOrders());
     const max = Math.max(...result.days.map(d => d.value), 1);
     const bars = result.days.map((d, i) =>
-      '<div class="bar-wrap"><div class="bar' + (i === 6 ? " today" : "") +
+      '<div class="bar-wrap"><div class="bar' + (i === 6 && !result.historical ? " today" : "") +
       (d.value === 0 ? " empty" : "") + '" title="' + d.label + ': ' +
       money(d.value) + '" style="height:' + (d.value ? Math.max(4, d.value / max * 165) : 0) +
       'px"></div><span class="bar-label">' + d.label + '</span></div>'
@@ -775,7 +775,8 @@
     ];
     return '<div class="queue-grid">' + columns.map(([status, label]) => {
       const tickets = eventTickets().filter(ticket => ticket.status === status);
-      const cards = tickets.slice(0, 6).map(ticket => {
+      const displayed = tv ? tickets.slice(0, 6) : tickets;
+      const cards = displayed.map(ticket => {
         const next = FrogQueue.check(state, state.selectedEvent, ticket.id, state.locale);
         const control = !tv && next.next
           ? btn(t("next") + " →", "advance:" + ticket.id, "secondary small")
@@ -792,7 +793,11 @@
       return '<section class="panel queue-col"><header><h3>' + label +
         '</h3>' + badge(String(tickets.length), color) +
         '</header>' + (cards || '<p class="muted" style="padding:20px 8px;font-size:10px">' +
-        t("emptyQueue") + '</p>') + '</section>';
+        t("emptyQueue") + '</p>') +
+        (tv && tickets.length > displayed.length
+          ? '<p class="muted" style="padding:10px 8px;font-size:10px">+' +
+            (tickets.length - displayed.length) + ' tickets</p>'
+          : "") + '</section>';
     }).join("") + '</div>';
   }
   function queue() {

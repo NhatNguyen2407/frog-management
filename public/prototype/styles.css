@@ -1207,9 +1207,16 @@ button:disabled {
     flex-wrap: wrap;
   }
   .top-actions {
+    width: 100%;
     gap: 6px;
   }
+  .top-left {
+    min-width: 0;
+  }
   .breadcrumbs {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 9px;
   }
   .demo-chip {

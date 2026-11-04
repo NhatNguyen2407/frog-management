@@ -1,6 +1,6 @@
 # Frontend V1 - Plan and Progress
 
-Updated: 2026-11-02
+Updated: 2026-11-04
 
 ## Goal
 
@@ -24,10 +24,10 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | 1.3  | Orders: open/unpaid, paid, cancel/restock, refund, history          | Accepted - 9/9 manual checks            | 2026-10-26     |
 | 1.4a | Compact customer bill, 76 x 130 mm label                            | Printed on A318BT - content QA pending   | 2026-10-28     |
 | 1.4b | Staff preparation slip and dual-print flow                          | Two-label print passed - full QA pending | 2026-10-29     |
-| 2.1a | Workshops: create/edit, dates, capacity, status, ticket prefixes | Implemented - browser QA pending | 2026-10-30 |
-| 2.1b | Registrations, attendee list and check-in | Implemented - Sprint 2 QA pending | 2026-11-02 |
-| 2.2  | Queue transitions, stock movements and history                   | Implemented - Sprint 2 QA pending       | 2026-11-02     |
-| 2.3  | Expenses and transaction-based dashboard                           | Implemented - Sprint 2 QA pending       | 2026-11-02     |
+| 2.1a | Workshops: create/edit, dates, capacity, status, ticket prefixes | Functional QA accepted - UI regression pending | 2026-10-30 |
+| 2.1b | Registrations, attendee list and check-in | Functional QA accepted - UI regression pending | 2026-11-02 |
+| 2.2  | Queue transitions, stock movements and history                   | Functional QA accepted - UI regression pending | 2026-11-02     |
+| 2.3  | Expenses and transaction-based dashboard                           | Functional QA accepted - UI regression pending | 2026-11-02     |
 | 3.1  | Reports, CSV export and customer history                            | Planned                                 | -              |
 | 3.2  | Responsive/UX testing and code cleanup                              | Planned                                 | -              |
 | 4    | Connect Supabase, authentication and deployment                     | Deferred                                | -              |
@@ -62,6 +62,9 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 - 2026-11-02 - Step 2.3: Added workshop expense create/edit/void/restore with date, category, VND amount and description. One-time migration preserves previous demo event expenses. Revenue charts now use Paid order snapshots grouped by Vietnam local day instead of static bars. Dashboard and Reports use the same revenue, COGS, expense and profit calculation. Added module unit tests. Sprint 2 features are implemented, but end-to-end acceptance is pending. Dual-label printing was subsequently confirmed on the A318BT; detailed receipt-content QA remains pending.
 
 - 2026-11-02 - Steps 1.4a/1.4b printer check: Project owner confirmed successfully printing both customer and staff labels on the Label A318BT using the established 76 x 130 mm paper. Hardware dual-print outcome is accepted. Receipt content, reprint behavior and broader functional QA have not been separately confirmed, so full Sprint 1 acceptance remains open.
+
+- 2026-11-04 - Sprint 2 functional acceptance: The project owner completed 12/12 manual functional test cases with no failures. Locally reported 55/55 unit tests, TypeScript typecheck and Next.js build all passed. Prettier flagged 25 files for formatting; final mobile UI and persistence regression remained outstanding.
+- 2026-11-04 - Final Sprint 2 cleanup prepared: Corrected the 320px Event Switcher alignment, displayed all Queue tickets in the admin view (TV display keeps the six-card layout and shows the additional count), and removed misleading Today highlighting from historical charts. Frog logo loading error traced to a stopped local dev server; no logo asset change is needed. Formatting and regression checks must pass before full Sprint 2 closure.
 
 ## Remaining design decisions
 

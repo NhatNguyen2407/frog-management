@@ -169,11 +169,21 @@
 }
 
 @media (max-width: 720px) {
+  .event-switcher {
+    flex: 1 1 0;
+  }
+
   .event-trigger {
-    width: 158px;
+    width: 100%;
     gap: 8px;
     min-height: 38px;
     padding: 6px 9px;
+  }
+
+  .event-menu {
+    left: 0;
+    right: auto;
+    width: min(290px, calc(100vw - 32px));
   }
 
   .event-trigger-copy small {
@@ -187,6 +197,6 @@
 
 @media (max-width: 420px) {
   .event-trigger {
-    width: 140px;
+    padding: 6px 8px;
   }
 }
