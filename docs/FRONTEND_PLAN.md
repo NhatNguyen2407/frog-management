@@ -28,7 +28,7 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | 2.1b | Registrations, attendee list and check-in                           | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
 | 2.2  | Queue transitions, stock movements and history                      | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
 | 2.3  | Expenses and transaction-based dashboard                            | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
-| 3.1  | Reports, CSV export and customer history                            | 3.1a implemented - QA pending                                          | -              |
+| 3.1  | Reports, CSV export and customer history                            | 3.1a/3.1b implemented - QA pending                                          | -              |
 | 3.2  | Responsive/UX testing and code cleanup                              | Planned                                          | -              |
 | 4    | Connect Supabase, authentication and deployment                     | Deferred                                         | -              |
 
@@ -68,6 +68,8 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 - 2026-11-04 - Sprint 2 final acceptance: 12/12 functional cases passed; local checks reported 55/55 tests, TypeScript, Prettier and production build passing. The formatting changes were committed to main. A further mobile CSS correction was committed and the project owner confirmed the responsive overflow was resolved. Sprint 2 frontend acceptance is closed. Full multi-device persistence regression and detailed receipt-content QA remain separate pre-launch checks.
 
 - 2026-11-04 - Step 3.1a: Added workshop-scoped date filters to Reports with financial totals, chart, sales mix and product sales based on the same filtered order snapshot. Added UTF-8 BOM CSV downloads for Orders, Paid revenue lines and active Expenses. Current-status reporting is not an accounting ledger: paid/refunded orders are grouped by their status timestamps, when available. CSV protects against spreadsheet formula injection. Seven focused reporting checks passed; full local suite, formatting, build and browser/Excel acceptance are pending.
+
+- 2026-11-04 - Step 3.1b: Added read-only Customer History in the owner prototype navigation. Search orders across workshops by name, order ID or linked ticket ID; display workshop, status, products, ticket/check-in and open the existing order detail. Summary counts matching orders, check-ins and distinct workshops with checked-in tickets. Same-name records remain separate because there is no verified customer ID. Added 7 focused tests (7/7 passed in isolated module checks). Full local test suite, formatting, build and browser acceptance remain pending until Sprint 3 QA.
 
 ## Remaining design decisions
 

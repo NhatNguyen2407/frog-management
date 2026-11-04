@@ -10,6 +10,7 @@
     dashboard: "Tổng quan",
     pos: "Bán hàng",
     orders: "Đơn hàng",
+    customers: "Lịch sử khách",
     events: "Workshop",
     queue: "Hàng đợi",
     inventory: "Kho hàng",
@@ -159,6 +160,7 @@
     dashboard: "Overview",
     pos: "Point of sale",
     orders: "Orders",
+    customers: "Customer history",
     events: "Workshops",
     queue: "Live queue",
     inventory: "Inventory",
@@ -437,6 +439,7 @@
     payment = "paid",
     createTicket = true,
     registrationQuery = "",
+    customerHistoryQuery = "",
     orderFilter = "all",
     reportFrom = "",
     reportTo = "",
@@ -489,6 +492,7 @@
     ["pos", "▣"],
     ["products", "◈"],
     ["orders", "▤"],
+    ["customers", "♧"],
     ["events", "▧"],
     ["queue", "◫"],
     ["inventory", "◈"],
@@ -511,7 +515,7 @@
   }
   function navRender() {
     $("#side-nav").innerHTML = `<div class="side-nav">${navs
-      .filter(([key]) => state.role === "owner" || key !== "products")
+      .filter(([key]) => state.role === "owner" || !["products", "customers"].includes(key))
       .map(
         ([key, icon]) =>
           `<button type="button" data-nav="${key}" class="nav-link ${page === key ? "active" : ""}"><span class="ico">${icon}</span>${t(key)}</button>`,
@@ -782,6 +786,13 @@
       "</tbody></table></div></section>"
     );
   }
+  function customers() {
+    if (state.role !== "owner") return pageHead("CUSTOMERS", t("customers"), t("noFinance"));
+    const lang = state.locale === "en" ? "en" : "vi";
+    const l = FrogCustomers.labels[lang];
+    return pageHead("CUSTOMERS", l.title, l.description) +
+      FrogCustomers.view(state, customerHistoryQuery, state.locale);
+  }
   function events() {
     const l = FrogWorkshops.labels[state.locale === "en" ? "en" : "vi"];
     return (
@@ -986,7 +997,7 @@
       `<div class="event-grid"><section class="panel"><div class="panel-head"><h3>${t("appearance")}</h3></div><div class="panel-body"><div class="form-field"><label>${t("appearance")}</label><div class="flex">${btn(t("light"), "theme:light", state.theme === "light" ? "soft" : "secondary")}${btn(t("dark"), "theme:dark", state.theme === "dark" ? "soft" : "secondary")}</div></div><div class="form-field"><label>${t("language")}</label><div class="flex">${btn("Tiếng Việt", "lang:vi", state.locale === "vi" ? "soft" : "secondary")}${btn("English", "lang:en", state.locale === "en" ? "soft" : "secondary")}</div></div></div></section><section class="panel"><div class="panel-head"><h3>${t("role")}</h3></div><div class="panel-body"><div class="flex wrap" style="margin-bottom:18px">${btn(t("owner"), "role:owner", state.role === "owner" ? "soft" : "secondary")}${btn(t("staff"), "role:staff", state.role === "staff" ? "soft" : "secondary")}</div><div class="note">${t("securityNotice")}</div><div style="margin-top:19px">${btn(t("reset"), "reset", "warn")}</div></div></section></div>`
     );
   }
-  const pages = { dashboard, pos, products, orders, events, queue, inventory, reports, settings };
+  const pages = { dashboard, pos, products, orders, customers, events, queue, inventory, reports, settings };
   function render() {
     navRender();
     $("#main").innerHTML = pages[page]();
@@ -1338,6 +1349,17 @@
     }
   });
   document.addEventListener("input", (e) => {
+    if (e.target.id === "customer-history-search") {
+      customerHistoryQuery = e.target.value;
+      const position = e.target.selectionStart;
+      render();
+      const input = $("#customer-history-search");
+      if (input) {
+        input.focus();
+        input.setSelectionRange(position, position);
+      }
+      return;
+    }
     if (e.target.id === "registration-search") {
       registrationQuery = e.target.value;
       const cursor = e.target.selectionStart;
