@@ -5,7 +5,7 @@
     registered: "ticket_printed",
     ticket_printed: "waiting",
     waiting: "in_progress",
-    in_progress: "completed"
+    in_progress: "completed",
   };
   const messages = {
     vi: {
@@ -14,7 +14,7 @@
       cancelled: "Ticket đã hủy hoặc đơn đã hủy/hoàn tiền.",
       unpaid: "Cần xác nhận thanh toán trước khi bắt đầu thực hiện.",
       finished: "Ticket đã hoàn thành hoặc không thể chuyển trạng thái.",
-      next: "Bước tiếp"
+      next: "Bước tiếp",
     },
     en: {
       missing: "Ticket not found in the selected workshop.",
@@ -22,15 +22,15 @@
       cancelled: "Ticket or related order has been cancelled/refunded.",
       unpaid: "Payment must be confirmed before preparation starts.",
       finished: "Ticket is complete or cannot advance.",
-      next: "Next step"
-    }
+      next: "Next step",
+    },
   };
 
   function check(state, eventId, ticketId, locale = "vi") {
     const l = messages[locale === "en" ? "en" : "vi"];
-    const ticket = state.tickets.find(t => t.id === ticketId && t.eventId === eventId);
+    const ticket = state.tickets.find((t) => t.id === ticketId && t.eventId === eventId);
     if (!ticket) return { error: l.missing };
-    const order = state.orders.find(o => o.id === ticket.orderId && o.eventId === eventId);
+    const order = state.orders.find((o) => o.id === ticket.orderId && o.eventId === eventId);
     if (!order) return { error: l.order };
     if (ticket.status === "cancelled" || ["cancelled", "refunded"].includes(order.status))
       return { error: l.cancelled };

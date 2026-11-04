@@ -502,7 +502,9 @@
     trigger.setAttribute("aria-expanded", String(open));
     picker.classList.toggle("is-open", open);
     if (open && focusOption) {
-      (menu.querySelector('[aria-checked="true"]') || menu.querySelector("[data-event-option]"))?.focus();
+      (
+        menu.querySelector('[aria-checked="true"]') || menu.querySelector("[data-event-option]")
+      )?.focus();
     }
   }
   function navRender() {
@@ -520,7 +522,11 @@
       })
       .join("");
     $("#breadcrumb").textContent = t(page);
-    $("#event-switcher").innerHTML = FrogEventSwitcher.render(state.events, state.selectedEvent, state.locale);
+    $("#event-switcher").innerHTML = FrogEventSwitcher.render(
+      state.events,
+      state.selectedEvent,
+      state.locale,
+    );
     $("#role-label").textContent = `${t(state.role)} / Demo`;
     $("#theme-toggle").textContent = state.theme === "light" ? "☾" : "☀";
     $("#language-toggle").textContent = state.locale === "vi" ? "EN" : "VI";
@@ -581,17 +587,36 @@
   }
   function chart() {
     const result = FrogExpenses.dailySales(eventOrders());
-    const max = Math.max(...result.days.map(d => d.value), 1);
-    const bars = result.days.map((d, i) =>
-      '<div class="bar-wrap"><div class="bar' + (i === 6 && !result.historical ? " today" : "") +
-      (d.value === 0 ? " empty" : "") + '" title="' + d.label + ': ' +
-      money(d.value) + '" style="height:' + (d.value ? Math.max(4, d.value / max * 165) : 0) +
-      'px"></div><span class="bar-label">' + d.label + '</span></div>'
-    ).join("");
-    return '<div class="summary-chart">' + bars + '</div>' +
+    const max = Math.max(...result.days.map((d) => d.value), 1);
+    const bars = result.days
+      .map(
+        (d, i) =>
+          '<div class="bar-wrap"><div class="bar' +
+          (i === 6 && !result.historical ? " today" : "") +
+          (d.value === 0 ? " empty" : "") +
+          '" title="' +
+          d.label +
+          ": " +
+          money(d.value) +
+          '" style="height:' +
+          (d.value ? Math.max(4, (d.value / max) * 165) : 0) +
+          'px"></div><span class="bar-label">' +
+          d.label +
+          "</span></div>",
+      )
+      .join("");
+    return (
+      '<div class="summary-chart">' +
+      bars +
+      "</div>" +
       '<p style="font-size:9px;color:var(--sub);margin:34px 0 0">' +
       (state.locale === "vi" ? "Doanh thu Paid theo ngày" : "Daily paid revenue") +
-      ' · ' + result.start + ' - ' + result.end + '</p>';
+      " · " +
+      result.start +
+      " - " +
+      result.end +
+      "</p>"
+    );
   }
   function dashboard() {
     const f = finance();
@@ -757,15 +782,17 @@
   }
   function events() {
     const l = FrogWorkshops.labels[state.locale === "en" ? "en" : "vi"];
-    return pageHead(
-      "WORKSHOP SPACE",
-      t("eventsTitle"),
-      t("eventsDesc"),
-      state.role === "owner" ? btn("＋ " + l.add, "workshop-new", "") : "",
-    ) +
+    return (
+      pageHead(
+        "WORKSHOP SPACE",
+        t("eventsTitle"),
+        t("eventsDesc"),
+        state.role === "owner" ? btn("＋ " + l.add, "workshop-new", "") : "",
+      ) +
       `<div class="note" style="margin-bottom:17px">${t("eventNotice")}</div>` +
       FrogWorkshops.list(state, state.locale, state.role === "owner") +
-      FrogRegistrations.view(state, state.selectedEvent, registrationQuery, state.locale);
+      FrogRegistrations.view(state, state.selectedEvent, registrationQuery, state.locale)
+    );
   }
   function queueColumns(tv = false) {
     const columns = [
@@ -773,32 +800,58 @@
       ["waiting", t("upNext")],
       ["completed", t("completed")],
     ];
-    return '<div class="queue-grid">' + columns.map(([status, label]) => {
-      const tickets = eventTickets().filter(ticket => ticket.status === status);
-      const displayed = tv ? tickets.slice(0, 6) : tickets;
-      const cards = displayed.map(ticket => {
-        const next = FrogQueue.check(state, state.selectedEvent, ticket.id, state.locale);
-        const control = !tv && next.next
-          ? btn(t("next") + " →", "advance:" + ticket.id, "secondary small")
-          : "";
-        const name = tv ? "" : '<small>' + esc(ticket.customer) + '</small>';
-        const updated = !tv && ticket.updatedAt
-          ? '<small>' + date(ticket.updatedAt) + ' ' + time(ticket.updatedAt) + '</small>'
-          : "";
-        return '<div class="ticket-card"><strong>' + esc(ticket.id) +
-          '</strong>' + name + updated + control + '</div>';
-      }).join("");
-      const color = status === "in_progress" ? "purple" :
-        status === "waiting" ? "amber" : "green";
-      return '<section class="panel queue-col"><header><h3>' + label +
-        '</h3>' + badge(String(tickets.length), color) +
-        '</header>' + (cards || '<p class="muted" style="padding:20px 8px;font-size:10px">' +
-        t("emptyQueue") + '</p>') +
-        (tv && tickets.length > displayed.length
-          ? '<p class="muted" style="padding:10px 8px;font-size:10px">+' +
-            (tickets.length - displayed.length) + ' tickets</p>'
-          : "") + '</section>';
-    }).join("") + '</div>';
+    return (
+      '<div class="queue-grid">' +
+      columns
+        .map(([status, label]) => {
+          const tickets = eventTickets().filter((ticket) => ticket.status === status);
+          const displayed = tv ? tickets.slice(0, 6) : tickets;
+          const cards = displayed
+            .map((ticket) => {
+              const next = FrogQueue.check(state, state.selectedEvent, ticket.id, state.locale);
+              const control =
+                !tv && next.next
+                  ? btn(t("next") + " →", "advance:" + ticket.id, "secondary small")
+                  : "";
+              const name = tv ? "" : "<small>" + esc(ticket.customer) + "</small>";
+              const updated =
+                !tv && ticket.updatedAt
+                  ? "<small>" + date(ticket.updatedAt) + " " + time(ticket.updatedAt) + "</small>"
+                  : "";
+              return (
+                '<div class="ticket-card"><strong>' +
+                esc(ticket.id) +
+                "</strong>" +
+                name +
+                updated +
+                control +
+                "</div>"
+              );
+            })
+            .join("");
+          const color =
+            status === "in_progress" ? "purple" : status === "waiting" ? "amber" : "green";
+          return (
+            '<section class="panel queue-col"><header><h3>' +
+            label +
+            "</h3>" +
+            badge(String(tickets.length), color) +
+            "</header>" +
+            (cards ||
+              '<p class="muted" style="padding:20px 8px;font-size:10px">' +
+                t("emptyQueue") +
+                "</p>") +
+            (tv && tickets.length > displayed.length
+              ? '<p class="muted" style="padding:10px 8px;font-size:10px">+' +
+                (tickets.length - displayed.length) +
+                " tickets</p>"
+              : "") +
+            "</section>"
+          );
+        })
+        .join("") +
+      "</div>"
+    );
   }
   function queue() {
     const newly = eventTickets().filter(
@@ -815,24 +868,50 @@
     );
   }
   function inventory() {
-    const low = state.products.filter(p => p.stock <= p.threshold).length;
-    const headings = [t("product"), t("sku"), t("stock"), t("threshold"),
-      t("status"), t("actions")].map(label => "<th>" + label + "</th>").join("");
-    const body = state.products.map(p => '<tr><td><strong>' + esc(p.emoji) +
-      ' ' + esc(p.name) + '</strong></td><td><span class="muted">' +
-      esc(p.id) + '</span></td><td><strong>' + p.stock + '</strong></td><td>' +
-      p.threshold + '</td><td>' +
-      badge(p.stock === 0 ? t("stockOut") :
-        p.stock <= p.threshold ? t("stockLow") : t("stockOk"),
-        p.stock === 0 ? "red" : p.stock <= p.threshold ? "amber" : "green") +
-      '</td><td>' + btn(t("stockEdit"), "stock:" + p.id, "secondary small") +
-      '</td></tr>').join("");
-    return pageHead("STOCK", t("inventoryTitle"), t("inventoryDesc"),
-      badge(low + " " + t("lowCount"), low ? "amber" : "green")) +
-      '<div class="note" style="margin-bottom:18px">' + t("inventoryHint") +
+    const low = state.products.filter((p) => p.stock <= p.threshold).length;
+    const headings = [t("product"), t("sku"), t("stock"), t("threshold"), t("status"), t("actions")]
+      .map((label) => "<th>" + label + "</th>")
+      .join("");
+    const body = state.products
+      .map(
+        (p) =>
+          "<tr><td><strong>" +
+          esc(p.emoji) +
+          " " +
+          esc(p.name) +
+          '</strong></td><td><span class="muted">' +
+          esc(p.id) +
+          "</span></td><td><strong>" +
+          p.stock +
+          "</strong></td><td>" +
+          p.threshold +
+          "</td><td>" +
+          badge(
+            p.stock === 0 ? t("stockOut") : p.stock <= p.threshold ? t("stockLow") : t("stockOk"),
+            p.stock === 0 ? "red" : p.stock <= p.threshold ? "amber" : "green",
+          ) +
+          "</td><td>" +
+          btn(t("stockEdit"), "stock:" + p.id, "secondary small") +
+          "</td></tr>",
+      )
+      .join("");
+    return (
+      pageHead(
+        "STOCK",
+        t("inventoryTitle"),
+        t("inventoryDesc"),
+        badge(low + " " + t("lowCount"), low ? "amber" : "green"),
+      ) +
+      '<div class="note" style="margin-bottom:18px">' +
+      t("inventoryHint") +
       '</div><section class="panel"><div class="table-scroll"><table class="data-table">' +
-      '<thead><tr>' + headings + '</tr></thead><tbody>' + body +
-      '</tbody></table></div></section>' + FrogStock.view(state, state.locale);
+      "<thead><tr>" +
+      headings +
+      "</tr></thead><tbody>" +
+      body +
+      "</tbody></table></div></section>" +
+      FrogStock.view(state, state.locale)
+    );
   }
   function reports() {
     if (state.role === "staff")
@@ -980,8 +1059,7 @@
     for (const i of items) {
       const p = product(i.productId);
       p.stock -= i.qty;
-      FrogStock.log(state, i.productId, -i.qty, "sale",
-        "Order " + id, order.createdAt, id);
+      FrogStock.log(state, i.productId, -i.qty, "sale", "Order " + id, order.createdAt, id);
     }
     persist();
     saleResult = order;
@@ -1038,7 +1116,7 @@
     }
     const eventOption = e.target.closest("[data-event-option]");
     if (eventOption) {
-      const selected = state.events.find(item => item.id === eventOption.dataset.eventOption);
+      const selected = state.events.find((item) => item.id === eventOption.dataset.eventOption);
       if (!selected) return;
       const changed = state.selectedEvent !== selected.id;
       if (changed) {
@@ -1097,20 +1175,36 @@
       render();
     } else if (name === "registration-check-in" || name === "registration-undo") {
       const result = FrogRegistrations.update(
-        state, state.selectedEvent, arg,
+        state,
+        state.selectedEvent,
+        arg,
         name === "registration-check-in" ? "check-in" : "undo",
-        fixedNow(), state.locale
+        fixedNow(),
+        state.locale,
       );
       if (result.error) toast(result.error);
-      else { persist(); render(); toast(t("updated")); }
+      else {
+        persist();
+        render();
+        toast(t("updated"));
+      }
     } else if (name === "expense-new") editExpense();
     else if (name === "expense-edit") editExpense(arg);
     else if (name === "expense-archive" || name === "expense-restore") {
       if (state.role !== "owner") return;
-      const result = FrogExpenses.setArchived(state, state.selectedEvent, arg,
-        name === "expense-archive", state.locale);
+      const result = FrogExpenses.setArchived(
+        state,
+        state.selectedEvent,
+        arg,
+        name === "expense-archive",
+        state.locale,
+      );
       if (result.error) toast(result.error);
-      else { persist(); render(); toast(t("updated")); }
+      else {
+        persist();
+        render();
+        toast(t("updated"));
+      }
     } else if (name === "workshop-new") openWorkshopEditor();
     else if (name === "workshop-edit") openWorkshopEditor(arg);
     else if (name === "catalog-new") openProductEditor();
@@ -1183,9 +1277,12 @@
     const current = items.indexOf(document.activeElement);
     if (["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) {
       e.preventDefault();
-      const next = e.key === "Home" ? 0
-        : e.key === "End" ? items.length - 1
-        : (current + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
+      const next =
+        e.key === "Home"
+          ? 0
+          : e.key === "End"
+            ? items.length - 1
+            : (current + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
       items[next]?.focus();
     } else if (e.key === "Tab") {
       setEventMenuOpen(false);
@@ -1277,7 +1374,7 @@
   });
   function openWorkshopEditor(id = null) {
     if (state.role !== "owner") return;
-    const event = id ? state.events.find(item => item.id === id) : null;
+    const event = id ? state.events.find((item) => item.id === id) : null;
     if (id && !event) return;
     modal(FrogWorkshops.editor(event, state.locale));
     $("#workshop-form").dataset.original = id || "";
@@ -1484,7 +1581,9 @@
   }
   function editExpense(id = null) {
     if (state.role !== "owner") return;
-    const item = id ? FrogExpenses.entries(state, state.selectedEvent).find(e => e.id === id) : null;
+    const item = id
+      ? FrogExpenses.entries(state, state.selectedEvent).find((e) => e.id === id)
+      : null;
     if (id && !item) return;
     modal(FrogExpenses.editor(item, state.locale));
     $("#expense-form").dataset.id = id || "";
@@ -1493,8 +1592,14 @@
     if (state.role !== "owner") return;
     const form = $("#expense-form");
     if (!form || !form.reportValidity()) return;
-    const result = FrogExpenses.save(state, state.selectedEvent,
-      Object.fromEntries(new FormData(form)), form.dataset.id || null, fixedNow(), state.locale);
+    const result = FrogExpenses.save(
+      state,
+      state.selectedEvent,
+      Object.fromEntries(new FormData(form)),
+      form.dataset.id || null,
+      fixedNow(),
+      state.locale,
+    );
     if (result.error) {
       const error = $("#expense-error");
       error.textContent = result.error;
@@ -1516,8 +1621,15 @@
     const form = $("#stock-movement-form");
     if (!form || !form.reportValidity()) return;
     const fields = Object.fromEntries(new FormData(form));
-    const result = FrogStock.apply(state, form.dataset.product,
-      fields.kind, fields.quantity, fields.reason, fixedNow(), state.locale);
+    const result = FrogStock.apply(
+      state,
+      form.dataset.product,
+      fields.kind,
+      fields.quantity,
+      fields.reason,
+      fixedNow(),
+      state.locale,
+    );
     if (result.error) {
       const error = $("#stock-error");
       error.textContent = result.error;

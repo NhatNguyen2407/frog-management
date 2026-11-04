@@ -8,11 +8,17 @@ runInNewContext(readFileSync("public/prototype/expenses.js", "utf8"), context);
 const { ensure, total, save, setArchived, dailySales, validate, view } = context.FrogExpenses;
 
 const state = () => ({
-  events: [{ id: "cozy", date: "2026-10-25", expense: 120000 },
-    { id: "autumn", date: "2026-11-01", expense: 0 }]
+  events: [
+    { id: "cozy", date: "2026-10-25", expense: 120000 },
+    { id: "autumn", date: "2026-11-01", expense: 0 },
+  ],
 });
-const form = { date: "2026-11-02", amount: "30000", category: "supplies",
-  description: "Workshop materials" };
+const form = {
+  date: "2026-11-02",
+  amount: "30000",
+  category: "supplies",
+  description: "Workshop materials",
+};
 
 test("one-time migration keeps old event expense without duplicating it", () => {
   const s = state();
@@ -48,33 +54,36 @@ test("void/restoration retain history and cannot be applied twice", () => {
 test("invalid amounts, dates, category and description are rejected", () => {
   const s = state();
   for (const bad of [
-    { ...form, amount: "0" }, { ...form, amount: "1.5" },
-    { ...form, date: "2026-02-30" }, { ...form, category: "nope" },
-    { ...form, description: "x" }
-  ]) assert.ok(validate(s, "cozy", bad).error);
+    { ...form, amount: "0" },
+    { ...form, amount: "1.5" },
+    { ...form, date: "2026-02-30" },
+    { ...form, category: "nope" },
+    { ...form, description: "x" },
+  ])
+    assert.ok(validate(s, "cozy", bad).error);
   assert.equal(s.expenses, undefined);
 });
 
 test("daily sales use Paid orders by Vietnam calendar date, excluding refunds", () => {
   const orders = [
-    { status: "paid", createdAt: "2026-11-01T18:00:00Z",
-      items: [{ qty: 2, price: 50000 }] },
-    { status: "paid", createdAt: "2026-11-02T04:00:00Z",
-      items: [{ qty: 1, price: 20000 }] },
-    { status: "refunded", createdAt: "2026-11-02T04:00:00Z",
-      items: [{ qty: 1, price: 70000 }] },
-    { status: "unpaid", createdAt: "2026-11-02T04:00:00Z",
-      items: [{ qty: 1, price: 30000 }] }
+    { status: "paid", createdAt: "2026-11-01T18:00:00Z", items: [{ qty: 2, price: 50000 }] },
+    { status: "paid", createdAt: "2026-11-02T04:00:00Z", items: [{ qty: 1, price: 20000 }] },
+    { status: "refunded", createdAt: "2026-11-02T04:00:00Z", items: [{ qty: 1, price: 70000 }] },
+    { status: "unpaid", createdAt: "2026-11-02T04:00:00Z", items: [{ qty: 1, price: 30000 }] },
   ];
   const result = dailySales(orders, new Date("2026-11-02T11:00:00Z"));
   assert.equal(result.days.length, 7);
-  assert.equal(result.days.find(d => d.date === "2026-11-02").value, 120000);
-  assert.equal(result.days.reduce((a, d) => a + d.value, 0), 120000);
+  assert.equal(result.days.find((d) => d.date === "2026-11-02").value, 120000);
+  assert.equal(
+    result.days.reduce((a, d) => a + d.value, 0),
+    120000,
+  );
 });
 
 test("chart falls back to last sale for historical demo orders", () => {
-  const orders = [{ status: "paid", createdAt: "2026-10-15T08:00:00Z",
-    items: [{ qty: 1, price: 100000 }] }];
+  const orders = [
+    { status: "paid", createdAt: "2026-10-15T08:00:00Z", items: [{ qty: 1, price: 100000 }] },
+  ];
   const result = dailySales(orders, new Date("2026-11-02T11:00:00Z"));
   assert.equal(result.historical, true);
   assert.equal(result.end, "2026-10-15");

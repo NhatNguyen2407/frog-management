@@ -18,7 +18,10 @@
   color: var(--fg);
   padding: 7px 11px;
   text-align: left;
-  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    box-shadow 0.15s;
 }
 
 .event-trigger:hover,

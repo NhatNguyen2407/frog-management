@@ -90,9 +90,12 @@
       (ticketId && eventName
         ? '<div class="staff-meta"><span>Workshop</span><b>' +
           escapeText(eventName) +
-          '</b></div>' +
-          (eventDate ? '<div class="staff-meta"><span>Ngày</span><b>' +
-            formattedDate(eventDate) + "</b></div>" : "")
+          "</b></div>" +
+          (eventDate
+            ? '<div class="staff-meta"><span>Ngày</span><b>' +
+              formattedDate(eventDate) +
+              "</b></div>"
+            : "")
         : "") +
       '<div class="staff-meta"><span>Đặt lúc</span><b>' +
       formattedDate(order.createdAt) +

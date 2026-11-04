@@ -17,20 +17,20 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 
 ## Progress
 
-| Step | Deliverable                                                         | Status                                  | Implemented on |
-| ---- | ------------------------------------------------------------------- | --------------------------------------- | -------------- |
-| 1.1  | Product Management: list, search, create, edit, archive/restore     | Code complete                           | 2026-10-26     |
-| 1.2  | POS: per-line custom notes, stock validation, workshop-ticket rules | Accepted - 7/7 manual checks            | 2026-10-26     |
-| 1.3  | Orders: open/unpaid, paid, cancel/restock, refund, history          | Accepted - 9/9 manual checks            | 2026-10-26     |
-| 1.4a | Compact customer bill, 76 x 130 mm label                            | Printed on A318BT - content QA pending   | 2026-10-28     |
-| 1.4b | Staff preparation slip and dual-print flow                          | Two-label print passed - full QA pending | 2026-10-29     |
-| 2.1a | Workshops: create/edit, dates, capacity, status, ticket prefixes | Functional QA accepted - UI regression pending | 2026-10-30 |
-| 2.1b | Registrations, attendee list and check-in | Functional QA accepted - UI regression pending | 2026-11-02 |
-| 2.2  | Queue transitions, stock movements and history                   | Functional QA accepted - UI regression pending | 2026-11-02     |
-| 2.3  | Expenses and transaction-based dashboard                           | Functional QA accepted - UI regression pending | 2026-11-02     |
-| 3.1  | Reports, CSV export and customer history                            | Planned                                 | -              |
-| 3.2  | Responsive/UX testing and code cleanup                              | Planned                                 | -              |
-| 4    | Connect Supabase, authentication and deployment                     | Deferred                                | -              |
+| Step | Deliverable                                                         | Status                                         | Implemented on |
+| ---- | ------------------------------------------------------------------- | ---------------------------------------------- | -------------- |
+| 1.1  | Product Management: list, search, create, edit, archive/restore     | Code complete                                  | 2026-10-26     |
+| 1.2  | POS: per-line custom notes, stock validation, workshop-ticket rules | Accepted - 7/7 manual checks                   | 2026-10-26     |
+| 1.3  | Orders: open/unpaid, paid, cancel/restock, refund, history          | Accepted - 9/9 manual checks                   | 2026-10-26     |
+| 1.4a | Compact customer bill, 76 x 130 mm label                            | Printed on A318BT - content QA pending         | 2026-10-28     |
+| 1.4b | Staff preparation slip and dual-print flow                          | Two-label print passed - full QA pending       | 2026-10-29     |
+| 2.1a | Workshops: create/edit, dates, capacity, status, ticket prefixes    | Functional QA accepted - UI regression pending | 2026-10-30     |
+| 2.1b | Registrations, attendee list and check-in                           | Functional QA accepted - UI regression pending | 2026-11-02     |
+| 2.2  | Queue transitions, stock movements and history                      | Functional QA accepted - UI regression pending | 2026-11-02     |
+| 2.3  | Expenses and transaction-based dashboard                            | Functional QA accepted - UI regression pending | 2026-11-02     |
+| 3.1  | Reports, CSV export and customer history                            | Planned                                        | -              |
+| 3.2  | Responsive/UX testing and code cleanup                              | Planned                                        | -              |
+| 4    | Connect Supabase, authentication and deployment                     | Deferred                                       | -              |
 
 ## Completed increments
 

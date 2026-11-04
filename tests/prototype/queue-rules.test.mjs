@@ -9,7 +9,7 @@ const { advance, check } = context.FrogQueue;
 
 const setup = (payment = "paid", status = "registered") => ({
   orders: [{ id: "FG-1", eventId: "cozy", status: payment }],
-  tickets: [{ id: "COZY-001", eventId: "cozy", orderId: "FG-1", status }]
+  tickets: [{ id: "COZY-001", eventId: "cozy", orderId: "FG-1", status }],
 });
 
 test("ticket follows the valid queue path and records history", () => {

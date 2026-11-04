@@ -63,8 +63,16 @@
   font-size: 10px;
 }
 @media (max-width: 720px) {
-  .registrations-panel { padding: 14px; }
-  .registration-stats { width: 100%; }
-  .registration-stat { flex: 1 1 76px; }
-  .registration-search { max-width: none; }
+  .registrations-panel {
+    padding: 14px;
+  }
+  .registration-stats {
+    width: 100%;
+  }
+  .registration-stat {
+    flex: 1 1 76px;
+  }
+  .registration-search {
+    max-width: none;
+  }
 }

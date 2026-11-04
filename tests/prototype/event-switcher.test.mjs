@@ -8,7 +8,7 @@ runInNewContext(readFileSync("public/prototype/event-switcher.js", "utf8"), cont
 const { render } = context.FrogEventSwitcher;
 const events = [
   { id: "cozy", name: "Cozy Workshop", date: "2026-10-25", status: "active" },
-  { id: "autumn", name: "Autumn Art Weekend", date: "2026-11-01", status: "planned" }
+  { id: "autumn", name: "Autumn Art Weekend", date: "2026-11-01", status: "planned" },
 ];
 
 test("selects the saved event and provides accessible menu semantics", () => {
@@ -29,7 +29,10 @@ test("renders English labels while preserving event IDs", () => {
 });
 
 test("escapes untrusted event names and identifiers", () => {
-  const html = render([{ id: "x\" onclick=\"bad", name: "<script>test</script>", date: "", status: "active" }], "x\" onclick=\"bad");
+  const html = render(
+    [{ id: 'x" onclick="bad', name: "<script>test</script>", date: "", status: "active" }],
+    'x" onclick="bad',
+  );
   assert.doesNotMatch(html, /<script>/);
   assert.match(html, /&lt;script&gt;/);
   assert.match(html, /&quot;/);

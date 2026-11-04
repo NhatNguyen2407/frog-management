@@ -81,8 +81,7 @@
       }
       for (const [product, qty] of changes) {
         product.stock += qty;
-        FrogStock.log(state, product.id, qty, "cancel",
-          "Order " + id, now, id);
+        FrogStock.log(state, product.id, qty, "cancel", "Order " + id, now, id);
       }
       order.status = "cancelled";
       order.cancelledAt = now;

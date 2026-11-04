@@ -12,23 +12,27 @@ function makeState() {
     orders: [
       { id: "FG-1", status: "paid", customer: "Minh Anh" },
       { id: "FG-2", status: "unpaid", customer: "An" },
-      { id: "FG-3", status: "refunded", customer: "Hà" }
+      { id: "FG-3", status: "refunded", customer: "Hà" },
     ],
     tickets: [
       { id: "COZY-1", orderId: "FG-1", eventId: "cozy", customer: "Minh Anh", status: "waiting" },
       { id: "COZY-2", orderId: "FG-2", eventId: "cozy", customer: "An", status: "registered" },
       { id: "COZY-3", orderId: "FG-3", eventId: "cozy", customer: "Hà", status: "completed" },
       { id: "COZY-4", orderId: "FG-1", eventId: "cozy", status: "cancelled" },
-      { id: "ART-1", orderId: "FG-1", eventId: "autumn", status: "waiting" }
-    ]
+      { id: "ART-1", orderId: "FG-1", eventId: "autumn", status: "waiting" },
+    ],
   };
 }
 
 test("registration metrics count paid, unpaid and check-ins per workshop", () => {
   const state = makeState();
   assert.equal(registrations(state, "cozy").length, 4);
-  assert.deepEqual(JSON.parse(JSON.stringify(summary(state, "cozy"))),
-    { registered: 2, arrived: 0, pending: 1, unpaid: 1 });
+  assert.deepEqual(JSON.parse(JSON.stringify(summary(state, "cozy"))), {
+    registered: 2,
+    arrived: 0,
+    pending: 1,
+    unpaid: 1,
+  });
   assert.equal(summary(state, "autumn").pending, 1);
 });
 
