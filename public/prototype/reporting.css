@@ -1,0 +1,41 @@
+.report-tools {
+  padding: 16px 20px;
+  margin-bottom: 18px;
+}
+.report-range,
+.report-exports {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.report-date {
+  display: grid;
+  flex: 1 1 150px;
+  gap: 6px;
+  min-width: 0;
+  font-size: 10px;
+  font-weight: 700;
+}
+.report-exports {
+  align-items: center;
+  margin-top: 14px;
+}
+.report-exports strong {
+  color: var(--sub);
+  font-size: 11px;
+}
+.report-note {
+  color: var(--sub);
+  font-size: 10px;
+  line-height: 1.6;
+  margin: 14px 0 0;
+}
+@media (max-width: 420px) {
+  .report-tools {
+    padding: 14px;
+  }
+  .report-exports .btn {
+    flex: 1 1 100px;
+  }
+}

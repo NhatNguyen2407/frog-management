@@ -438,6 +438,8 @@
     createTicket = true,
     registrationQuery = "",
     orderFilter = "all",
+    reportFrom = "",
+    reportTo = "",
     saleResult = null,
     display = false;
   const $ = (s, root = document) => root.querySelector(s);
@@ -569,11 +571,11 @@
     );
   const card = (title, subtitle, content, right = "") =>
     `<section class="panel"><div class="panel-head"><div><h3>${title}</h3>${subtitle ? `<p>${subtitle}</p>` : ""}</div>${right}</div><div class="panel-body">${content}</div></section>`;
-  function mix() {
-    const total = finance().revenue || 1;
+  function mix(orders = eventOrders()) {
+    const total = FrogOrders.financialTotals(orders).revenue || 1;
     return ["workshop", "food"]
       .map((cat, index) => {
-        let sum = paidOrders().reduce(
+        let sum = orders.filter((o) => o.status === "paid").reduce(
           (n, o) =>
             n +
             o.items
@@ -585,8 +587,8 @@
       })
       .join("");
   }
-  function chart() {
-    const result = FrogExpenses.dailySales(eventOrders());
+  function chart(orders = eventOrders()) {
+    const result = FrogExpenses.dailySales(orders);
     const max = Math.max(...result.days.map((d) => d.value), 1);
     const bars = result.days
       .map(
@@ -919,9 +921,12 @@
         pageHead("REPORTING", t("reportsTitle"), t("reportsDesc")) +
         `<div class="note">${t("noFinance")}</div>`
       );
-    const f = finance(),
-      rows = [];
-    for (const o of paidOrders())
+    const selected = FrogReporting.snapshot(
+      state, state.selectedEvent, reportFrom, reportTo, state.locale,
+    );
+    if (selected.error) return pageHead("ANALYTICS", t("reportsTitle"), selected.error);
+    const f = selected.totals, rows = [];
+    for (const o of selected.orders.filter((o) => o.status === "paid"))
       for (const i of o.items) {
         const p = product(i.productId);
         const row = rows.find((r) => r.id === i.productId);
@@ -939,6 +944,7 @@
     rows.sort((a, b) => b.revenue - a.revenue);
     return (
       pageHead("ANALYTICS", t("reportsTitle"), t("reportsDesc")) +
+      FrogReporting.controls(reportFrom, reportTo, state.locale) +
       `<div class="grid-kpi">${[
         [t("revenue"), money(f.revenue)],
         [t("costOfGoods"), money(f.cogs)],
@@ -951,8 +957,28 @@
         )
         .join(
           "",
-        )}</div><div class="report-grid">${card(t("salesChart"), t("salesChartHint"), chart())}${card(t("salesMix"), t("salesMixHint"), mix() + `<div class="note">${t("margin")}: ${f.revenue ? Math.round((f.profit / f.revenue) * 100) : 0}%</div>`)}</div><section class="panel section-gap"><div class="panel-head"><h3>${t("productReport")}</h3></div><div class="table-scroll"><table class="data-table"><thead><tr><th>${t("product")}</th><th>${t("items")}</th><th>${t("revenue")}</th><th>${t("share")}</th></tr></thead><tbody>${rows.map((r) => `<tr><td><strong>${esc(r.name)}</strong></td><td>${r.qty}</td><td>${money(r.revenue)}</td><td>${Math.round((r.revenue / (f.revenue || 1)) * 100)}%</td></tr>`).join("")}</tbody></table></div></section>${FrogExpenses.view(state, state.selectedEvent, state.locale)}`
+        )}</div><div class="report-grid">${card(t("salesChart"), t("salesChartHint"), chart(selected.orders))}${card(t("salesMix"), t("salesMixHint"), mix(selected.orders) + `<div class="note">${t("margin")}: ${f.revenue ? Math.round((f.profit / f.revenue) * 100) : 0}%</div>`)}</div><section class="panel section-gap"><div class="panel-head"><h3>${t("productReport")}</h3></div><div class="table-scroll"><table class="data-table"><thead><tr><th>${t("product")}</th><th>${t("items")}</th><th>${t("revenue")}</th><th>${t("share")}</th></tr></thead><tbody>${rows.map((r) => `<tr><td><strong>${esc(r.name)}</strong></td><td>${r.qty}</td><td>${money(r.revenue)}</td><td>${Math.round((r.revenue / (f.revenue || 1)) * 100)}%</td></tr>`).join("")}</tbody></table></div></section>${FrogExpenses.view(state, state.selectedEvent, state.locale)}`
     );
+  }
+  function downloadReport(kind) {
+    if (state.role !== "owner" || !["orders", "revenue", "expenses"].includes(kind)) return;
+    const selected = FrogReporting.snapshot(
+      state, state.selectedEvent, reportFrom, reportTo, state.locale,
+    );
+    if (selected.error) {
+      toast(selected.error);
+      return;
+    }
+    const content = FrogReporting.csv(kind, selected, state.locale);
+    const file = new Blob([content], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(file);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = [state.selectedEvent, kind, reportFrom || "all", reportTo || "all"].join("-") + ".csv";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   function settings() {
     return (
@@ -1188,7 +1214,12 @@
         render();
         toast(t("updated"));
       }
-    } else if (name === "expense-new") editExpense();
+    } else if (name === "report-clear") {
+      reportFrom = "";
+      reportTo = "";
+      render();
+    } else if (name === "report-export") downloadReport(arg);
+    else if (name === "expense-new") editExpense();
     else if (name === "expense-edit") editExpense(arg);
     else if (name === "expense-archive" || name === "expense-restore") {
       if (state.role !== "owner") return;
@@ -1292,6 +1323,19 @@
     if (e.target.id === "payment-status") payment = e.target.value;
     if (e.target.id === "payment-method") method = e.target.value;
     if (e.target.id === "with-ticket") createTicket = e.target.checked;
+    if (e.target.id === "report-from" || e.target.id === "report-to") {
+      const from = $("#report-from")?.value || "";
+      const to = $("#report-to")?.value || "";
+      const check = FrogReporting.snapshot(state, state.selectedEvent, from, to, state.locale);
+      if (check.error) {
+        toast(check.error);
+        e.target.value = e.target.id === "report-from" ? reportFrom : reportTo;
+        return;
+      }
+      reportFrom = from;
+      reportTo = to;
+      render();
+    }
   });
   document.addEventListener("input", (e) => {
     if (e.target.id === "registration-search") {

@@ -28,7 +28,7 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | 2.1b | Registrations, attendee list and check-in                           | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
 | 2.2  | Queue transitions, stock movements and history                      | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
 | 2.3  | Expenses and transaction-based dashboard                            | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
-| 3.1  | Reports, CSV export and customer history                            | Planned                                          | -              |
+| 3.1  | Reports, CSV export and customer history                            | 3.1a implemented - QA pending                                          | -              |
 | 3.2  | Responsive/UX testing and code cleanup                              | Planned                                          | -              |
 | 4    | Connect Supabase, authentication and deployment                     | Deferred                                         | -              |
 
@@ -66,6 +66,8 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 - 2026-11-04 - Sprint 2 functional acceptance: The project owner completed 12/12 manual functional test cases with no failures. Locally reported 55/55 unit tests, TypeScript typecheck and Next.js build all passed. Prettier flagged 25 files for formatting; final mobile UI and persistence regression remained outstanding.
 - 2026-11-04 - Final Sprint 2 cleanup prepared: Corrected the 320px Event Switcher alignment, displayed all Queue tickets in the admin view (TV display keeps the six-card layout and shows the additional count), and removed misleading Today highlighting from historical charts. Frog logo loading error traced to a stopped local dev server; no logo asset change is needed. Formatting and regression checks must pass before full Sprint 2 closure.
 - 2026-11-04 - Sprint 2 final acceptance: 12/12 functional cases passed; local checks reported 55/55 tests, TypeScript, Prettier and production build passing. The formatting changes were committed to main. A further mobile CSS correction was committed and the project owner confirmed the responsive overflow was resolved. Sprint 2 frontend acceptance is closed. Full multi-device persistence regression and detailed receipt-content QA remain separate pre-launch checks.
+
+- 2026-11-04 - Step 3.1a: Added workshop-scoped date filters to Reports with financial totals, chart, sales mix and product sales based on the same filtered order snapshot. Added UTF-8 BOM CSV downloads for Orders, Paid revenue lines and active Expenses. Current-status reporting is not an accounting ledger: paid/refunded orders are grouped by their status timestamps, when available. CSV protects against spreadsheet formula injection. Seven focused reporting checks passed; full local suite, formatting, build and browser/Excel acceptance are pending.
 
 ## Remaining design decisions
 
