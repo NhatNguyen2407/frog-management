@@ -93,3 +93,15 @@ test("English view and empty search results are clear", () => {
   assert.match(view(state, "", "en"), /Customer history|Matching orders|Search customer/);
   assert.match(view(state, "NOT_FOUND", "en"), /No matching orders found/);
 });
+
+test("customer history exposes localized cell labels for mobile cards", () => {
+  const state = makeState();
+  const vi = view(state, "Minh Anh", "vi");
+  const en = view(state, "Minh Anh", "en");
+  assert.match(vi, /data-label="Khách hàng"/);
+  assert.match(vi, /data-label="Workshop"/);
+  assert.match(vi, /data-label="Vé \/ Check-in"/);
+  assert.match(en, /data-label="Customer"/);
+  assert.match(en, /data-label="Ticket \/ Check-in"/);
+  assert.match(view(state, "NOT_FOUND"), /customer-empty/);
+});

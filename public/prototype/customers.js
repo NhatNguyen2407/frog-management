@@ -109,22 +109,27 @@
         }).format(date);
     };
     const stat = (n, label) => '<div class="customer-stat"><strong>' + n + '</strong><span>' + label + '</span></div>';
+    const cell = (label, value) =>
+      '<td data-label="' + escapeHtml(label) + '">' + value + "</td>";
     const rows = matches.map(({ order, event, ticket }) => {
       const ticketText = ticket
-        ? '<strong>' + escapeHtml(ticket.id) + '</strong><small>' +
-          (ticket.checkedInAt ? l.checked + " · " + formatDate(ticket.checkedInAt) : l.pending) + '</small>'
-        : '<span class="customer-muted">' + l.noTicket + '</span>';
+        ? "<strong>" + escapeHtml(ticket.id) + "</strong><small>" +
+          (ticket.checkedInAt ? l.checked + " · " + formatDate(ticket.checkedInAt) : l.pending) +
+          "</small>"
+        : '<span class="customer-muted">' + l.noTicket + "</span>";
       const products = (order.items || [])
         .map((item) => escapeHtml(item.name || item.productId || "") + " ×" + Number(item.qty || 0))
         .join(", ");
-      return '<tr><td><strong>' + escapeHtml(order.id) + '</strong><small>' +
-        formatDate(order.createdAt) + '</small></td><td>' +
-        escapeHtml(order.customer || l.fallback) + '</td><td>' +
-        escapeHtml(event?.name || l.missingEvent) + '</td><td>' +
-        escapeHtml(l[order.status] || order.status || "-") + '</td><td>' +
-        ticketText + '</td><td>' + (products || "-") +
-        '</td><td><button type="button" class="btn secondary small" data-act="details:' +
-        escapeHtml(order.id) + '">' + l.view + '</button></td></tr>';
+      return "<tr>" +
+        cell(l.order, "<strong>" + escapeHtml(order.id) + "</strong><small>" +
+          formatDate(order.createdAt) + "</small>") +
+        cell(l.customer, escapeHtml(order.customer || l.fallback)) +
+        cell(l.workshop, escapeHtml(event?.name || l.missingEvent)) +
+        cell(l.status, escapeHtml(l[order.status] || order.status || "-")) +
+        cell(l.ticket, ticketText) +
+        cell(l.items, products || "-") +
+        cell(l.actions, '<button type="button" class="btn secondary small" data-act="details:' +
+          escapeHtml(order.id) + '">' + l.view + "</button>") + "</tr>";
     }).join("");
     const headings = [l.order, l.customer, l.workshop, l.status, l.ticket, l.items, l.actions]
       .map(label => "<th>" + label + "</th>").join("");
@@ -136,7 +141,7 @@
       stat(stats.workshops, l.workshopCount) + stat(stats.checkIns, l.checkInCount) +
       '</div><p class="customer-notice">' + l.notice + '</p></div>' +
       '<div class="table-scroll"><table class="data-table customer-table"><thead><tr>' +
-      headings + '</tr></thead><tbody>' + (rows || '<tr><td colspan="7">' +
+      headings + '</tr></thead><tbody>' + (rows || '<tr class="customer-empty"><td colspan="7">' +
       l.empty + '</td></tr>') + '</tbody></table></div></section>';
   }
 

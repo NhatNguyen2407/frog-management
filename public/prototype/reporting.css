@@ -35,7 +35,18 @@
   .report-tools {
     padding: 14px;
   }
+  .report-date {
+    flex-basis: 100%;
+  }
+  .report-range > .btn {
+    width: 100%;
+  }
+  .report-exports strong {
+    flex-basis: 100%;
+  }
   .report-exports .btn {
     flex: 1 1 100px;
+    min-width: 0;
+    white-space: normal;
   }
 }

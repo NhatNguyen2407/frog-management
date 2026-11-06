@@ -161,7 +161,14 @@ button:disabled {
 }
 .side-nav {
   display: grid;
+  align-content: start;
   gap: 3px;
+  min-height: 0;
+  overflow-y: auto;
+  flex: 1 1 auto;
+}
+.sidebar-footer {
+  flex-shrink: 0;
 }
 .nav-link {
   border: 0;
@@ -1239,7 +1246,7 @@ button:disabled {
     overflow-wrap: anywhere;
   }
   .grid-kpi {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
   .kpi {
@@ -1252,7 +1259,7 @@ button:disabled {
   .bottom-grid,
   .report-grid,
   .pos-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .products-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

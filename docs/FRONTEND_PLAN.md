@@ -1,6 +1,6 @@
 # Frontend V1 - Plan and Progress
 
-Updated: 2026-11-04
+Updated: 2026-11-06
 
 ## Goal
 
@@ -29,7 +29,7 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | 2.2  | Queue transitions, stock movements and history                      | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
 | 2.3  | Expenses and transaction-based dashboard                            | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
 | 3.1  | Reports, CSV export and customer history                            | 3.1a/3.1b implemented - QA pending                                          | -              |
-| 3.2  | Responsive/UX testing and code cleanup                              | Planned                                          | -              |
+| 3.2  | Responsive/UX testing and code cleanup                              | 3.2a implemented - browser QA pending                                          | -              |
 | 4    | Connect Supabase, authentication and deployment                     | Deferred                                         | -              |
 
 ## Completed increments
@@ -70,6 +70,8 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 - 2026-11-04 - Step 3.1a: Added workshop-scoped date filters to Reports with financial totals, chart, sales mix and product sales based on the same filtered order snapshot. Added UTF-8 BOM CSV downloads for Orders, Paid revenue lines and active Expenses. Current-status reporting is not an accounting ledger: paid/refunded orders are grouped by their status timestamps, when available. CSV protects against spreadsheet formula injection. Seven focused reporting checks passed; full local suite, formatting, build and browser/Excel acceptance are pending.
 
 - 2026-11-04 - Step 3.1b: Added read-only Customer History in the owner prototype navigation. Search orders across workshops by name, order ID or linked ticket ID; display workshop, status, products, ticket/check-in and open the existing order detail. Summary counts matching orders, check-ins and distinct workshops with checked-in tickets. Same-name records remain separate because there is no verified customer ID. Added 7 focused tests (7/7 passed in isolated module checks). Full local test suite, formatting, build and browser acceptance remain pending until Sprint 3 QA.
+
+- 2026-11-06 - Step 3.2a: Refined small-screen Reports date/export controls and rendered Customer History rows as labeled mobile cards without changing desktop tables. Made sidebar navigation scroll on short screens and tightened mobile grid sizing. Added a Customer History mobile-label assertion; its focused test suite passed 8/8 in an isolated check. Browser responsiveness, full local tests, formatting and build remain pending Sprint 3 final QA.
 
 ## Remaining design decisions
 
