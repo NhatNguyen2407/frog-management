@@ -29,7 +29,7 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | 2.2  | Queue transitions, stock movements and history                      | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
 | 2.3  | Expenses and transaction-based dashboard                            | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
 | 3.1  | Reports, CSV export and customer history                            | 3.1a/3.1b implemented - QA pending                                          | -              |
-| 3.2  | Responsive/UX testing and code cleanup                              | 3.2a implemented - browser QA pending                                          | -              |
+| 3.2  | Responsive/UX testing and code cleanup                              | 3.2a/3.2b implemented - QA pending                                          | -              |
 | 4    | Connect Supabase, authentication and deployment                     | Deferred                                         | -              |
 
 ## Completed increments
@@ -72,6 +72,8 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 - 2026-11-04 - Step 3.1b: Added read-only Customer History in the owner prototype navigation. Search orders across workshops by name, order ID or linked ticket ID; display workshop, status, products, ticket/check-in and open the existing order detail. Summary counts matching orders, check-ins and distinct workshops with checked-in tickets. Same-name records remain separate because there is no verified customer ID. Added 7 focused tests (7/7 passed in isolated module checks). Full local test suite, formatting, build and browser acceptance remain pending until Sprint 3 QA.
 
 - 2026-11-06 - Step 3.2a: Refined small-screen Reports date/export controls and rendered Customer History rows as labeled mobile cards without changing desktop tables. Made sidebar navigation scroll on short screens and tightened mobile grid sizing. Added a Customer History mobile-label assertion; its focused test suite passed 8/8 in an isolated check. Browser responsiveness, full local tests, formatting and build remain pending Sprint 3 final QA.
+
+- 2026-11-06 - Step 3.2b: Added shared localStorage persistence for prototype and print previews. Fresh demo state is now saved on initial load so independent print tabs can read it. Persisted orders, tickets, expenses and selected event survive refresh; malformed or inaccessible storage produces a visible warning instead of crashing or silently replacing the original data. Reset explicitly permits replacing invalid stored data. Print preview/reprint remains read-only, never marks a ticket printed or confirms actual printer success. Customer-only and staff-only print modes now validate their respective templates independently. Seven focused persistence/print checks passed in isolated execution; local full suite/build, receipt-content, physical printer and browser persistence acceptance are pending Sprint 3 QA.
 
 ## Remaining design decisions
 

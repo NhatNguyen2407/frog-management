@@ -1,6 +1,5 @@
 (() => {
   "use strict";
-  const STORAGE = "frog-management-prototype-v1";
   const vi = {
     workspace: "WORKSPACE",
     demoMode: "Không gian demo",
@@ -414,14 +413,15 @@
       locale: "vi",
     };
   };
-  let state;
+  let loaded;
   try {
-    const stored = JSON.parse(localStorage.getItem(STORAGE));
-    state =
-      stored && Array.isArray(stored.orders) && Array.isArray(stored.products) ? stored : initial();
+    loaded = FrogPersistence.load(localStorage, initial);
   } catch {
-    state = initial();
+    loaded = { state: initial(), source: "unavailable" };
   }
+  let state = loaded.state;
+  let storageLocked = loaded.source === "invalid";
+  let storageIssue = storageLocked ? "invalid" : null;
   for (const order of state.orders)
     for (const item of order.items || [])
       item.name ||= state.products.find((p) => p.id === item.productId)?.name || item.productId;
@@ -479,7 +479,17 @@
     waiting: eventTickets().filter((k) => k.status === "waiting").length,
   });
   const product = (id) => state.products.find((p) => p.id === id);
-  const persist = () => localStorage.setItem(STORAGE, JSON.stringify(state));
+  const persist = () => {
+    if (storageLocked) return false;
+    let saved = false;
+    try {
+      saved = FrogPersistence.save(localStorage, state);
+    } catch {
+      saved = false;
+    }
+    storageIssue = saved ? null : "unavailable";
+    return saved;
+  };
   const toast = (text) => {
     const el = $("#toast");
     el.textContent = text;
@@ -1000,7 +1010,18 @@
   const pages = { dashboard, pos, products, orders, customers, events, queue, inventory, reports, settings };
   function render() {
     navRender();
-    $("#main").innerHTML = pages[page]();
+    const warning = storageIssue
+      ? '<div class="note" role="alert" style="margin-bottom:18px">' +
+        (storageIssue === "invalid"
+          ? state.locale === "vi"
+            ? "Dữ liệu demo đã lưu không hợp lệ. Bản cũ được giữ nguyên; vào Cài đặt > Đặt lại dữ liệu demo để xác nhận khôi phục."
+            : "Stored demo data is invalid. The original is untouched; use Settings > Reset demo data to confirm a fresh start."
+          : state.locale === "vi"
+            ? "Trình duyệt không thể lưu dữ liệu demo. Các thay đổi có thể mất sau khi tải lại."
+            : "Browser storage is unavailable. Demo changes may be lost after refresh.") +
+        "</div>"
+      : "";
+    $("#main").innerHTML = warning + pages[page]();
     const s = $("#pos-search");
     if (s && query) {
       /* preserve text between rerenders through state */
@@ -1716,6 +1737,7 @@
     const act = e.target.closest("[data-act]")?.dataset.act || "";
     if (act === "confirm-reset") {
       state = initial();
+      storageLocked = false;
       persist();
       cart = [];
       nextCartKey = 0;
@@ -1732,5 +1754,6 @@
     const desired = window.location.hash.slice(1);
     if (pages[desired]) page = desired;
   }
+  if (!storageLocked) persist();
   render();
 })();

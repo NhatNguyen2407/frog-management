@@ -101,7 +101,7 @@
 
   let state;
   try {
-    state = JSON.parse(localStorage.getItem("frog-management-prototype-v1"));
+    state = FrogPersistence.read(localStorage);
   } catch {
     state = null;
   }

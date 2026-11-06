@@ -1,7 +1,6 @@
 (() => {
   "use strict";
 
-  const storageKey = "frog-management-prototype-v1";
   const search = new URLSearchParams(location.search);
   const orderId = search.get("order");
   const mode = ["both", "customer", "staff"].includes(search.get("mode"))
@@ -10,7 +9,7 @@
 
   let state;
   try {
-    state = JSON.parse(localStorage.getItem(storageKey));
+    state = FrogPersistence.read(localStorage);
   } catch {
     state = null;
   }
@@ -21,7 +20,7 @@
   const customer = globalThis.FrogCustomerBill.renderBill(state, orderId);
   const staff = globalThis.FrogStaffSlip.renderStaffSlip(state, orderId);
 
-  if (!customer || !staff) {
+  if ((mode !== "staff" && !customer) || (mode !== "customer" && !staff)) {
     pages.textContent = "Không tìm thấy đơn hàng demo.";
     printButton.disabled = true;
     return;
