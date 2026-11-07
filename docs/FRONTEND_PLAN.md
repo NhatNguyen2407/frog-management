@@ -29,7 +29,7 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | 2.2  | Queue transitions, stock movements and history                      | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
 | 2.3  | Expenses and transaction-based dashboard                            | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
 | 3.1  | Reports, CSV export and customer history                            | 3.1a/3.1b implemented - QA pending                                          | -              |
-| 3.2  | Responsive/UX testing and code cleanup                              | 3.2a/3.2b implemented - QA pending                                          | -              |
+| 3.2  | Responsive/UX testing and code cleanup                              | 3.2a/3.2b/3.2c code complete - QA pending                                          | -              |
 | 4    | Connect Supabase, authentication and deployment                     | Deferred                                         | -              |
 
 ## Completed increments
@@ -78,6 +78,8 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 - 2026-11-07 - Sprint 3 manual QA: Project owner reported 13/14 checks passed. QA-09 failed because refreshing the browser returned to Overview instead of the current page; QA-10 confirmed persistence of workshop, check-in and expenses. Identified navigation root cause: changing the page did not update the URL hash, although initial load already tried to restore it. Added URL-hash navigation and refresh restoration, owner-only route guards, and fixed the stale storage key reference in cross-tab synchronization. Six focused navigation checks passed in isolated execution. QA-09 browser retest, full automated suite, format check, typecheck and build are pending. Do not mark Sprint 3 accepted until QA-09 and all required checks pass.
 
 - 2026-11-07 - QA-09 follow-up: Refresh now kept the selected page, but the owner reported the newly created order view reset. Investigation found the checkout confirmation was only an in-memory saleResult, and checkout showed success even if localStorage saving failed. Added a session-scoped last-sale reference that restores the confirmation only when the saved order exists for the selected workshop; new-sale/navigation/reset clears it. Checkout now blocks a locked store and rolls back unsaved changes if persistence fails, showing an error rather than a false success. Eleven focused persistence/printing tests passed in isolated execution. QA-09 remains pending owner browser retest; full npm suite, formatting, typecheck and build remain pending.
+
+- 2026-11-07 - Step 3.2c: Added per-workshop POS Draft Autosave using a separate localStorage key. Restores unsent cart items, quantity, notes, customer name, payment method/status and ticket preference after refresh. Workshop switches preserve separate drafts; successful checkout clears only the completed workshop's draft and Settings reset clears all draft records. Loading skips unavailable/invalid product lines with a visible note. Drafts never create orders, consume inventory or affect revenue. Storage failures show a draft warning. Nine focused draft tests passed in isolated execution. Manual draft persistence, full npm test suite, format check, typecheck and build remain pending before Sprint 3 closure.
 
 ## Remaining design decisions
 

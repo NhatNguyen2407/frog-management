@@ -444,6 +444,8 @@
     reportFrom = "",
     reportTo = "",
     saleResult = null,
+    draftSaveFailed = false,
+    draftSkipped = 0,
     display = false;
   const $ = (s, root = document) => root.querySelector(s);
   const esc = (value = "") =>
@@ -486,6 +488,34 @@
       return null;
     }
   };
+  const draftStorage = () => {
+    try {
+      return window.localStorage;
+    } catch {
+      return null;
+    }
+  };
+  function restoreDraft() {
+    const draft = FrogPosDraft.load(draftStorage(), state.selectedEvent, state.products);
+    cart = draft.cart;
+    nextCartKey = cart.length;
+    customer = draft.customer;
+    method = draft.method;
+    payment = draft.payment;
+    createTicket = draft.createTicket;
+    draftSkipped = draft.skipped;
+    draftSaveFailed = false;
+  }
+  function saveDraft() {
+    const saved = FrogPosDraft.save(draftStorage(), state.selectedEvent,
+      { cart, customer, method, payment, createTicket }, state.products);
+    draftSaveFailed = !saved;
+    const status = $("#pos-draft-status");
+    if (status) status.textContent = saved
+      ? (state.locale === "vi" ? "Bản nháp đã được lưu trong trình duyệt." : "Draft saved in this browser.")
+      : (state.locale === "vi" ? "Không lưu được bản nháp. Dữ liệu có thể mất sau refresh." : "Draft could not be saved. Changes may be lost after refresh.");
+    return saved;
+  }
   const persist = () => {
     if (storageLocked) return false;
     let saved = false;
@@ -701,6 +731,13 @@
       `<button type="button" class="filter ${category === id ? "active" : ""}" data-act="cat:${id}">${label}</button>`;
     return (
       pageHead("THE FROG / POS", t("posTitle"), t("posDesc"), badge(t("mockNotice"), "purple")) +
+      '<div class="note" id="pos-draft-status" style="margin-bottom:14px">' +
+      (draftSaveFailed
+        ? state.locale === "vi" ? "Không lưu được bản nháp. Dữ liệu đang nhập có thể mất sau refresh." : "Could not save draft. Your inputs may be lost after refresh."
+        : draftSkipped
+          ? state.locale === "vi" ? "Một số sản phẩm trong bản nháp không còn trong danh mục." : "Some draft items are no longer in the catalogue."
+          : state.locale === "vi" ? "Bản nháp tự động lưu trên trình duyệt này, riêng cho từng workshop." : "Draft auto-saves in this browser, separately for each workshop.") +
+      '</div>' +
       `<div class="pos-layout"><div><div class="filter-row">${categoryButton("all", t("all"))}${categoryButton("workshop", t("workshop"))}${categoryButton("food", t("food"))}</div><input id="pos-search" class="search" placeholder="${t("search")}" value="${esc(query)}" aria-label="${t("search")}"/><div class="products-grid" style="margin-top:16px">${products.map((p, i) => `<button type="button" class="product" data-act="add:${p.id}" ${FrogRegister.canAdd(cart, p) ? "" : "disabled"}><div class="product-art ${p.category === "food" ? "peach" : i % 2 ? "mint" : ""}">${p.emoji}</div><span class="product-name">${esc(p.name)}</span><span class="product-price">${money(p.price)}</span><span class="product-sku">${esc(p.id)}</span><span class="product-availability">${p.stock ? `${reg.inStock}: ${p.stock - FrogRegister.quantity(cart, p.id)}` : reg.soldOut}</span></button>`).join("")}</div></div><section class="panel cart"><div class="panel-head"><div><h3>🛒 ${t("cart")}</h3><p>${t("cartDesc")}</p></div>${badge(String(cart.reduce((n, i) => n + i.qty, 0)), "purple")}</div><div class="panel-body"><div class="cart-items">${
         cart.length
           ? cart
@@ -1038,6 +1075,7 @@
     if (display) renderTv();
   }
   function go(next) {
+    if (page === "pos") saveDraft();
     page = FrogNavigation.visit(next, state.role, window.location, window.history);
     FrogPersistence.clearSale(saleSession());
     saleResult = null;
@@ -1141,9 +1179,14 @@
       return;
     }
     FrogPersistence.rememberSale(saleSession(), order.id);
+    FrogPosDraft.clear(draftStorage(), state.selectedEvent);
     saleResult = order;
     cart = [];
     customer = "";
+    method = "cash";
+    payment = "paid";
+    createTicket = true;
+    draftSaveFailed = false;
     render();
     toast(t("success"));
   }
@@ -1199,7 +1242,11 @@
       if (!selected) return;
       const changed = state.selectedEvent !== selected.id;
       if (changed) {
+        saveDraft();
+        FrogPersistence.clearSale(saleSession());
+        saleResult = null;
         state.selectedEvent = selected.id;
+        restoreDraft();
         persist();
         render();
         toast(t("updated"));
@@ -1232,11 +1279,13 @@
       const item = cart.find((i) => i.id === arg && !i.note);
       if (item) item.qty++;
       else cart.push({ id: arg, key: "L" + ++nextCartKey, qty: 1, note: "" });
+      saveDraft();
       render();
     } else if (name === "plus") {
       const i = cart.find((k) => k.key === arg);
       if (i && FrogRegister.canAdd(cart, product(i.id))) i.qty++;
       else toast(FrogRegister.labels[state.locale].noStock);
+      saveDraft();
       render();
     } else if (name === "minus") {
       const i = cart.find((k) => k.key === arg);
@@ -1244,9 +1293,11 @@
         i.qty--;
         if (i.qty === 0) cart = cart.filter((k) => k.key !== arg);
       }
+      saveDraft();
       render();
     } else if (name === "remove") {
       cart = cart.filter((k) => k.key !== arg);
+      saveDraft();
       render();
     } else if (name === "checkout") completeSale();
     else if (name === "new-sale") {
@@ -1303,7 +1354,12 @@
       orderFilter = arg;
       render();
     } else if (name === "event") {
+      if (!state.events.some((event) => event.id === arg)) return;
+      saveDraft();
+      FrogPersistence.clearSale(saleSession());
+      saleResult = null;
       state.selectedEvent = arg;
+      restoreDraft();
       persist();
       render();
       toast(t("updated"));
@@ -1377,6 +1433,7 @@
     if (e.target.id === "payment-status") payment = e.target.value;
     if (e.target.id === "payment-method") method = e.target.value;
     if (e.target.id === "with-ticket") createTicket = e.target.checked;
+    if (["payment-status", "payment-method", "with-ticket"].includes(e.target.id)) saveDraft();
     if (e.target.id === "report-from" || e.target.id === "report-to") {
       const from = $("#report-from")?.value || "";
       const to = $("#report-to")?.value || "";
@@ -1414,10 +1471,16 @@
       }
       return;
     }
-    if (e.target.id === "customer-name") customer = e.target.value;
+    if (e.target.id === "customer-name") {
+      customer = e.target.value;
+      saveDraft();
+    }
     if (e.target.dataset.lineNote) {
       const line = cart.find((i) => i.key === e.target.dataset.lineNote);
-      if (line) line.note = e.target.value;
+      if (line) {
+        line.note = e.target.value;
+        saveDraft();
+      }
     }
     if (e.target.id === "catalog-search") {
       catalogQuery = e.target.value;
@@ -1511,7 +1574,11 @@
       error.hidden = false;
       return;
     }
-    if (!original) state.selectedEvent = result.event.id;
+    if (!original) {
+      saveDraft();
+      state.selectedEvent = result.event.id;
+      restoreDraft();
+    }
     persist();
     closeModal();
     render();
@@ -1767,9 +1834,15 @@
       state = initial();
       storageLocked = false;
       persist();
+      FrogPosDraft.clearAll(draftStorage());
       cart = [];
       nextCartKey = 0;
       customer = "";
+      method = "cash";
+      payment = "paid";
+      createTicket = true;
+      draftSaveFailed = false;
+      draftSkipped = 0;
       saleResult = null;
       FrogPersistence.clearSale(saleSession());
       page = FrogNavigation.visit("dashboard", state.role, window.location, window.history);
@@ -1784,5 +1857,6 @@
   if (window.location.hash && window.location.hash !== "#" + page)
     FrogNavigation.visit(page, state.role, window.location, window.history);
   if (!storageLocked) persist();
+  restoreDraft();
   render();
 })();
