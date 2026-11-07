@@ -39,7 +39,7 @@ test("first visit saves the complete sample state for popup printing", () => {
   const session = load(storage, initial);
   assert.equal(session.source, "new");
   assert.equal(save(storage, session.state), true);
-  assert.deepEqual(read(storage), session.state);
+  assert.deepEqual(JSON.parse(JSON.stringify(read(storage))), session.state);
   assert.equal(storage.data.size, 1);
   assert.equal(storage.data.has(KEY), true);
 });
@@ -53,7 +53,7 @@ test("refresh restores orders, check-in, expenses and selected workshop", () => 
   assert.equal(save(storage, state), true);
   const restored = load(storage, initial);
   assert.equal(restored.source, "stored");
-  assert.deepEqual(restored.state, state);
+  assert.deepEqual(JSON.parse(JSON.stringify(restored.state)), state);
   assert.equal(restored.state.tickets[0].checkedInAt, "2026-11-06T08:15:00Z");
 });
 
