@@ -1009,6 +1009,8 @@
   }
   const pages = { dashboard, pos, products, orders, customers, events, queue, inventory, reports, settings };
   function render() {
+    if (!FrogNavigation.allowed(page, state.role))
+      page = FrogNavigation.visit("dashboard", state.role, window.location, window.history);
     navRender();
     const warning = storageIssue
       ? '<div class="note" role="alert" style="margin-bottom:18px">' +
@@ -1029,7 +1031,7 @@
     if (display) renderTv();
   }
   function go(next) {
-    page = next;
+    page = FrogNavigation.visit(next, state.role, window.location, window.history);
     saleResult = null;
     display = false;
     $("#sidebar").classList.remove("open");
@@ -1452,12 +1454,18 @@
     }
   });
   window.addEventListener("storage", (e) => {
-    if (e.key === STORAGE) {
-      try {
-        state = JSON.parse(e.newValue) || initial();
-        render();
-      } catch {}
-    }
+    if (e.key !== FrogPersistence.KEY) return;
+    const restored = FrogPersistence.read(localStorage);
+    if (!restored) return;
+    state = restored;
+    storageIssue = null;
+    render();
+  });
+  window.addEventListener("hashchange", () => {
+    const target = FrogNavigation.resolve(window.location.hash, state.role);
+    if (target !== page) go(target);
+    else if (window.location.hash !== "#" + target)
+      FrogNavigation.visit(target, state.role, window.location, window.history);
   });
   function openWorkshopEditor(id = null) {
     if (state.role !== "owner") return;
@@ -1743,17 +1751,16 @@
       nextCartKey = 0;
       customer = "";
       saleResult = null;
-      page = "dashboard";
+      page = FrogNavigation.visit("dashboard", state.role, window.location, window.history);
       display = false;
       closeModal();
       render();
       toast(t("resetDone"));
     }
   });
-  if (window.location.hash) {
-    const desired = window.location.hash.slice(1);
-    if (pages[desired]) page = desired;
-  }
+  page = FrogNavigation.resolve(window.location.hash, state.role);
+  if (window.location.hash && window.location.hash !== "#" + page)
+    FrogNavigation.visit(page, state.role, window.location, window.history);
   if (!storageLocked) persist();
   render();
 })();
