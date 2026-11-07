@@ -48,5 +48,30 @@
     }
   }
 
-  globalThis.FrogPersistence = { KEY, read, load, save };
+  const LAST_SALE = "frog-management-prototype-last-sale";
+  function rememberSale(storage, orderId) {
+    try {
+      storage.setItem(LAST_SALE, orderId);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  function restoreSale(storage, state) {
+    try {
+      const id = storage.getItem(LAST_SALE);
+      return state.orders.find((order) => order.id === id && order.eventId === state.selectedEvent) || null;
+    } catch {
+      return null;
+    }
+  }
+  function clearSale(storage) {
+    try {
+      storage.removeItem(LAST_SALE);
+    } catch {
+      // Session storage may be disabled.
+    }
+  }
+
+  globalThis.FrogPersistence = { KEY, LAST_SALE, read, load, save, rememberSale, restoreSale, clearSale };
 })();

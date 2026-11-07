@@ -77,6 +77,8 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 
 - 2026-11-07 - Sprint 3 manual QA: Project owner reported 13/14 checks passed. QA-09 failed because refreshing the browser returned to Overview instead of the current page; QA-10 confirmed persistence of workshop, check-in and expenses. Identified navigation root cause: changing the page did not update the URL hash, although initial load already tried to restore it. Added URL-hash navigation and refresh restoration, owner-only route guards, and fixed the stale storage key reference in cross-tab synchronization. Six focused navigation checks passed in isolated execution. QA-09 browser retest, full automated suite, format check, typecheck and build are pending. Do not mark Sprint 3 accepted until QA-09 and all required checks pass.
 
+- 2026-11-07 - QA-09 follow-up: Refresh now kept the selected page, but the owner reported the newly created order view reset. Investigation found the checkout confirmation was only an in-memory saleResult, and checkout showed success even if localStorage saving failed. Added a session-scoped last-sale reference that restores the confirmation only when the saved order exists for the selected workshop; new-sale/navigation/reset clears it. Checkout now blocks a locked store and rolls back unsaved changes if persistence fails, showing an error rather than a false success. Eleven focused persistence/printing tests passed in isolated execution. QA-09 remains pending owner browser retest; full npm suite, formatting, typecheck and build remain pending.
+
 ## Remaining design decisions
 
 - Free-text customization is intentional for V1; priced modifiers/variant definitions are not implemented yet.

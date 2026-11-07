@@ -479,6 +479,13 @@
     waiting: eventTickets().filter((k) => k.status === "waiting").length,
   });
   const product = (id) => state.products.find((p) => p.id === id);
+  const saleSession = () => {
+    try {
+      return window.sessionStorage;
+    } catch {
+      return null;
+    }
+  };
   const persist = () => {
     if (storageLocked) return false;
     let saved = false;
@@ -1032,6 +1039,7 @@
   }
   function go(next) {
     page = FrogNavigation.visit(next, state.role, window.location, window.history);
+    FrogPersistence.clearSale(saleSession());
     saleResult = null;
     display = false;
     $("#sidebar").classList.remove("open");
@@ -1080,6 +1088,11 @@
       $("#customer-name")?.focus();
       return;
     }
+    if (storageLocked) {
+      toast(state.locale === "vi" ? "Dữ liệu demo đang bị khóa. Hãy kiểm tra cảnh báo lưu trữ." : "Demo data is locked. Check the storage warning.");
+      return;
+    }
+    const previous = JSON.stringify(state);
     const e = currentEvent(),
       id = `FG-${String(state.nextOrder++).padStart(4, "0")}`;
     const ticketId = wantsTicket
@@ -1121,7 +1134,13 @@
       p.stock -= i.qty;
       FrogStock.log(state, i.productId, -i.qty, "sale", "Order " + id, order.createdAt, id);
     }
-    persist();
+    if (!persist()) {
+      state = JSON.parse(previous);
+      render();
+      toast(state.locale === "vi" ? "Không lưu được đơn. Chưa tạo đơn hàng; hãy kiểm tra bộ nhớ trình duyệt." : "Could not save the order. No order was created; check browser storage.");
+      return;
+    }
+    FrogPersistence.rememberSale(saleSession(), order.id);
     saleResult = order;
     cart = [];
     customer = "";
@@ -1231,6 +1250,7 @@
       render();
     } else if (name === "checkout") completeSale();
     else if (name === "new-sale") {
+      FrogPersistence.clearSale(saleSession());
       saleResult = null;
       render();
     } else if (name === "registration-check-in" || name === "registration-undo") {
@@ -1751,6 +1771,7 @@
       nextCartKey = 0;
       customer = "";
       saleResult = null;
+      FrogPersistence.clearSale(saleSession());
       page = FrogNavigation.visit("dashboard", state.role, window.location, window.history);
       display = false;
       closeModal();
@@ -1759,6 +1780,7 @@
     }
   });
   page = FrogNavigation.resolve(window.location.hash, state.role);
+  if (page === "pos") saleResult = FrogPersistence.restoreSale(saleSession(), state);
   if (window.location.hash && window.location.hash !== "#" + page)
     FrogNavigation.visit(page, state.role, window.location, window.history);
   if (!storageLocked) persist();

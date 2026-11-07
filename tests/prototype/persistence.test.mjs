@@ -6,7 +6,7 @@ import { runInNewContext } from "node:vm";
 const context = {};
 for (const path of ["persistence.js", "customer-bill.js", "staff-slip.js"])
   runInNewContext(readFileSync("public/prototype/" + path, "utf8"), context);
-const { KEY, load, save, read } = context.FrogPersistence;
+const { KEY, LAST_SALE, load, save, read, rememberSale, restoreSale, clearSale } = context.FrogPersistence;
 const { renderBill } = context.FrogCustomerBill;
 const { renderStaffSlip } = context.FrogStaffSlip;
 const initial = () => ({
@@ -30,6 +30,7 @@ function memory() {
   return { data,
     getItem: (key) => data.get(key) ?? null,
     setItem: (key, value) => data.set(key, value),
+    removeItem: (key) => data.delete(key),
   };
 }
 
@@ -117,4 +118,46 @@ test("historical order price, notes and status survive catalogue changes", () =>
   assert.match(customer, /ĐÃ HOÀN TIỀN/);
   assert.match(staff, /WORKSHOP/);
   assert.doesNotMatch(staff, /Tên sản phẩm mới|250\.000/);
+});
+
+test("a saved checkout confirmation survives POS refresh but cannot invent missing orders", () => {
+  const storage = memory();
+  const session = memory();
+  const state = initial();
+  state.orders.push({ id: "FG-0002", eventId: "frog", status: "paid",
+    items: [{ productId: "WS", name: "Gấu bông", qty: 1, price: 100000, cost: 35000 }] });
+  assert.equal(save(storage, state), true);
+  assert.equal(rememberSale(session, "FG-0002"), true);
+  assert.equal(session.data.get(LAST_SALE), "FG-0002");
+  assert.equal(restoreSale(session, load(storage, initial).state)?.id, "FG-0002");
+  assert.equal(restoreSale(session, initial()), null);
+  clearSale(session);
+  assert.equal(restoreSale(session, state), null);
+});
+
+test("recovery never shows a stale checkout from another workshop", () => {
+  const session = memory();
+  const state = initial();
+  rememberSale(session, "FG-0001");
+  state.selectedEvent = "another";
+  assert.equal(restoreSale(session, state), null);
+});
+
+test("unavailable tab storage does not affect saved orders", () => {
+  const storage = memory();
+  const denied = { getItem() { throw Error("blocked"); },
+    setItem() { throw Error("blocked"); }, removeItem() { throw Error("blocked"); } };
+  assert.equal(rememberSale(denied, "FG-0001"), false);
+  assert.equal(restoreSale(denied, initial()), null);
+  assert.doesNotThrow(() => clearSale(denied));
+  assert.equal(save(storage, initial()), true);
+  assert.equal(read(storage).orders[0].id, "FG-0001");
+});
+
+test("checkout displays success only after save and exposes persistence errors", () => {
+  const code = readFileSync("public/prototype/app.js", "utf8");
+  assert.match(code, /if \(!persist\(\)\) \{[\s\S]*?state = JSON\.parse\(previous\)/);
+  assert.match(code, /FrogPersistence\.rememberSale\(saleSession\(\), order\.id\)/);
+  assert.match(code, /if \(page === "pos"\) saleResult = FrogPersistence\.restoreSale/);
+  assert.match(code, /FrogPersistence\.clearSale\(saleSession\(\)\)/);
 });
