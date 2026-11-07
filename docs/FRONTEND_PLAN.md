@@ -22,15 +22,16 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | 1.1  | Product Management: list, search, create, edit, archive/restore     | Code complete                                    | 2026-10-26     |
 | 1.2  | POS: per-line custom notes, stock validation, workshop-ticket rules | Accepted - 7/7 manual checks                     | 2026-10-26     |
 | 1.3  | Orders: open/unpaid, paid, cancel/restock, refund, history          | Accepted - 9/9 manual checks                     | 2026-10-26     |
-| 1.4a | Compact customer bill, 76 x 130 mm label                            | Printed on A318BT - content QA pending           | 2026-10-28     |
-| 1.4b | Staff preparation slip and dual-print flow                          | Two-label print passed - full QA pending         | 2026-10-29     |
+| 1.4a | Compact customer bill, 76 x 130 mm label                            | Accepted - content QA and printer check          | 2026-10-28     |
+| 1.4b | Staff preparation slip and dual-print flow                          | Accepted - dual-print and reprint QA             | 2026-10-29     |
 | 2.1a | Workshops: create/edit, dates, capacity, status, ticket prefixes    | Accepted - 12/12 functional QA; mobile UI passed | 2026-10-30     |
 | 2.1b | Registrations, attendee list and check-in                           | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
 | 2.2  | Queue transitions, stock movements and history                      | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
 | 2.3  | Expenses and transaction-based dashboard                            | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
-| 3.1  | Reports, CSV export and customer history                            | 3.1a/3.1b implemented - QA pending               | -              |
-| 3.2  | Responsive/UX testing and code cleanup                              | 3.2a/3.2b/3.2c code complete - QA pending        | -              |
-| 4    | Connect Supabase, authentication and deployment                     | Deferred                                         | -              |
+| 3.1  | Reports, CSV export and customer history                            | Accepted - Sprint 3 manual QA                    | 2026-11-07     |
+| 3.2  | Responsive/UX, persistence and POS draft autosave                   | Accepted - Sprint 3 manual QA                    | 2026-11-07     |
+| 3.3  | Final checks, regression and cleanup                                | Accepted - 96/96 tests; 5/5 edge cases           | 2026-11-07     |
+| 4    | Connect prototype to Supabase, authentication and deployment        | Deferred                                         | -              |
 
 ## Completed increments
 
@@ -81,12 +82,14 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 
 - 2026-11-07 - Step 3.2c: Added per-workshop POS Draft Autosave using a separate localStorage key. Restores unsent cart items, quantity, notes, customer name, payment method/status and ticket preference after refresh. Workshop switches preserve separate drafts; successful checkout clears only the completed workshop's draft and Settings reset clears all draft records. Loading skips unavailable/invalid product lines with a visible note. Drafts never create orders, consume inventory or affect revenue. Storage failures show a draft warning. Nine focused draft tests passed in isolated execution. Manual draft persistence, full npm test suite, format check, typecheck and build remain pending before Sprint 3 closure.
 
+- 2026-11-07 - Sprint 3 final acceptance (owner-reported): The 14/14 browser QA checklist passed, including scoped reports/CSV, customer history, responsive layouts, order and check-in persistence, ticket preview/reprint and Sprint 1-2 regression. POS Draft Autosave was also confirmed in the browser. Follow-up edge cases EC-01 through EC-05 passed (5/5): archived product in a draft, stock reduction before checkout, no duplicate order after refresh, same-browser two-tab updates and long receipt overflow protection. Local verification reported 96/96 automated tests passed, TypeScript typecheck passed, Prettier check passed and Next.js production build passed. Formatting was committed to main. Sprint 3 frontend prototype accepted; no new frontend features required for closure. Remaining pre-launch work includes real backend authentication, multi-device transactional consistency, and hardware tests with final production data/templates; same-browser storage events are not a substitute for database concurrency control.
+
 ## Remaining design decisions
 
 - Free-text customization is intentional for V1; priced modifiers/variant definitions are not implemented yet.
 - One workshop ticket per order is the current behavior. Multiple attendees in one order will be addressed alongside workshop registration in Step 2.1.
 - V1 treats Unpaid as an open order. Cancelling is blocked after ticket work begins; refunds do not restock automatically and retain cost in mock profit.
-- Local mock data is not transactional or synchronized between devices.
+- Prototype localStorage changes can update tabs in the same browser, but there is no transactional concurrency control or synchronization across devices.
 - Each completed step requires browser acceptance; keep test instructions in chat, not in this document.
 
 ## Run
