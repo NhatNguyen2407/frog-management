@@ -6,10 +6,15 @@ import { runInNewContext } from "node:vm";
 const context = {};
 runInNewContext(readFileSync("public/prototype/pos-draft.js", "utf8"), context);
 const { PREFIX, empty, normalize, load, save, clear, clearAll } = context.FrogPosDraft;
-const products = [{ id: "WS-1", name: "Tote", stock: 5 }, { id: "FB-1", name: "Cookie", stock: 8 }];
+const products = [
+  { id: "WS-1", name: "Tote", stock: 5 },
+  { id: "FB-1", name: "Cookie", stock: 8 },
+];
 const draft = () => ({
-  cart: [{ id: "WS-1", key: "L9", qty: 2, note: "Blue plushie" },
-    { id: "FB-1", key: "L10", qty: 1, note: "No sugar" }],
+  cart: [
+    { id: "WS-1", key: "L9", qty: 2, note: "Blue plushie" },
+    { id: "FB-1", key: "L10", qty: 1, note: "No sugar" },
+  ],
   customer: "Minh Anh",
   method: "bank",
   payment: "unpaid",
@@ -18,11 +23,21 @@ const draft = () => ({
 function storage() {
   const data = new Map();
   return {
-    get length() { return data.size; },
-    key(i) { return [...data.keys()][i] ?? null; },
-    getItem(k) { return data.get(k) ?? null; },
-    setItem(k, v) { data.set(k, v); },
-    removeItem(k) { data.delete(k); },
+    get length() {
+      return data.size;
+    },
+    key(i) {
+      return [...data.keys()][i] ?? null;
+    },
+    getItem(k) {
+      return data.get(k) ?? null;
+    },
+    setItem(k, v) {
+      data.set(k, v);
+    },
+    removeItem(k) {
+      data.delete(k);
+    },
     data,
   };
 }
@@ -65,12 +80,15 @@ test("drafts never write to transactional state or reserve inventory", () => {
 
 test("restoration skips removed products and invalid lines instead of crashing", () => {
   const browser = storage();
-  const value = { ...draft(), cart: [
-    { id: "WS-1", qty: 1, note: "Valid" },
-    { id: "OLD", qty: 1, note: "Removed" },
-    { id: "FB-1", qty: -3 },
-    { id: "FB-1", qty: "2" },
-  ] };
+  const value = {
+    ...draft(),
+    cart: [
+      { id: "WS-1", qty: 1, note: "Valid" },
+      { id: "OLD", qty: 1, note: "Removed" },
+      { id: "FB-1", qty: -3 },
+      { id: "FB-1", qty: "2" },
+    ],
+  };
   browser.setItem(PREFIX + "cozy", JSON.stringify(value));
   const restored = load(browser, "cozy", products);
   assert.equal(restored.cart.length, 1);
@@ -82,8 +100,17 @@ test("bad JSON and blocked browser storage degrade to an empty draft", () => {
   const browser = storage();
   browser.setItem(PREFIX + "cozy", "{broken");
   assert.equal(load(browser, "cozy", products).cart.length, 0);
-  const denied = { getItem() { throw Error("denied"); }, setItem() { throw Error("denied"); },
-    removeItem() { throw Error("denied"); } };
+  const denied = {
+    getItem() {
+      throw Error("denied");
+    },
+    setItem() {
+      throw Error("denied");
+    },
+    removeItem() {
+      throw Error("denied");
+    },
+  };
   assert.equal(load(denied, "cozy", products).cart.length, 0);
   assert.equal(save(denied, "cozy", draft(), products), false);
   assert.equal(clear(denied, "cozy"), false);
@@ -109,10 +136,16 @@ test("explicit demo reset clears every draft but leaves unrelated storage untouc
 });
 
 test("input values are length-limited and invalid payment options fall back safely", () => {
-  const data = normalize({ ...draft(), customer: "X".repeat(100),
-    payment: "refunded", method: "card", cart: [
-      { id: "WS-1", qty: 2, note: "N".repeat(180) },
-    ] }, products);
+  const data = normalize(
+    {
+      ...draft(),
+      customer: "X".repeat(100),
+      payment: "refunded",
+      method: "card",
+      cart: [{ id: "WS-1", qty: 2, note: "N".repeat(180) }],
+    },
+    products,
+  );
   assert.equal(data.customer.length, 80);
   assert.equal(data.cart[0].note.length, 160);
   assert.equal(data.payment, "paid");

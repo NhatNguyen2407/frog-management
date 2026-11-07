@@ -13,15 +13,38 @@ const makeState = () => ({
     { id: "w2", name: "Autumn Weekend" },
   ],
   orders: [
-    { id: "FG-1", eventId: "w1", customer: "Minh Anh", status: "paid",
+    {
+      id: "FG-1",
+      eventId: "w1",
+      customer: "Minh Anh",
+      status: "paid",
       createdAt: "2026-11-01T07:00:00Z",
-      items: [{ productId: "A", name: "Gấu bông", qty: 1, price: 100000 }] },
-    { id: "FG-2", eventId: "w2", customer: "Minh Anh", status: "paid",
-      createdAt: "2026-11-03T07:00:00Z", items: [] },
-    { id: "FG-3", eventId: "w1", customer: "Hà Linh", status: "refunded",
-      createdAt: "2026-11-02T07:00:00Z", items: [] },
-    { id: "FG-4", eventId: "w1", customer: "", status: "unpaid",
-      createdAt: "2026-11-04T07:00:00Z", items: [] },
+      items: [{ productId: "A", name: "Gấu bông", qty: 1, price: 100000 }],
+    },
+    {
+      id: "FG-2",
+      eventId: "w2",
+      customer: "Minh Anh",
+      status: "paid",
+      createdAt: "2026-11-03T07:00:00Z",
+      items: [],
+    },
+    {
+      id: "FG-3",
+      eventId: "w1",
+      customer: "Hà Linh",
+      status: "refunded",
+      createdAt: "2026-11-02T07:00:00Z",
+      items: [],
+    },
+    {
+      id: "FG-4",
+      eventId: "w1",
+      customer: "",
+      status: "unpaid",
+      createdAt: "2026-11-04T07:00:00Z",
+      items: [],
+    },
   ],
   tickets: [
     { id: "COZY-1", eventId: "w1", orderId: "FG-1", checkedInAt: "2026-11-01T08:00:00Z" },
@@ -60,8 +83,13 @@ test("check-in stats count actual tickets and distinct workshops without guessin
 
 test("missing tickets and unknown events display safely", () => {
   const state = makeState();
-  state.orders.push({ id: "FG-5", eventId: "unknown", customer: "Guest",
-    createdAt: "2026-11-05T07:00:00Z", items: [] });
+  state.orders.push({
+    id: "FG-5",
+    eventId: "unknown",
+    customer: "Guest",
+    createdAt: "2026-11-05T07:00:00Z",
+    items: [],
+  });
   const html = view(state, "Guest");
   assert.match(html, /Workshop không xác định/);
   assert.match(html, /Không có vé/);
@@ -69,7 +97,7 @@ test("missing tickets and unknown events display safely", () => {
 
 test("customer provided text is escaped in both the view and search input", () => {
   const state = makeState();
-  state.orders[0].customer = '<img src=x onerror=alert(1)>';
+  state.orders[0].customer = "<img src=x onerror=alert(1)>";
   state.orders[0].items[0].name = "<script>bad()</script>";
   const html = view(state, "<img");
   assert.match(html, /&lt;img/);

@@ -8,7 +8,13 @@ for (const file of ["expenses.js", "orders.js", "reporting.js"])
   runInNewContext(readFileSync("public/prototype/" + file, "utf8"), context);
 const { snapshot, csv, orderDay, controls } = context.FrogReporting;
 const makeOrder = (id, eventId, status, createdAt, price = 100000, extra = {}) => ({
-  id, eventId, status, createdAt, customer: "Minh Anh", method: "cash", ticketId: "T-1",
+  id,
+  eventId,
+  status,
+  createdAt,
+  customer: "Minh Anh",
+  method: "cash",
+  ticketId: "T-1",
   items: [{ productId: "P-1", name: "Gấu bông", category: "workshop", qty: 1, price, cost: 40000 }],
   ...extra,
 });
@@ -27,12 +33,33 @@ const makeState = () => ({
   ],
   nextExpense: 4,
   expenses: [
-    { id: "EX-1", eventId: "a", date: "2026-11-02", amount: 30000,
-      category: "rent", description: "Mặt bằng", archived: false },
-    { id: "EX-2", eventId: "a", date: "2026-11-02", amount: 8000,
-      category: "supplies", description: "Đã hủy", archived: true },
-    { id: "EX-3", eventId: "b", date: "2026-11-02", amount: 60000,
-      category: "rent", description: "Other", archived: false },
+    {
+      id: "EX-1",
+      eventId: "a",
+      date: "2026-11-02",
+      amount: 30000,
+      category: "rent",
+      description: "Mặt bằng",
+      archived: false,
+    },
+    {
+      id: "EX-2",
+      eventId: "a",
+      date: "2026-11-02",
+      amount: 8000,
+      category: "supplies",
+      description: "Đã hủy",
+      archived: true,
+    },
+    {
+      id: "EX-3",
+      eventId: "b",
+      date: "2026-11-02",
+      amount: 60000,
+      category: "rent",
+      description: "Other",
+      archived: false,
+    },
   ],
 });
 
@@ -41,7 +68,7 @@ test("report date filters respect Vietnam timezone and selected workshop", () =>
   assert.equal(orderDay(s.orders[0]), "2026-11-02");
   assert.equal(orderDay(s.orders[4]), "2026-11-03");
   const report = snapshot(s, "a", "2026-11-02", "2026-11-02");
-  assert.equal(report.orders.map(o => o.id).join(","), "FG-1,FG-2,FG-3");
+  assert.equal(report.orders.map((o) => o.id).join(","), "FG-1,FG-2,FG-3");
   assert.equal(report.expenses.length, 1);
   assert.equal(report.totals.revenue, 100000);
   assert.equal(report.totals.cogs, 80000);
@@ -59,7 +86,10 @@ test("all-time finance includes Paid and refunded COGS but no voided expenses", 
 
 test("invalid dates, reversed ranges and missing workshop are rejected", () => {
   const s = makeState();
-  for (const [from, to] of [["2026-02-30", ""], ["2026-11-03", "2026-11-02"]])
+  for (const [from, to] of [
+    ["2026-02-30", ""],
+    ["2026-11-03", "2026-11-02"],
+  ])
     assert.ok(snapshot(s, "a", from, to).error);
   assert.ok(snapshot(s, "missing").error);
 });

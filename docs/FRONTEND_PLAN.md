@@ -28,8 +28,8 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | 2.1b | Registrations, attendee list and check-in                           | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
 | 2.2  | Queue transitions, stock movements and history                      | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
 | 2.3  | Expenses and transaction-based dashboard                            | Accepted - 12/12 functional QA; mobile UI passed | 2026-11-02     |
-| 3.1  | Reports, CSV export and customer history                            | 3.1a/3.1b implemented - QA pending                                          | -              |
-| 3.2  | Responsive/UX testing and code cleanup                              | 3.2a/3.2b/3.2c code complete - QA pending                                          | -              |
+| 3.1  | Reports, CSV export and customer history                            | 3.1a/3.1b implemented - QA pending               | -              |
+| 3.2  | Responsive/UX testing and code cleanup                              | 3.2a/3.2b/3.2c code complete - QA pending        | -              |
 | 4    | Connect Supabase, authentication and deployment                     | Deferred                                         | -              |
 
 ## Completed increments

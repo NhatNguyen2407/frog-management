@@ -1,8 +1,16 @@
 (() => {
   "use strict";
   const pages = [
-    "dashboard", "pos", "products", "orders", "customers",
-    "events", "queue", "inventory", "reports", "settings",
+    "dashboard",
+    "pos",
+    "products",
+    "orders",
+    "customers",
+    "events",
+    "queue",
+    "inventory",
+    "reports",
+    "settings",
   ];
   const allowed = (page, role) =>
     pages.includes(page) && (role === "owner" || !["products", "customers"].includes(page));

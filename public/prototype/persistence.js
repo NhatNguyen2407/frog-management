@@ -60,7 +60,10 @@
   function restoreSale(storage, state) {
     try {
       const id = storage.getItem(LAST_SALE);
-      return state.orders.find((order) => order.id === id && order.eventId === state.selectedEvent) || null;
+      return (
+        state.orders.find((order) => order.id === id && order.eventId === state.selectedEvent) ||
+        null
+      );
     } catch {
       return null;
     }
@@ -73,5 +76,14 @@
     }
   }
 
-  globalThis.FrogPersistence = { KEY, LAST_SALE, read, load, save, rememberSale, restoreSale, clearSale };
+  globalThis.FrogPersistence = {
+    KEY,
+    LAST_SALE,
+    read,
+    load,
+    save,
+    rememberSale,
+    restoreSale,
+    clearSale,
+  };
 })();

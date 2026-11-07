@@ -18,8 +18,12 @@
     const lines = Array.isArray(data.cart) ? data.cart : [];
     for (const line of lines.slice(0, 100)) {
       if (
-        !line || typeof line.id !== "string" || !known.has(line.id) ||
-        !Number.isSafeInteger(line.qty) || line.qty < 1 || line.qty > 10000
+        !line ||
+        typeof line.id !== "string" ||
+        !known.has(line.id) ||
+        !Number.isSafeInteger(line.qty) ||
+        line.qty < 1 ||
+        line.qty > 10000
       ) {
         draft.skipped++;
         continue;
@@ -50,16 +54,24 @@
   function save(storage, eventId, data, products) {
     try {
       const draft = normalize(data, products);
-      const hasData = draft.cart.length || draft.customer.trim() ||
-        draft.method !== "cash" || draft.payment !== "paid" || !draft.createTicket;
+      const hasData =
+        draft.cart.length ||
+        draft.customer.trim() ||
+        draft.method !== "cash" ||
+        draft.payment !== "paid" ||
+        !draft.createTicket;
       if (!hasData) storage.removeItem(key(eventId));
-      else storage.setItem(key(eventId), JSON.stringify({
-        cart: draft.cart.map(({ id, qty, note }) => ({ id, qty, note })),
-        customer: draft.customer,
-        method: draft.method,
-        payment: draft.payment,
-        createTicket: draft.createTicket,
-      }));
+      else
+        storage.setItem(
+          key(eventId),
+          JSON.stringify({
+            cart: draft.cart.map(({ id, qty, note }) => ({ id, qty, note })),
+            customer: draft.customer,
+            method: draft.method,
+            payment: draft.payment,
+            createTicket: draft.createTicket,
+          }),
+        );
       return true;
     } catch {
       return false;

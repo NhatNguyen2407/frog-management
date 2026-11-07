@@ -25,8 +25,16 @@ test("refresh retains the last opened page using its URL hash", () => {
 
 test("navigation does not strip existing URL query parameters", () => {
   let url;
-  visit("customers", "owner", { pathname: "/prototype/index.html", search: "?mode=demo" },
-    { replaceState(_state, _title, next) { url = next; } });
+  visit(
+    "customers",
+    "owner",
+    { pathname: "/prototype/index.html", search: "?mode=demo" },
+    {
+      replaceState(_state, _title, next) {
+        url = next;
+      },
+    },
+  );
   assert.equal(url, "/prototype/index.html?mode=demo#customers");
 });
 
@@ -46,9 +54,16 @@ test("unknown or malformed hashes fall back to Overview", () => {
 
 test("reset always rewrites the URL to Overview", () => {
   let url = "";
-  const result = visit("dashboard", "owner",
+  const result = visit(
+    "dashboard",
+    "owner",
     { pathname: "/prototype/index.html", search: "" },
-    { replaceState(_state, _title, value) { url = value; } });
+    {
+      replaceState(_state, _title, value) {
+        url = value;
+      },
+    },
+  );
   assert.equal(result, "dashboard");
   assert.equal(url, "/prototype/index.html#dashboard");
 });

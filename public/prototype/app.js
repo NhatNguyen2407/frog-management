@@ -507,13 +507,22 @@
     draftSaveFailed = false;
   }
   function saveDraft() {
-    const saved = FrogPosDraft.save(draftStorage(), state.selectedEvent,
-      { cart, customer, method, payment, createTicket }, state.products);
+    const saved = FrogPosDraft.save(
+      draftStorage(),
+      state.selectedEvent,
+      { cart, customer, method, payment, createTicket },
+      state.products,
+    );
     draftSaveFailed = !saved;
     const status = $("#pos-draft-status");
-    if (status) status.textContent = saved
-      ? (state.locale === "vi" ? "Bản nháp đã được lưu trong trình duyệt." : "Draft saved in this browser.")
-      : (state.locale === "vi" ? "Không lưu được bản nháp. Dữ liệu có thể mất sau refresh." : "Draft could not be saved. Changes may be lost after refresh.");
+    if (status)
+      status.textContent = saved
+        ? state.locale === "vi"
+          ? "Bản nháp đã được lưu trong trình duyệt."
+          : "Draft saved in this browser."
+        : state.locale === "vi"
+          ? "Không lưu được bản nháp. Dữ liệu có thể mất sau refresh."
+          : "Draft could not be saved. Changes may be lost after refresh.";
     return saved;
   }
   const persist = () => {
@@ -626,14 +635,16 @@
     const total = FrogOrders.financialTotals(orders).revenue || 1;
     return ["workshop", "food"]
       .map((cat, index) => {
-        let sum = orders.filter((o) => o.status === "paid").reduce(
-          (n, o) =>
-            n +
-            o.items
-              .filter((i) => (i.category || product(i.productId)?.category) === cat)
-              .reduce((a, b) => a + b.qty * b.price, 0),
-          0,
-        );
+        let sum = orders
+          .filter((o) => o.status === "paid")
+          .reduce(
+            (n, o) =>
+              n +
+              o.items
+                .filter((i) => (i.category || product(i.productId)?.category) === cat)
+                .reduce((a, b) => a + b.qty * b.price, 0),
+            0,
+          );
         return `<div class="category-total"><span class="category-dot ${index ? "green" : ""}"></span><div class="grow"><strong>${t(cat)}</strong><div class="progress ${index ? "green" : ""}"><span style="width:${Math.round((sum / total) * 100)}%"></span></div></div><div class="amount">${money(sum)}</div></div>`;
       })
       .join("");
@@ -733,11 +744,17 @@
       pageHead("THE FROG / POS", t("posTitle"), t("posDesc"), badge(t("mockNotice"), "purple")) +
       '<div class="note" id="pos-draft-status" style="margin-bottom:14px">' +
       (draftSaveFailed
-        ? state.locale === "vi" ? "Không lưu được bản nháp. Dữ liệu đang nhập có thể mất sau refresh." : "Could not save draft. Your inputs may be lost after refresh."
+        ? state.locale === "vi"
+          ? "Không lưu được bản nháp. Dữ liệu đang nhập có thể mất sau refresh."
+          : "Could not save draft. Your inputs may be lost after refresh."
         : draftSkipped
-          ? state.locale === "vi" ? "Một số sản phẩm trong bản nháp không còn trong danh mục." : "Some draft items are no longer in the catalogue."
-          : state.locale === "vi" ? "Bản nháp tự động lưu trên trình duyệt này, riêng cho từng workshop." : "Draft auto-saves in this browser, separately for each workshop.") +
-      '</div>' +
+          ? state.locale === "vi"
+            ? "Một số sản phẩm trong bản nháp không còn trong danh mục."
+            : "Some draft items are no longer in the catalogue."
+          : state.locale === "vi"
+            ? "Bản nháp tự động lưu trên trình duyệt này, riêng cho từng workshop."
+            : "Draft auto-saves in this browser, separately for each workshop.") +
+      "</div>" +
       `<div class="pos-layout"><div><div class="filter-row">${categoryButton("all", t("all"))}${categoryButton("workshop", t("workshop"))}${categoryButton("food", t("food"))}</div><input id="pos-search" class="search" placeholder="${t("search")}" value="${esc(query)}" aria-label="${t("search")}"/><div class="products-grid" style="margin-top:16px">${products.map((p, i) => `<button type="button" class="product" data-act="add:${p.id}" ${FrogRegister.canAdd(cart, p) ? "" : "disabled"}><div class="product-art ${p.category === "food" ? "peach" : i % 2 ? "mint" : ""}">${p.emoji}</div><span class="product-name">${esc(p.name)}</span><span class="product-price">${money(p.price)}</span><span class="product-sku">${esc(p.id)}</span><span class="product-availability">${p.stock ? `${reg.inStock}: ${p.stock - FrogRegister.quantity(cart, p.id)}` : reg.soldOut}</span></button>`).join("")}</div></div><section class="panel cart"><div class="panel-head"><div><h3>🛒 ${t("cart")}</h3><p>${t("cartDesc")}</p></div>${badge(String(cart.reduce((n, i) => n + i.qty, 0)), "purple")}</div><div class="panel-body"><div class="cart-items">${
         cart.length
           ? cart
@@ -844,8 +861,10 @@
     if (state.role !== "owner") return pageHead("CUSTOMERS", t("customers"), t("noFinance"));
     const lang = state.locale === "en" ? "en" : "vi";
     const l = FrogCustomers.labels[lang];
-    return pageHead("CUSTOMERS", l.title, l.description) +
-      FrogCustomers.view(state, customerHistoryQuery, state.locale);
+    return (
+      pageHead("CUSTOMERS", l.title, l.description) +
+      FrogCustomers.view(state, customerHistoryQuery, state.locale)
+    );
   }
   function events() {
     const l = FrogWorkshops.labels[state.locale === "en" ? "en" : "vi"];
@@ -987,10 +1006,15 @@
         `<div class="note">${t("noFinance")}</div>`
       );
     const selected = FrogReporting.snapshot(
-      state, state.selectedEvent, reportFrom, reportTo, state.locale,
+      state,
+      state.selectedEvent,
+      reportFrom,
+      reportTo,
+      state.locale,
     );
     if (selected.error) return pageHead("ANALYTICS", t("reportsTitle"), selected.error);
-    const f = selected.totals, rows = [];
+    const f = selected.totals,
+      rows = [];
     for (const o of selected.orders.filter((o) => o.status === "paid"))
       for (const i of o.items) {
         const p = product(i.productId);
@@ -1028,7 +1052,11 @@
   function downloadReport(kind) {
     if (state.role !== "owner" || !["orders", "revenue", "expenses"].includes(kind)) return;
     const selected = FrogReporting.snapshot(
-      state, state.selectedEvent, reportFrom, reportTo, state.locale,
+      state,
+      state.selectedEvent,
+      reportFrom,
+      reportTo,
+      state.locale,
     );
     if (selected.error) {
       toast(selected.error);
@@ -1039,7 +1067,8 @@
     const url = URL.createObjectURL(file);
     const link = document.createElement("a");
     link.href = url;
-    link.download = [state.selectedEvent, kind, reportFrom || "all", reportTo || "all"].join("-") + ".csv";
+    link.download =
+      [state.selectedEvent, kind, reportFrom || "all", reportTo || "all"].join("-") + ".csv";
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -1051,7 +1080,18 @@
       `<div class="event-grid"><section class="panel"><div class="panel-head"><h3>${t("appearance")}</h3></div><div class="panel-body"><div class="form-field"><label>${t("appearance")}</label><div class="flex">${btn(t("light"), "theme:light", state.theme === "light" ? "soft" : "secondary")}${btn(t("dark"), "theme:dark", state.theme === "dark" ? "soft" : "secondary")}</div></div><div class="form-field"><label>${t("language")}</label><div class="flex">${btn("Tiếng Việt", "lang:vi", state.locale === "vi" ? "soft" : "secondary")}${btn("English", "lang:en", state.locale === "en" ? "soft" : "secondary")}</div></div></div></section><section class="panel"><div class="panel-head"><h3>${t("role")}</h3></div><div class="panel-body"><div class="flex wrap" style="margin-bottom:18px">${btn(t("owner"), "role:owner", state.role === "owner" ? "soft" : "secondary")}${btn(t("staff"), "role:staff", state.role === "staff" ? "soft" : "secondary")}</div><div class="note">${t("securityNotice")}</div><div style="margin-top:19px">${btn(t("reset"), "reset", "warn")}</div></div></section></div>`
     );
   }
-  const pages = { dashboard, pos, products, orders, customers, events, queue, inventory, reports, settings };
+  const pages = {
+    dashboard,
+    pos,
+    products,
+    orders,
+    customers,
+    events,
+    queue,
+    inventory,
+    reports,
+    settings,
+  };
   function render() {
     if (!FrogNavigation.allowed(page, state.role))
       page = FrogNavigation.visit("dashboard", state.role, window.location, window.history);
@@ -1127,7 +1167,11 @@
       return;
     }
     if (storageLocked) {
-      toast(state.locale === "vi" ? "Dữ liệu demo đang bị khóa. Hãy kiểm tra cảnh báo lưu trữ." : "Demo data is locked. Check the storage warning.");
+      toast(
+        state.locale === "vi"
+          ? "Dữ liệu demo đang bị khóa. Hãy kiểm tra cảnh báo lưu trữ."
+          : "Demo data is locked. Check the storage warning.",
+      );
       return;
     }
     const previous = JSON.stringify(state);
@@ -1175,7 +1219,11 @@
     if (!persist()) {
       state = JSON.parse(previous);
       render();
-      toast(state.locale === "vi" ? "Không lưu được đơn. Chưa tạo đơn hàng; hãy kiểm tra bộ nhớ trình duyệt." : "Could not save the order. No order was created; check browser storage.");
+      toast(
+        state.locale === "vi"
+          ? "Không lưu được đơn. Chưa tạo đơn hàng; hãy kiểm tra bộ nhớ trình duyệt."
+          : "Could not save the order. No order was created; check browser storage.",
+      );
       return;
     }
     FrogPersistence.rememberSale(saleSession(), order.id);

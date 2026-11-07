@@ -6,28 +6,65 @@ import { runInNewContext } from "node:vm";
 const context = {};
 for (const path of ["persistence.js", "customer-bill.js", "staff-slip.js"])
   runInNewContext(readFileSync("public/prototype/" + path, "utf8"), context);
-const { KEY, LAST_SALE, load, save, read, rememberSale, restoreSale, clearSale } = context.FrogPersistence;
+const { KEY, LAST_SALE, load, save, read, rememberSale, restoreSale, clearSale } =
+  context.FrogPersistence;
 const { renderBill } = context.FrogCustomerBill;
 const { renderStaffSlip } = context.FrogStaffSlip;
 const initial = () => ({
   products: [{ id: "WS", name: "Gấu bông", category: "workshop" }],
   events: [{ id: "frog", name: "Frog Workshop", date: "2026-11-06" }],
-  orders: [{
-    id: "FG-0001", eventId: "frog", eventName: "Frog Workshop",
-    eventDate: "2026-11-06", customer: "Minh Anh", status: "paid",
-    method: "cash", createdAt: "2026-11-06T08:00:00Z", ticketId: "FROG-001",
-    items: [{ productId: "WS", name: "Gấu bông", category: "workshop",
-      qty: 1, price: 100000, cost: 35000, note: "Màu tím" }],
-  }],
-  tickets: [{ id: "FROG-001", eventId: "frog", orderId: "FG-0001",
-    status: "waiting", checkedInAt: "2026-11-06T08:10:00Z" }],
-  expenses: [{ id: "EX-1", eventId: "frog", amount: 25000,
-    date: "2026-11-06", category: "other", archived: false }],
-  selectedEvent: "frog", role: "owner", theme: "light", locale: "vi",
+  orders: [
+    {
+      id: "FG-0001",
+      eventId: "frog",
+      eventName: "Frog Workshop",
+      eventDate: "2026-11-06",
+      customer: "Minh Anh",
+      status: "paid",
+      method: "cash",
+      createdAt: "2026-11-06T08:00:00Z",
+      ticketId: "FROG-001",
+      items: [
+        {
+          productId: "WS",
+          name: "Gấu bông",
+          category: "workshop",
+          qty: 1,
+          price: 100000,
+          cost: 35000,
+          note: "Màu tím",
+        },
+      ],
+    },
+  ],
+  tickets: [
+    {
+      id: "FROG-001",
+      eventId: "frog",
+      orderId: "FG-0001",
+      status: "waiting",
+      checkedInAt: "2026-11-06T08:10:00Z",
+    },
+  ],
+  expenses: [
+    {
+      id: "EX-1",
+      eventId: "frog",
+      amount: 25000,
+      date: "2026-11-06",
+      category: "other",
+      archived: false,
+    },
+  ],
+  selectedEvent: "frog",
+  role: "owner",
+  theme: "light",
+  locale: "vi",
 });
 function memory() {
   const data = new Map();
-  return { data,
+  return {
+    data,
     getItem: (key) => data.get(key) ?? null,
     setItem: (key, value) => data.set(key, value),
     removeItem: (key) => data.delete(key),
@@ -78,7 +115,14 @@ test("invalid or corrupted browser data uses a fallback without modifying the ol
 });
 
 test("disabled storage does not crash the prototype loader or exporter", () => {
-  const denied = { getItem() { throw Error("blocked"); }, setItem() { throw Error("blocked"); } };
+  const denied = {
+    getItem() {
+      throw Error("blocked");
+    },
+    setItem() {
+      throw Error("blocked");
+    },
+  };
   assert.equal(load(denied, initial).source, "unavailable");
   assert.equal(read(denied), null);
   assert.equal(save(denied, initial()), false);
@@ -124,8 +168,12 @@ test("a saved checkout confirmation survives POS refresh but cannot invent missi
   const storage = memory();
   const session = memory();
   const state = initial();
-  state.orders.push({ id: "FG-0002", eventId: "frog", status: "paid",
-    items: [{ productId: "WS", name: "Gấu bông", qty: 1, price: 100000, cost: 35000 }] });
+  state.orders.push({
+    id: "FG-0002",
+    eventId: "frog",
+    status: "paid",
+    items: [{ productId: "WS", name: "Gấu bông", qty: 1, price: 100000, cost: 35000 }],
+  });
   assert.equal(save(storage, state), true);
   assert.equal(rememberSale(session, "FG-0002"), true);
   assert.equal(session.data.get(LAST_SALE), "FG-0002");
@@ -145,8 +193,17 @@ test("recovery never shows a stale checkout from another workshop", () => {
 
 test("unavailable tab storage does not affect saved orders", () => {
   const storage = memory();
-  const denied = { getItem() { throw Error("blocked"); },
-    setItem() { throw Error("blocked"); }, removeItem() { throw Error("blocked"); } };
+  const denied = {
+    getItem() {
+      throw Error("blocked");
+    },
+    setItem() {
+      throw Error("blocked");
+    },
+    removeItem() {
+      throw Error("blocked");
+    },
+  };
   assert.equal(rememberSale(denied, "FG-0001"), false);
   assert.equal(restoreSale(denied, initial()), null);
   assert.doesNotThrow(() => clearSale(denied));
