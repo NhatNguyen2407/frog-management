@@ -6,11 +6,11 @@ The first business unit is a creative workshop with a small F&B catalogue. The d
 
 ## Project status
 
-**Phase 1 has been implemented in the repository, but live acceptance testing is still pending.**
+**The browser-only frontend prototype has completed Sprint 3 acceptance testing. The separate Next.js/Supabase backend implementation has not yet passed hosted end-to-end acceptance.**
 
-The repository contains the screens, SQL migrations, seed catalogue and automated tests. The initial implementation reported passing local build and database tests. Those results have not been rerun as part of this documentation update.
+The repository contains Next.js screens, four SQL migrations, a seed catalogue and automated tests, alongside the standalone mock POS prototype. The Sprint 3 prototype review recorded 96/96 automated tests and 5/5 follow-up edge cases passing. Those recorded results are not a fresh execution of the suite, nor proof of backend or live multi-device readiness.
 
-A hosted Supabase connection, Google OAuth sign-in, Realtime updates on real devices and physical receipt printing still need to be verified before using the app for real sales. Without Supabase environment variables, the app shows a setup screen rather than a working demo.
+The current backend audit has not confirmed a dedicated hosted Supabase project or completed live authentication, Realtime, concurrency, and database acceptance tests. The standalone prototype works without Supabase, but is not suitable for real sales. A physical dual-label printer check was recorded for the mock prototype; the separate Next.js printing flow still needs equivalent verification. Without Supabase environment variables, the Next.js app shows a setup screen.
 
 This is an internal application, not an online store. There are no customer accounts, online payments or public registration pages in Phase 1.
 
@@ -199,11 +199,13 @@ The database test runner starts an isolated PostgreSQL container, exercises migr
 
 ## Next priorities
 
-Before opening the workshop, I want to focus on real Supabase integration, end-to-end acceptance tests, repeatable backups and CI checks. The current repository has tests but no committed GitHub Actions workflow.
+Before live use, the remaining priority is to finish the separate Supabase backend audit and local database tests, provision an isolated Frog Management project if approved, then verify authentication, RLS, end-to-end transactions, multi-device behavior, printer output, backups, and CI. The current repository has tests but no committed GitHub Actions workflow.
 
 Operational improvements to evaluate next are corrections to cost entries, explicit inventory adjustments/restocking, safer customer names on a public-facing TV and more robust event-level product controls.
 
-Phase 2 can then cover customer history, exports, product-level cost analytics, cross-event comparisons and a separate public registration flow. The future coffee unit should be designed around its actual sales and shift workflow rather than assuming every coffee order is a workshop ticket.
+The accepted browser prototype already includes customer history, CSV exports, workshop-specific reporting, draft autosave, and responsive workflows. These features still need verified parity in the database-backed application. Future work may add product-level cost analytics, cross-event comparisons and a separate public registration flow. A coffee-specific workflow remains out of scope.
+
+For the current backend audit, see [docs/BACKEND_AUDIT.md](docs/BACKEND_AUDIT.md). It distinguishes code already in the repository from the database and hosting checks still pending.
 
 ## Deployment
 
@@ -222,4 +224,4 @@ The visual POS prototype is available at **/vi/prototype** (or **/en/prototype**
 - Mock changes are kept in your browser's `localStorage`. Use Settings -> Reset demo data to restore initial values.
 - The prototype is a standalone, dependency-free UI experiment; existing production-focused app screens and Supabase migrations remain unchanged. It is **not** secured by Supabase RLS, and should **never** be used to record real sales or customer information.
 
-Frontend V1 work is tracked in [docs/FRONTEND_PLAN.md](docs/FRONTEND_PLAN.md). Product Management now supports mock create/edit/archive/restore with SKU validation. The POS also supports notes per cart line, stock guards and workshop-only ticket creation. The mock Orders screen now supports payment confirmation, cancellation with stock restoration, refunds and detailed history. Existing backend files remain untouched; these screens are not ready for real sales.
+Frontend V1 is tracked in [docs/FRONTEND_PLAN.md](docs/FRONTEND_PLAN.md). The accepted Sprint 3 prototype includes product management, line-level customization, stock limits, order/payment transitions, workshop registration and check-in, queue and inventory movements, expenses, workshop-scoped reports, CSV export, customer history, responsive UX, and per-workshop draft autosave. Those are browser-local features, not verified Supabase transactions.
