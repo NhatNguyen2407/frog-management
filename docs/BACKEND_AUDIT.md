@@ -1,12 +1,12 @@
 # Sprint 4.1 - Backend Audit
 
-Updated: 2026-11-08
+Updated: 2026-11-09
 
 ## Scope and status
 
 I reviewed the current GitHub repository and the Supabase projects accessible through the connected account. This is a read-only audit. I have not created a project, run hosted migrations, changed credentials or touched production data.
 
-**Result: Repository backend exists; dedicated hosted infrastructure and end-to-end verification are still pending.**
+**Result: Repository backend exists and local database assertions passed; dedicated hosted infrastructure and end-to-end verification are still pending.**
 
 ## Connected Supabase projects
 
@@ -43,7 +43,7 @@ I will use the accepted prototype as the UX/functional reference while keeping t
 ## Verification and security boundaries
 
 - Owner-reported local checks for Sprint 3: 96/96 unit tests, TypeScript, Prettier and Next.js build passed.
-- These checks do **not** include `npm run test:db`. The repository has a separate PostgreSQL 17 Docker test runner with schema, permission and business operation assertions. Its outcome still needs to be collected.
+- **4.1a accepted - 2026-11-09:** The project owner ran `npm run test:db` locally with the existing Docker PostgreSQL 17 container. The SQL suite returned `All Phase 1 database assertions passed`, followed by `ROLLBACK` and `Database schema and permission assertions passed; all test changes were rolled back.` This verifies the local schema/permission/operations assertions, not the hosted Supabase environment.
 - No hosted Frog Management project exists to verify live migration history, RLS policies, Data API grants, Auth Hook activation, Google OAuth, Realtime subscriptions or database security advisors.
 - The SQL includes scoped RLS and `security_invoker` reporting views, but privileged functions and policies still require live security testing with owner, staff and unauthorized accounts.
 - The browser-only prototype is not safe to use for real transactions. Two browser tabs updating localStorage are not a substitute for transaction-safe multi-device checkout.
@@ -59,4 +59,4 @@ I will use the accepted prototype as the UX/functional reference while keeping t
 
 ## Next action
 
-Run `npm run test:db` in the local repository with Docker available and send its complete terminal output. If it passes, the next gate is selecting an organization and confirming the cost of a separate Supabase project. No production schema changes are approved by this audit.
+The local Docker database test passed. For 4.2, the connected Supabase account currently lists one organization, `Dioxyzine Frog`, with two existing e-commerce projects. Confirm which organization should own a **new, separate Frog Management project**, then check the quoted project cost and obtain approval before creating any potentially billable resources. Do not apply migrations or modify the existing Dioxyzine Frog databases.
