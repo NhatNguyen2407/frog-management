@@ -9,7 +9,7 @@ Move Frog Management from the accepted browser-only prototype to the existing Ne
 ## Status
 
 - 4.1 - Backend audit: Complete. Four SQL migrations reviewed and the local PostgreSQL 17 database test passed.
-- 4.2 - Dedicated Supabase setup: Hosted database provisioned, four migrations deployed and catalogue seeded on 2026-11-09. Project integration remains pending Auth, local-to-remote migration history reconciliation and application environment configuration.
+- 4.2 - Dedicated Supabase setup: Database verified on 2026-11-09. Four migrations, catalogue seed, RLS/security review and local-to-remote migration history alignment passed. Google OAuth and app environment configuration move to 4.3.
 - 4.3 - Authentication and authorization: Not started on hosted infrastructure.
 - 4.4 - Business feature integration: Not started against hosted infrastructure.
 - 4.5 - Reliability and multi-device testing: Not started.
@@ -85,14 +85,16 @@ Run automated unit, typecheck, format, build, database, security and integration
 - Performance Advisors returned 41 informational unindexed-foreign-key findings. Review query plans and index requirements before real traffic rather than adding every suggested index blindly.
 - No changes were made to either Dioxyzine Frog e-commerce project.
 
-### Migration history reconciliation - required before future db push
+### Migration history reconciliation - PASS (2026-11-09)
+
+The owner completed the remote migration-history repair using the linked Supabase CLI v2.117.0. Follow-up `supabase migration list` showed all four versions matching Local and Remote, and `supabase db push --dry-run` returned `Remote database is up to date.` The connected Supabase tool independently confirmed the same four remote versions. The database was not reset or re-migrated. The hosted product catalogue still has 11 products, 20 base tables and zero orders.
 
 The hosted tool assigned new migration timestamps at deployment time, while Git retains the original filenames `20261024080425` through `20261024080428`. The SQL schemas are deployed, but the recorded versions are different.
 
-**Do not run `supabase db push` against this hosted project until local and remote migration histories are aligned.** Reconcile with the supported Supabase CLI `migration list` and `migration repair` procedure, after explicitly linking to `swkbnkazjxgvnhkwrcyx`. Migration repair updates history metadata, not schema definitions. First inspect the history and confirm every mapping, then mark the four generated remote versions as reverted and the four Git versions as applied. Do not re-execute the already-applied schema SQL. Reference: https://supabase.com/docs/reference/cli/supabase-migration-repair.
+Migration history is now aligned. For future changes, create and commit a new timestamped migration, review the target project and dry-run output, then apply once. Do not rerun the four baseline migrations. Reference: https://supabase.com/docs/reference/cli/supabase-migration-repair.
 
 The temporary security hardening for `public.rls_auto_enable()` is a hosted project configuration fix. If Automatic RLS is enabled on another new project, inspect its generated function grants again.
 
-### Next step
+### Next step - 4.3
 
 Configure hosted Google OAuth and the Before User Created Auth Hook, bootstrap an approved owner, and verify sign-in plus live RLS. Application environment variables must use the project-specific URL and a browser-safe publishable key; never commit secrets. The standalone `localStorage` prototype remains separate.
