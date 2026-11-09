@@ -59,4 +59,4 @@ I will use the accepted prototype as the UX/functional reference while keeping t
 
 ## Next action
 
-The local Docker database test passed. For 4.2, the connected Supabase account currently lists one organization, `Dioxyzine Frog`, with two existing e-commerce projects. Confirm which organization should own a **new, separate Frog Management project**, then check the quoted project cost and obtain approval before creating any potentially billable resources. Do not apply migrations or modify the existing Dioxyzine Frog databases.
+The local Docker database test passed. For 4.2, the connected Supabase account currently lists one organization, `Dioxyzine Frog`, with two existing e-commerce projects. The owner has chosen a **separate organization**, tentatively named `The Frog Art Space`. It has not appeared in the connected account yet. Wait for it to be created through the dashboard, then verify the project cost before any potentially billable actions. Do not apply migrations or modify the existing Dioxyzine Frog databases.

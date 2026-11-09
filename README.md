@@ -224,4 +224,6 @@ The visual POS prototype is available at **/vi/prototype** (or **/en/prototype**
 - Mock changes are kept in your browser's `localStorage`. Use Settings -> Reset demo data to restore initial values.
 - The prototype is a standalone, dependency-free UI experiment; existing production-focused app screens and Supabase migrations remain unchanged. It is **not** secured by Supabase RLS, and should **never** be used to record real sales or customer information.
 
+Phase 4 backend work is tracked in [docs/PHASE4_PLAN.md](docs/PHASE4_PLAN.md).
+
 Frontend V1 is tracked in [docs/FRONTEND_PLAN.md](docs/FRONTEND_PLAN.md). The accepted Sprint 3 prototype includes product management, line-level customization, stock limits, order/payment transitions, workshop registration and check-in, queue and inventory movements, expenses, workshop-scoped reports, CSV export, customer history, responsive UX, and per-workshop draft autosave. Those are browser-local features, not verified Supabase transactions.
