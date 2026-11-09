@@ -44,7 +44,7 @@ I will use the accepted prototype as the UX/functional reference while keeping t
 
 - Owner-reported local checks for Sprint 3: 96/96 unit tests, TypeScript, Prettier and Next.js build passed.
 - **4.1a accepted - 2026-11-09:** The project owner ran `npm run test:db` locally with the existing Docker PostgreSQL 17 container. The SQL suite returned `All Phase 1 database assertions passed`, followed by `ROLLBACK` and `Database schema and permission assertions passed; all test changes were rolled back.` This verifies the local schema/permission/operations assertions, not the hosted Supabase environment.
-- No hosted Frog Management project exists to verify live migration history, RLS policies, Data API grants, Auth Hook activation, Google OAuth, Realtime subscriptions or database security advisors.
+- A dedicated hosted project now exists, and its base schema, RLS enablement, migration history, catalogue seed and Security/Health Advisors have been inspected. Live Auth Hook activation, Google OAuth, role-based API access and actual Realtime delivery remain unverified.
 - The SQL includes scoped RLS and `security_invoker` reporting views, but privileged functions and policies still require live security testing with owner, staff and unauthorized accounts.
 - The browser-only prototype is not safe to use for real transactions. Two browser tabs updating localStorage are not a substitute for transaction-safe multi-device checkout.
 
@@ -59,4 +59,4 @@ I will use the accepted prototype as the UX/functional reference while keeping t
 
 ## Next action
 
-The local Docker database test passed. For 4.2, the connected Supabase account currently lists one organization, `Dioxyzine Frog`, with two existing e-commerce projects. The owner has chosen a **separate organization**, tentatively named `The Frog Art Space`. It has not appeared in the connected account yet. Wait for it to be created through the dashboard, then verify the project cost before any potentially billable actions. Do not apply migrations or modify the existing Dioxyzine Frog databases.
+The new The_Frog_Art_Space project `swkbnkazjxgvnhkwrcyx` has been provisioned, migrated and seeded. The next action is migration history reconciliation and Phase 4.3 Google OAuth/owner allowlist testing. Refer to `docs/PHASE4_PLAN.md` for exact hosted migration versions and remaining security checks.

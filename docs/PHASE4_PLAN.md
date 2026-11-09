@@ -9,7 +9,7 @@ Move Frog Management from the accepted browser-only prototype to the existing Ne
 ## Status
 
 - 4.1 - Backend audit: Complete. Four SQL migrations reviewed and the local PostgreSQL 17 database test passed.
-- 4.2 - Dedicated Supabase setup: Preparing. The connected account does not yet have a separate The Frog Art Space organization or Frog Management project.
+- 4.2 - Dedicated Supabase setup: Hosted database provisioned, four migrations deployed and catalogue seeded on 2026-11-09. Project integration remains pending Auth, local-to-remote migration history reconciliation and application environment configuration.
 - 4.3 - Authentication and authorization: Not started on hosted infrastructure.
 - 4.4 - Business feature integration: Not started against hosted infrastructure.
 - 4.5 - Reliability and multi-device testing: Not started.
@@ -71,6 +71,28 @@ Run automated unit, typecheck, format, build, database, security and integration
 - Keep exports and restore drills possible without relying solely on Supabase project availability.
 - Avoid building a second backend or migrating away from Supabase until there is a concrete operational need.
 
-## Current blocker
+## 4.2 hosted deployment record - 2026-11-09
 
-The connected Supabase account still lists only the `Dioxyzine Frog` organization. Creating an organization is not exposed by the connected Supabase tools. The owner must create `The Frog Art Space` through the Supabase dashboard and choose the Free plan; after that, the new organization can be discovered through the connector. No new project or hosted migration should be created until its organization and cost are verified.
+- Organization: `The_Frog_Art_Space` (Free). Project ID: `swkbnkazjxgvnhkwrcyx`; Singapore; PostgreSQL 17.
+- The project display name is currently `NhatNguyen2407's Project`. All commands must target the project ID, not the display name.
+- Applied the four existing migration SQL files in order through the connected Supabase tool: core, security, operations and reporting. The remote migration records are:
+  - `20261109121851_phase1_core`
+  - `20261109122028_phase1_security`
+  - `20261109122035_phase1_operations`
+  - `20261109122043_phase1_reporting`
+- Applied `supabase/seed.sql`. Verified 20 public tables with RLS enabled, 38 policies, six reporting views, 11 products, two categories, one business unit and Realtime publication of `queue_entries`. No event or order records were seeded.
+- An auto-generated `public.rls_auto_enable()` event-trigger function had `EXECUTE` grants for `PUBLIC`, `anon` and `authenticated`. Revoked those grants directly on the hosted project. Follow-up Security and Health Advisors returned no findings.
+- Performance Advisors returned 41 informational unindexed-foreign-key findings. Review query plans and index requirements before real traffic rather than adding every suggested index blindly.
+- No changes were made to either Dioxyzine Frog e-commerce project.
+
+### Migration history reconciliation - required before future db push
+
+The hosted tool assigned new migration timestamps at deployment time, while Git retains the original filenames `20261024080425` through `20261024080428`. The SQL schemas are deployed, but the recorded versions are different.
+
+**Do not run `supabase db push` against this hosted project until local and remote migration histories are aligned.** Reconcile with the supported Supabase CLI `migration list` and `migration repair` procedure, after explicitly linking to `swkbnkazjxgvnhkwrcyx`. Migration repair updates history metadata, not schema definitions. First inspect the history and confirm every mapping, then mark the four generated remote versions as reverted and the four Git versions as applied. Do not re-execute the already-applied schema SQL. Reference: https://supabase.com/docs/reference/cli/supabase-migration-repair.
+
+The temporary security hardening for `public.rls_auto_enable()` is a hosted project configuration fix. If Automatic RLS is enabled on another new project, inspect its generated function grants again.
+
+### Next step
+
+Configure hosted Google OAuth and the Before User Created Auth Hook, bootstrap an approved owner, and verify sign-in plus live RLS. Application environment variables must use the project-specific URL and a browser-safe publishable key; never commit secrets. The standalone `localStorage` prototype remains separate.
