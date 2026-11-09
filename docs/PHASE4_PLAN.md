@@ -10,7 +10,7 @@ Move Frog Management from the accepted browser-only prototype to the existing Ne
 
 - 4.1 - Backend audit: Complete. Four SQL migrations reviewed and the local PostgreSQL 17 database test passed.
 - 4.2 - Dedicated Supabase setup: Database verified on 2026-11-09. Four migrations, catalogue seed, RLS/security review and local-to-remote migration history alignment passed. Email/password and app environment configuration move to 4.3.
-- 4.3 - Authentication and authorization: Email/password-only implementation prepared. Hosted application login and RLS acceptance remain pending.
+- 4.3 - Authentication and authorization: Email/password-only implementation committed and its authorization migration deployed. Hosted provider configuration, account provisioning and end-to-end acceptance remain pending.
 - 4.4 - Business feature integration: Not started against hosted infrastructure.
 - 4.5 - Reliability and multi-device testing: Not started.
 - 4.6 - Final manual acceptance: Not started.
@@ -90,11 +90,17 @@ Run automated unit, typecheck, format, build, database, security and integration
 
 The owner completed the remote migration-history repair using the linked Supabase CLI v2.117.0. Follow-up `supabase migration list` showed all four versions matching Local and Remote, and `supabase db push --dry-run` returned `Remote database is up to date.` The connected Supabase tool independently confirmed the same four remote versions. The database was not reset or re-migrated. The hosted product catalogue still has 11 products, 20 base tables and zero orders.
 
-The hosted tool assigned new migration timestamps at deployment time, while Git retains the original filenames `20261024080425` through `20261024080428`. The SQL schemas are deployed, but the recorded versions are different.
-
 Migration history is now aligned. For future changes, create and commit a new timestamped migration, review the target project and dry-run output, then apply once. Do not rerun the four baseline migrations. Reference: https://supabase.com/docs/reference/cli/supabase-migration-repair.
 
 The temporary security hardening for `public.rls_auto_enable()` is a hosted project configuration fix. If Automatic RLS is enabled on another new project, inspect its generated function grants again.
+
+### 4.3 code and hosted migration - 2026-11-09
+
+- Next.js login was replaced with a staff email/password form using `signInWithPassword`; social OAuth callback was removed.
+- The database `staff_password_auth` migration updated `private.role_for_unit` and `public.before_user_created` to require confirmed email identities, without rebuilding business tables.
+- The hosted migration was applied successfully. Its remote version is `20261109143532`; the matching source file is `supabase/migrations/20261109143532_staff_password_auth.sql`.
+- Hosted Security Advisor returned no findings after the migration. No staff Auth users or allowlist entries have been provisioned yet.
+- **Not yet accepted:** Disabling public signups and social providers, enabling the Before User Created Auth Hook, provisioning Owner/Staff, and real login/role tests are still pending.
 
 ### Next step - 4.3
 

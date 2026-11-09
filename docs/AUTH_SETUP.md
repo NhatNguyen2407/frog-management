@@ -53,6 +53,6 @@ Then provision the corresponding confirmed email/password user in Authentication
 - Unconfirmed email does not pass database role checks.
 - Social OAuth is disabled, and public email signup fails directly through Supabase Auth.
 - The Before User Created hook allows approved email accounts and rejects unapproved or social-provider accounts.
-- A database migration `supabase/migrations/20261109142327_staff_password_auth.sql` changes existing RLS helpers and the signup hook without recreating business tables.
+- A database migration `supabase/migrations/20261109143532_staff_password_auth.sql` changes existing RLS helpers and the signup hook without recreating business tables.
 
 Manual account provisioning and hosted provider/hook activation still require verification. Do not claim production authentication is accepted until these checks pass.
