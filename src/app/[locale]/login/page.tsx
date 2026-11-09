@@ -1,9 +1,10 @@
 import { getTranslations } from "next-intl/server";
-import { Leaf, ArrowRight, ShieldCheck, CircleDot } from "lucide-react";
+import { Leaf, ArrowRight, ShieldCheck, KeyRound } from "lucide-react";
 import { signIn } from "@/features/auth/actions";
 import { supabaseConfigured } from "@/lib/supabase/config";
 import { Preferences } from "@/components/preferences";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Notice } from "@/components/shared";
 import { Badge } from "@/components/ui/badge";
 export default async function LoginPage({
@@ -69,12 +70,37 @@ export default async function LoginPage({
             </div>
           ) : null}
           {configured ? (
-            <form action={signIn} className="mt-8">
+            <form action={signIn} className="mt-8 space-y-4">
               <input type="hidden" name="locale" value={locale} />
+              <div className="space-y-2">
+                <label htmlFor="email" className="text-sm font-medium">
+                  {t("email")}
+                </label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="username"
+                  required
+                  maxLength={254}
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="password" className="text-sm font-medium">
+                  {t("password")}
+                </label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                />
+              </div>
               <Button className="w-full justify-between" type="submit">
                 <span className="flex items-center gap-3">
-                  <CircleDot aria-hidden />
-                  {t("google")}
+                  <KeyRound aria-hidden />
+                  {t("signIn")}
                 </span>
                 <ArrowRight aria-hidden />
               </Button>

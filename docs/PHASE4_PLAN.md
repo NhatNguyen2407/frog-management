@@ -9,8 +9,8 @@ Move Frog Management from the accepted browser-only prototype to the existing Ne
 ## Status
 
 - 4.1 - Backend audit: Complete. Four SQL migrations reviewed and the local PostgreSQL 17 database test passed.
-- 4.2 - Dedicated Supabase setup: Database verified on 2026-11-09. Four migrations, catalogue seed, RLS/security review and local-to-remote migration history alignment passed. Google OAuth and app environment configuration move to 4.3.
-- 4.3 - Authentication and authorization: Not started on hosted infrastructure.
+- 4.2 - Dedicated Supabase setup: Database verified on 2026-11-09. Four migrations, catalogue seed, RLS/security review and local-to-remote migration history alignment passed. Email/password and app environment configuration move to 4.3.
+- 4.3 - Authentication and authorization: Email/password-only implementation prepared. Hosted application login and RLS acceptance remain pending.
 - 4.4 - Business feature integration: Not started against hosted infrastructure.
 - 4.5 - Reliability and multi-device testing: Not started.
 - 4.6 - Final manual acceptance: Not started.
@@ -29,8 +29,9 @@ Move Frog Management from the accepted browser-only prototype to the existing Ne
 
 ## 4.3 - Authentication and authorization
 
-- Set up hosted Google OAuth and the Before User Created Auth Hook.
-- Create the initial owner allowlist entry, then test Owner, Staff and unapproved accounts.
+- Use Supabase email/password sign-in only. Keep social providers disabled and disable public signups.
+- Provision confirmed staff accounts in Supabase Authentication > Users and maintain a separate owner-controlled allowlist.
+- Enable the Before User Created Auth Hook and test Owner, Staff and unapproved accounts.
 - Verify permissions with direct database/API calls, not only hidden navigation controls.
 - Do not treat successful sign-in as proof that RLS is correct.
 
@@ -97,4 +98,4 @@ The temporary security hardening for `public.rls_auto_enable()` is a hosted proj
 
 ### Next step - 4.3
 
-Configure hosted Google OAuth and the Before User Created Auth Hook, bootstrap an approved owner, and verify sign-in plus live RLS. Application environment variables must use the project-specific URL and a browser-safe publishable key; never commit secrets. The standalone `localStorage` prototype remains separate.
+Configure hosted Email/Password Auth, disable public registration, enable the allowlist Auth Hook, bootstrap an approved owner, and verify password sign-in plus live RLS. Application environment variables must use the project-specific URL and a browser-safe publishable key; never commit secrets. The standalone `localStorage` prototype remains separate.

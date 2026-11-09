@@ -19,10 +19,10 @@ I will not point Frog Management migrations at either Dioxyzine Frog project. A 
 ## Existing repository implementation
 
 - The standalone `public/prototype/` is the accepted browser-only UI. It uses localStorage and is not authenticated or connected to Postgres.
-- The Next.js application in `src/` is a separate, database-oriented implementation. It already uses Supabase SSR clients, Google sign-in, a server-side workspace context, owner/staff permissions, data queries and server actions.
+- The Next.js application in `src/` is a separate, database-oriented implementation. It already uses Supabase SSR clients, a server-side workspace context, owner/staff permissions, data queries and server actions. The initial Google-only login is being replaced with email/password in Phase 4.3.
 - Four SQL migrations exist under `supabase/migrations/`: core schema, security, operations and reporting.
 - Core schema defines 20 business tables, including units, staff allowlist, events, products, tickets, queue, orders, inventory movements, costs and audit log.
-- Security migration defines row-level security, the Google allowlist Auth Hook, unit membership checks, role-based policies, guarded writes and audit triggers.
+- Security migration defines row-level security, the staff allowlist Auth Hook, unit membership checks, role-based policies, guarded writes and audit triggers.
 - Operations migration implements database functions for creating events, products and orders, ticket status/printing, payment transitions, inventory and checkout.
 - Reporting migration defines six `security_invoker` views for paid sales, event financials, product revenue, revenue over time, inventory and operational status.
 - `supabase/seed.sql` seeds one workshop business unit, two product categories and 11 sample products. It does not create events, accounts, order history or stock quantities.
@@ -44,7 +44,7 @@ I will use the accepted prototype as the UX/functional reference while keeping t
 
 - Owner-reported local checks for Sprint 3: 96/96 unit tests, TypeScript, Prettier and Next.js build passed.
 - **4.1a accepted - 2026-11-09:** The project owner ran `npm run test:db` locally with the existing Docker PostgreSQL 17 container. The SQL suite returned `All Phase 1 database assertions passed`, followed by `ROLLBACK` and `Database schema and permission assertions passed; all test changes were rolled back.` This verifies the local schema/permission/operations assertions, not the hosted Supabase environment.
-- A dedicated hosted project now exists, and its base schema, RLS enablement, migration history, catalogue seed and Security/Health Advisors have been inspected. Live Auth Hook activation, Google OAuth, role-based API access and actual Realtime delivery remain unverified.
+- A dedicated hosted project now exists, and its base schema, RLS enablement, migration history, catalogue seed and Security/Health Advisors have been inspected. Live Auth Hook activation, email/password sign-in, role-based API access and actual Realtime delivery remain unverified.
 - The SQL includes scoped RLS and `security_invoker` reporting views, but privileged functions and policies still require live security testing with owner, staff and unauthorized accounts.
 - The browser-only prototype is not safe to use for real transactions. Two browser tabs updating localStorage are not a substitute for transaction-safe multi-device checkout.
 
@@ -59,4 +59,4 @@ I will use the accepted prototype as the UX/functional reference while keeping t
 
 ## Next action
 
-The new The_Frog_Art_Space project `swkbnkazjxgvnhkwrcyx` has been provisioned, migrated and seeded. The next action is migration history reconciliation and Phase 4.3 Google OAuth/owner allowlist testing. Refer to `docs/PHASE4_PLAN.md` for exact hosted migration versions and remaining security checks.
+The new The_Frog_Art_Space project `swkbnkazjxgvnhkwrcyx` has been provisioned, migrated and seeded. The next action is migration history reconciliation and Phase 4.3 email/password/owner allowlist testing. Refer to `docs/PHASE4_PLAN.md` for exact hosted migration versions and remaining security checks.

@@ -8,9 +8,9 @@ The first business unit is a creative workshop with a small F&B catalogue. The d
 
 **The browser-only frontend prototype has completed Sprint 3 acceptance testing. The separate Next.js/Supabase backend implementation has not yet passed hosted end-to-end acceptance.**
 
-The repository contains Next.js screens, four SQL migrations, a seed catalogue and automated tests, alongside the standalone mock POS prototype. The Sprint 3 prototype review recorded 96/96 automated tests and 5/5 follow-up edge cases passing. Those recorded results are not a fresh execution of the suite, nor proof of backend or live multi-device readiness.
+The repository contains Next.js screens, SQL migrations, a seed catalogue and automated tests, alongside the standalone mock POS prototype. The Sprint 3 prototype review recorded 96/96 automated tests and 5/5 follow-up edge cases passing. Those recorded results are not a fresh execution of the suite, nor proof of backend or live multi-device readiness.
 
-The current backend audit has not confirmed a dedicated hosted Supabase project or completed live authentication, Realtime, concurrency, and database acceptance tests. The standalone prototype works without Supabase, but is not suitable for real sales. A physical dual-label printer check was recorded for the mock prototype; the separate Next.js printing flow still needs equivalent verification. Without Supabase environment variables, the Next.js app shows a setup screen.
+The dedicated The Frog Art Space Supabase project is provisioned with aligned migrations and a seeded catalogue. Hosted email/password authentication, Realtime, concurrency and end-to-end acceptance still need verification. The standalone prototype works without Supabase, but is not suitable for real sales. A physical dual-label printer check was recorded for the mock prototype; the separate Next.js printing flow still needs equivalent verification. Without Supabase environment variables, the Next.js app shows a setup screen.
 
 This is an internal application, not an online store. There are no customer accounts, online payments or public registration pages in Phase 1.
 
@@ -28,7 +28,7 @@ This is an internal application, not an online store. There are no customer acco
 | Costs                | Record event expenses by category and date                                      | Owner        |
 | Dashboard            | Paid revenue, costs, profit, margin, category breakdown and charts              | Owner        |
 | Operations dashboard | Queue and ticket counts without financial reporting                             | Staff        |
-| Settings             | Allowlisted Google accounts and owner/staff roles                               | Owner        |
+| Settings             | Allowlisted staff email accounts and owner/staff roles                               | Owner        |
 
 The TV display requires an authenticated staff session. It is not a public screen.
 
@@ -36,7 +36,7 @@ The TV display requires an authenticated staff session. It is not a public scree
 
 - Next.js 16 App Router, React 19 and TypeScript
 - Tailwind CSS 4 and shadcn/ui-style components
-- Supabase Postgres, Google Auth, RLS and Realtime
+- Supabase Postgres, Email/Password Auth, RLS and Realtime
 - next-intl for Vietnamese and English
 - Recharts for reporting
 - Vercel-ready Next.js deployment
@@ -80,12 +80,10 @@ Copy `.env.example` to `.env.local` and fill in the relevant values.
 | `NEXT_PUBLIC_SUPABASE_URL`                | Supabase project API URL                          |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`    | Browser-safe publishable key                      |
 | `NEXT_PUBLIC_SITE_URL`                    | App origin, e.g. `http://localhost:3000`          |
-| `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` | Google OAuth for the local Supabase stack         |
-| `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET`    | Google OAuth for the local Supabase stack         |
 | `INITIAL_OWNER_EMAIL`                     | Email used by the optional owner bootstrap script |
 | `INITIAL_BUSINESS_UNIT_SLUG`              | Initial unit, normally `workshop`                 |
 
-The hosted Google OAuth credentials belong in Supabase Auth provider settings. Never commit `.env.local`, a service-role key or a Google client secret. The web app does not require a service-role key.
+Staff credentials are provisioned in Supabase Authentication. Never commit `.env.local`, passwords or a service-role key. The web app does not require a service-role key.
 
 ### 2. Apply the database
 
@@ -113,26 +111,26 @@ supabase status
 
 The configured local stack loads migrations and `supabase/seed.sql`. Use the local API URL and publishable key printed by `supabase status`. Do not run `supabase db reset` on a database containing data you need to keep.
 
-### 3. Enable Google sign-in
+### 3. Provision email/password staff accounts
 
-- Enable Google as the Supabase Auth provider and configure its callback in Google Cloud.
-- Set the Supabase Site URL to the app origin.
-- Allow the app's `/auth/callback` URL locally and for each approved deployment origin.
-- Enable the **Before User Created** Auth Hook, using `public.before_user_created`.
-- Set up at least one approved owner email before the first Google sign-in.
+- Enable the Email provider and disable public signups in Supabase Auth. Keep social providers disabled.
+- Add the first owner email to `staff_allowlist`, then create the matching confirmed email/password user in Supabase Authentication > Users.
+- Add staff emails through Settings and provision their login accounts separately in Supabase Auth > Users. The allowlist does not create authentication users.
+- Enable the Before User Created Auth Hook using `public.before_user_created` to enforce the approved email list.
+- See [docs/AUTH_SETUP.md](docs/AUTH_SETUP.md) for the complete onboarding and testing procedure.
 
-For a new hosted project, the initial owner can be added using the Supabase SQL Editor after the seed is applied. Replace the placeholder with the intended Google account:
+For a new hosted project, add the initial owner email using the Supabase SQL Editor:
 
 ```sql
 insert into public.staff_allowlist (business_unit_id, email, role, active)
-select id, lower('YOUR_GOOGLE_EMAIL'), 'owner', true
+select id, lower('YOUR_OWNER_EMAIL'), 'owner', true
 from public.business_units
 where slug = 'workshop'
 on conflict (business_unit_id, email)
 do update set role = 'owner', active = true;
 ```
 
-The repository also includes an owner bootstrap script. Its CLI invocation should be checked against the installed CLI version before relying on it. Subsequent owner/staff accounts can be managed through Settings after sign-in.
+The repository also includes an owner allowlist bootstrap script, but it does not create an Auth user. See the onboarding guide before provisioning passwords.
 
 ## How the numbers work
 
@@ -151,14 +149,14 @@ Be careful not to count the same material purchase both as a product unit cost a
 ## Project structure
 
 ```text
-src/app/                 Routes, layouts and auth callback
+src/app/                 Routes, layouts and login
 src/components/          Shared components and staff navigation
 src/features/            Counter, tickets, orders, inventory, reports and settings
 src/lib/domain/          Finance and inventory calculations
 src/lib/permissions/     Authenticated workspace context
 src/lib/supabase/        Supabase clients, queries and types
 src/i18n/ + messages/    Vietnamese and English UI strings
-supabase/migrations/     Four Phase 1 SQL migrations
+supabase/migrations/     Versioned SQL migrations
 supabase/seed.sql        Initial product catalogue
 scripts/                 Owner bootstrap and database test runner
 tests/                   Unit tests and SQL permission/operations assertions
@@ -183,11 +181,11 @@ docker pull postgres:17
 npm run test:db
 ```
 
-The database test runner starts an isolated PostgreSQL container, exercises migrations and permissions, and rolls back its test fixtures. It does not test Google OAuth, actual Supabase Realtime delivery or a real printer.
+The database test runner starts an isolated PostgreSQL container, exercises migrations and permissions, and rolls back its test fixtures. It does not test hosted password sign-in, actual Supabase Realtime delivery or a real printer.
 
 ### Acceptance checks before live use
 
-- Allowlisted Google accounts can sign in; unapproved accounts cannot access business data.
+- Approved email/password accounts can sign in; unapproved accounts cannot access business data.
 - Owner and staff restrictions work at the database level, not just in navigation.
 - Registering, printing, advancing and cancelling tickets updates the authenticated TV display.
 - An Unpaid order contributes no revenue; Paid contributes its amount; Refunded removes it.
@@ -209,7 +207,7 @@ For the current backend audit, see [docs/BACKEND_AUDIT.md](docs/BACKEND_AUDIT.md
 
 ## Deployment
 
-The app is structured for Vercel with Next.js. Configure the three `NEXT_PUBLIC_*` values for each approved environment, update Supabase and Google OAuth redirect URLs, and run the acceptance checks above before enabling staff access.
+The app is structured for Vercel with Next.js. Configure the three `NEXT_PUBLIC_*` values for each approved environment, configure Supabase email/password and project settings, and run the acceptance checks above before enabling staff access.
 
 No live deployment or operational readiness is claimed by this README.
 

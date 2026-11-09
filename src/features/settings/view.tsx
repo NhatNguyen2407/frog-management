@@ -52,7 +52,7 @@ export async function SettingsView() {
         }
       />
       <Notice variant="info">
-        {t("settings.scope")} {t("settings.initialOwner")}
+        {t("settings.scope")} {t("settings.initialOwner")} {t("settings.provisioning")}
       </Notice>
       <div className="space-y-3">
         {rows.map((row) => (

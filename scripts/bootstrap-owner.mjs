@@ -19,4 +19,4 @@ if (result.error || result.status !== 0) {
   console.error(result.error?.message ?? result.stderr);
   process.exit(1);
 }
-console.log("Owner allowlist bootstrap completed. No Google account or customer was created.");
+console.log("Owner allowlist bootstrap completed. No login account or password was created.");

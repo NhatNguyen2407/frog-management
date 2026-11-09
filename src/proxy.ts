@@ -1,13 +1,11 @@
 import createMiddleware from "next-intl/middleware";
 import { createServerClient } from "@supabase/ssr";
-import { NextResponse, type NextRequest } from "next/server";
+import { type NextRequest } from "next/server";
 import { routing } from "./i18n/routing";
 import { supabaseConfigured, supabaseConfig } from "./lib/supabase/config";
 const internationalize = createMiddleware(routing);
 export async function proxy(request: NextRequest) {
-  let response = request.nextUrl.pathname.startsWith("/auth/")
-    ? NextResponse.next()
-    : internationalize(request);
+  let response = internationalize(request);
   response.headers.set("Cache-Control", "private, no-store");
   if (!supabaseConfigured()) return response;
   const { url, key } = supabaseConfig();
@@ -16,9 +14,7 @@ export async function proxy(request: NextRequest) {
       getAll: () => request.cookies.getAll(),
       setAll(values, headers) {
         values.forEach(({ name, value }) => request.cookies.set(name, value));
-        response = request.nextUrl.pathname.startsWith("/auth/")
-          ? NextResponse.next({ request })
-          : internationalize(request);
+        response = internationalize(request);
         values.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
         Object.entries(headers ?? {}).forEach(([name, value]) => response.headers.set(name, value));
       },

@@ -1,8 +1,8 @@
 -- Every fixture and assertion is rolled back by the test runner.
 insert into auth.users(id,email,email_confirmed_at,raw_app_meta_data) values
- ('10000000-0000-0000-0000-000000000001','owner@example.test',now(),'{"provider":"google"}'),
- ('10000000-0000-0000-0000-000000000002','staff@example.test',now(),'{"provider":"google"}'),
- ('10000000-0000-0000-0000-000000000003','outsider@example.test',now(),'{"provider":"google"}');
+ ('10000000-0000-0000-0000-000000000001','owner@example.test',now(),'{"provider":"email"}'),
+ ('10000000-0000-0000-0000-000000000002','staff@example.test',now(),'{"provider":"email"}'),
+ ('10000000-0000-0000-0000-000000000003','outsider@example.test',now(),'{"provider":"email"}');
 insert into public.staff_allowlist(business_unit_id,email,role)
 select id,'owner@example.test','owner' from public.business_units where slug='workshop';
 insert into public.staff_allowlist(business_unit_id,email,role)
@@ -204,8 +204,9 @@ end $$;
 reset role;
 set local role supabase_auth_admin;
 do $$ begin
-  assert public.before_user_created('{"user":{"email":"owner@example.test","app_metadata":{"provider":"google"}}}')='{}'::jsonb;
-  assert public.before_user_created('{"user":{"email":"outsider@example.test","app_metadata":{"provider":"google"}}}') ? 'error';
+  assert public.before_user_created('{"user":{"email":"owner@example.test","app_metadata":{"provider":"email"}}}')='{}'::jsonb;
+  assert public.before_user_created('{"user":{"email":"outsider@example.test","app_metadata":{"provider":"email"}}}') ? 'error';
+  assert public.before_user_created('{"user":{"email":"owner@example.test","app_metadata":{"provider":"google"}}}') ? 'error';
   assert public.before_user_created('{"user":{"email":"owner@example.test","app_metadata":{}}}') ? 'error';
 end $$;
 reset role;
