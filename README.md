@@ -28,7 +28,7 @@ This is an internal application, not an online store. There are no customer acco
 | Costs                | Record event expenses by category and date                                      | Owner        |
 | Dashboard            | Paid revenue, costs, profit, margin, category breakdown and charts              | Owner        |
 | Operations dashboard | Queue and ticket counts without financial reporting                             | Staff        |
-| Settings             | Allowlisted staff email accounts and owner/staff roles                               | Owner        |
+| Settings             | Allowlisted staff email accounts and owner/staff roles                          | Owner        |
 
 The TV display requires an authenticated staff session. It is not a public screen.
 
@@ -75,13 +75,13 @@ Use a **new Supabase project for Frog Management**. Do not point these migration
 
 Copy `.env.example` to `.env.local` and fill in the relevant values.
 
-| Variable                                  | Used for                                          |
-| ----------------------------------------- | ------------------------------------------------- |
-| `NEXT_PUBLIC_SUPABASE_URL`                | Supabase project API URL                          |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`    | Browser-safe publishable key                      |
-| `NEXT_PUBLIC_SITE_URL`                    | App origin, e.g. `http://localhost:3000`          |
-| `INITIAL_OWNER_EMAIL`                     | Email used by the optional owner bootstrap script |
-| `INITIAL_BUSINESS_UNIT_SLUG`              | Initial unit, normally `workshop`                 |
+| Variable                               | Used for                                          |
+| -------------------------------------- | ------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`             | Supabase project API URL                          |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Browser-safe publishable key                      |
+| `NEXT_PUBLIC_SITE_URL`                 | App origin, e.g. `http://localhost:3000`          |
+| `INITIAL_OWNER_EMAIL`                  | Email used by the optional owner bootstrap script |
+| `INITIAL_BUSINESS_UNIT_SLUG`           | Initial unit, normally `workshop`                 |
 
 Staff credentials are provisioned in Supabase Authentication. Never commit `.env.local`, passwords or a service-role key. The web app does not require a service-role key.
 

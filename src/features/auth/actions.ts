@@ -8,7 +8,9 @@ export async function signIn(form: FormData) {
   const locale = form.get("locale") === "en" ? "en" : "vi";
   const login = localePath(locale, "/login");
   if (!supabaseConfigured()) redirect(`${login}?error=setup_required`);
-  const email = String(form.get("email") ?? "").trim().toLowerCase();
+  const email = String(form.get("email") ?? "")
+    .trim()
+    .toLowerCase();
   const password = String(form.get("password") ?? "");
   if (!email || email.length > 254 || !password) redirect(`${login}?error=auth_failed`);
 
