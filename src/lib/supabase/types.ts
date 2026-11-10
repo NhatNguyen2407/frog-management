@@ -148,6 +148,41 @@ export type CheckoutResult = {
   total_vnd?: number;
   already_created?: boolean;
 };
+export type HistoryOrder = {
+  id: string;
+  business_unit_id: string;
+  event_id: string;
+  event_name: string;
+  created_at: string;
+  paid_at: string | null;
+  payment_status: Order["payment_status"];
+  payment_method: Order["payment_method"];
+  ticket_id: string | null;
+  ticket_number: string | null;
+  customer_name: string | null;
+  phone_zalo: string | null;
+  checked_in_at: string | null;
+  items: { name: string; quantity: number }[];
+  total_vnd: number | null;
+  search_text: string;
+};
+export type SalesReportLine = {
+  order_item_id: string;
+  business_unit_id: string;
+  event_id: string;
+  event_name: string;
+  order_id: string;
+  customer_name: string | null;
+  ticket_number: string | null;
+  sku_snapshot: string;
+  name_snapshot: string;
+  category_code_snapshot: string;
+  quantity: number;
+  unit_price_vnd: number;
+  revenue_vnd: number;
+  cost_of_goods_vnd: number | null;
+  paid_at: string;
+};
 type Table<T> = { Row: T; Insert: Partial<T>; Update: Partial<T>; Relationships: [] };
 type View<T> = { Row: T; Relationships: [] };
 type Fn<A, R> = { Args: A; Returns: R };
@@ -196,6 +231,9 @@ export type Database = {
       >;
     };
     Views: {
+      customer_history: View<HistoryOrder>;
+      sales_report_lines: View<SalesReportLine>;
+      expense_report: View<Cost & { event_name: string }>;
       ticket_registrations: View<Ticket & { can_check_in: boolean }>;
       event_financials: View<EventFinancials>;
       product_revenue: View<ProductRevenue>;

@@ -6,7 +6,7 @@ Updated: 2026-11-10
 
 The initial backend audit was read-only. Phase 4.2 provisioned a dedicated Supabase project, deployed the migrations and seeded the catalogue. Phase 4.3 added approved accounts and verified database roles; the owner reports regular successful app testing. Phase 4.4a adds ticket attendance without seeding sales or tickets.
 
-**Result: Hosted schema and database roles are verified; authentication has owner-reported acceptance. Check-in and undo are implemented with a deployed migration and automated SQL checks. Browser acceptance of this new feature and remaining business integrations are pending.**
+**Result: Authentication and check-in/undo have owner-reported acceptance plus independent database checks. Customer history and CSV exports are implemented and SQL-tested with deployed read models; their browser acceptance and remaining business integrations are pending.**
 
 ## Connected Supabase projects
 
@@ -20,7 +20,7 @@ I will not point Frog Management migrations at either Dioxyzine Frog project. A 
 
 - The standalone `public/prototype/` is the accepted browser-only UI. It uses localStorage and is not authenticated or connected to Postgres.
 - The Next.js application in `src/` is a separate, database-oriented implementation. It uses Supabase SSR clients, a server-side workspace context, owner/staff permissions, data queries and server actions. Staff email/password has replaced social login.
-- Six SQL migrations exist under `supabase/migrations/`: core schema, security, operations, reporting, staff password authentication and ticket check-in. All six versions match hosted migration history.
+- Seven SQL migrations exist under `supabase/migrations/`: core schema, security, operations, reporting, staff password authentication, ticket check-in and customer history/report read models. All seven versions match hosted migration history.
 - Core schema defines 20 business tables, including units, staff allowlist, events, products, tickets, queue, orders, inventory movements, costs and audit log.
 - Security migration defines row-level security, the staff allowlist Auth Hook, unit membership checks, role-based policies, guarded writes and audit triggers.
 - Operations migration implements database functions for creating events, products and orders, ticket status/printing, payment transitions, inventory and checkout.
@@ -32,8 +32,8 @@ Hosted migration history and the deployed password authorization helpers were ch
 
 ## Prototype-to-backend gaps to review
 
-- **Check-in:** Phase 4.4a adds `tickets.checked_in_at`, a scoped registration view and guarded check-in/undo RPC. SQL checks passed; browser acceptance of the new controls is pending.
-- **Customer history and exports:** The prototype provides cross-workshop history, date-scoped reports and CSV exports. The Next.js sections currently reviewed do not provide equivalent functionality, so their scope must be checked before declaring feature parity.
+- **Check-in:** Phase 4.4a adds `tickets.checked_in_at`, a scoped registration view and guarded check-in/undo RPC. Automated SQL checks and owner-reported browser acceptance passed.
+- **Customer history and exports:** Phase 4.4b adds cross-workshop Owner history/search and Orders/Revenue/Expenses CSV downloads with date/workshop filters. Read models, role isolation, CSV protection and pagination are tested. Browser acceptance of the new pages/downloads is pending.
 - **Printing:** The prototype passed customer and staff dual-label testing on 76 x 130 mm paper. The separate Next.js receipt component provides a ticket print view, but not the same two-label customer/staff flow.
 - **Inventory:** The prototype models product stock directly. The database has a more detailed materials model with event stock and product-to-supply mappings. This requires an explicit mapping of business rules rather than copying localStorage records.
 - **Drafts:** The prototype saves unfinished POS orders by workshop. The Next.js Counter currently holds its cart in component state; draft persistence must be designed separately when migrating that workflow.
@@ -59,4 +59,4 @@ I will use the accepted prototype as the UX/functional reference while keeping t
 
 ## Next action
 
-Phase 4.3 is accepted based on owner-reported app testing and independent hosted permission checks. Phase 4.4a check-in/undo is implemented and its migration is deployed. Verify the new controls after the application update, then continue customer history and CSV export. Refer to `docs/PHASE4_PLAN.md` for the verification record.
+Phases 4.3 and 4.4a are accepted based on owner-reported app testing and independent database checks. Phase 4.4b history/CSV is implemented with a deployed migration. Verify the new pages/downloads after the application update, then continue dual-label printing and POS drafts. Refer to `docs/PHASE4_PLAN.md` for the verification record.

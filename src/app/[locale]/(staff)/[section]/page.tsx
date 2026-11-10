@@ -7,6 +7,8 @@ import { OrdersView } from "@/features/orders/view";
 import { InventoryView } from "@/features/inventory/view";
 import { CostsView } from "@/features/costs/view";
 import { SettingsView } from "@/features/settings/view";
+import { CustomersView } from "@/features/customers/view";
+import { ReportsView } from "@/features/reports/view";
 export default async function SectionPage({
   params,
   searchParams,
@@ -44,5 +46,13 @@ export default async function SectionPage({
   if (section === "inventory") return <InventoryView />;
   if (section === "costs") return <CostsView />;
   if (section === "settings") return <SettingsView />;
+  if (section === "customers")
+    return (
+      <CustomersView
+        query={query.q ?? ""}
+        page={Math.max(1, Math.min(100000, Math.floor(Number(query.page)) || 1))}
+      />
+    );
+  if (section === "reports") return <ReportsView query={query} />;
   notFound();
 }

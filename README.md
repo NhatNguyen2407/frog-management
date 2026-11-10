@@ -10,7 +10,7 @@ The first business unit is a creative workshop with a small F&B catalogue. The d
 
 The repository contains Next.js screens, SQL migrations, a seed catalogue and automated tests, alongside the standalone mock POS prototype. The Sprint 3 prototype review recorded 96/96 automated tests and 5/5 follow-up edge cases passing. Those recorded results are not a fresh execution of the suite, nor proof of backend or live multi-device readiness.
 
-The dedicated The Frog Art Space Supabase project has aligned migrations and a seeded catalogue. Hosted email/password login and permissions have owner-reported acceptance, with independent database role checks. Ticket check-in and undo are implemented and SQL-tested; their new browser controls still need acceptance. Realtime, concurrency and complete business-flow acceptance remain pending. The standalone prototype works without Supabase, but is not suitable for real sales. A physical dual-label printer check was recorded for the mock prototype; the separate Next.js printing flow still needs equivalent verification. Without Supabase environment variables, the Next.js app shows a setup screen.
+The dedicated The Frog Art Space Supabase project has aligned migrations and a seeded catalogue. Hosted email/password login, permissions and ticket check-in/undo have owner-reported acceptance, with independent database checks. Owner customer history and date-filtered CSV exports are implemented and tested; their browser acceptance is pending. Realtime, concurrency and complete business-flow acceptance remain pending. The standalone prototype works without Supabase, but is not suitable for real sales. A physical dual-label printer check was recorded for the mock prototype; the separate Next.js printing flow still needs equivalent verification. Without Supabase environment variables, the Next.js app shows a setup screen.
 
 This is an internal application, not an online store. There are no customer accounts, online payments or public registration pages in Phase 1.
 
@@ -26,6 +26,8 @@ This is an internal application, not an online store. There are no customer acco
 | Orders               | Paid, Unpaid, Refunded and Cancelled statuses; cash or bank transfer            | Owner, staff |
 | Inventory            | Prepared stock, product-to-supply mappings, usage movements and alerts          | Owner        |
 | Costs                | Record event expenses by category and date                                      | Owner        |
+| Customer history     | Search separate orders across workshops by name, phone, order or ticket         | Owner        |
+| CSV reports          | Orders, paid revenue and expenses with workshop and Vietnam-date filters        | Owner        |
 | Dashboard            | Paid revenue, costs, profit, margin, category breakdown and charts              | Owner        |
 | Operations dashboard | Queue and ticket counts without financial reporting                             | Staff        |
 | Settings             | Allowlisted staff email accounts and owner/staff roles                          | Owner        |
@@ -172,7 +174,7 @@ npm run typecheck
 npm run build
 ```
 
-The current unit suite covers revenue, profit, stock calculations, formatting and translation-key parity.
+The current unit suite covers revenue, profit, stock calculations, formatting, report dates, CSV safety/pagination and translation-key parity. The separate SQL suites exercise database operations, permissions, check-in and report read models.
 
 Database tests require Docker and a locally available `postgres:17` image:
 
@@ -197,7 +199,7 @@ The database test runner starts an isolated PostgreSQL container, exercises migr
 
 ## Next priorities
 
-Hosted accounts and authentication are accepted. The current priority is browser acceptance of ticket check-in/undo, followed by customer history, date-filtered CSV exports, dual customer/staff labels and unfinished POS drafts in the database-backed app. Then verify end-to-end transactions, multi-device behavior, printer output, backups and CI. The current repository has tests but no committed GitHub Actions workflow.
+Hosted accounts, authentication and check-in/undo are accepted. The current priority is browser acceptance of customer history and CSV exports, followed by dual customer/staff labels and unfinished POS drafts in the database-backed app. Then verify end-to-end transactions, multi-device behavior, printer output, backups and CI. The current repository has tests but no committed GitHub Actions workflow.
 
 Operational improvements to evaluate next are corrections to cost entries, explicit inventory adjustments/restocking, safer customer names on a public-facing TV and more robust event-level product controls.
 

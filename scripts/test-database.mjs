@@ -54,6 +54,7 @@ try {
     (await readFile("supabase/seed.sql", "utf8")).replace(/^\s*(begin|commit);\s*$/gim, ""),
     await readFile("tests/database/phase1.sql", "utf8"),
     await readFile("tests/database/check-in.sql", "utf8"),
+    await readFile("tests/database/reporting.sql", "utf8"),
     "rollback;",
   ].join("\n");
   const output = docker(

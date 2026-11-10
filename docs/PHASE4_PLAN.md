@@ -11,7 +11,7 @@ Move Frog Management from the accepted browser-only prototype to the existing Ne
 - 4.1 - Backend audit: Complete. Four SQL migrations reviewed and the local PostgreSQL 17 database test passed.
 - 4.2 - Dedicated Supabase setup: Database verified on 2026-11-09. Four migrations, catalogue seed, RLS/security review and local-to-remote migration history alignment passed. Email/password and app environment configuration move to 4.3.
 - 4.3 - Authentication and authorization: Accepted on 2026-11-10 based on the owner's regular app testing and independent hosted account/RLS checks. Browser sign-in was not repeated by the agent.
-- 4.4 - Business feature integration: In progress. Check-in and undo are implemented and their migration is deployed; acceptance of the new controls is pending.
+- 4.4 - Business feature integration: In progress. Check-in/undo accepted by the owner. Customer history and date-filtered CSV are implemented with deployed read models; their browser acceptance is pending.
 - 4.5 - Reliability and multi-device testing: Not started.
 - 4.6 - Final manual acceptance: Not started.
 
@@ -104,7 +104,7 @@ The temporary security hardening for `public.rls_auto_enable()` is a hosted proj
 
 ### Next step - 4.4
 
-Verify the new paid-ticket check-in and undo controls after the application update. Then continue customer history and date-filtered CSV export. Existing login acceptance does not need another manual cycle unless authentication changes.
+Verify Owner customer history and the three CSV downloads, including workshop/date filters and denial for Staff. Then continue dual-label printing and unfinished POS drafts. Existing login and check-in acceptance do not need another manual cycle unless those features change.
 
 ### 4.3 initial read-only verification - 2026-11-10
 
@@ -130,4 +130,14 @@ Verify the new paid-ticket check-in and undo controls after the application upda
 - Deployed `20261110035628_ticket_check_in` to `swkbnkazjxgvnhkwrcyx`. The source filename matches the hosted migration version. Existing product/account data remains intact; no sales or tickets were seeded.
 - Verified the `security_invoker` registration view, authenticated-only RPC grants, and absence of new Security Advisor findings beyond the existing Free-plan password warning.
 - Validation passed: 96/96 unit tests, TypeScript, production build, formatting, baseline SQL and new check-in/permission assertions. SQL ran in disposable PGlite PostgreSQL 17.5, with fixtures rolled back; the Docker wrapper was not run because Docker is unavailable here. No runtime dependency was added to the app.
-- **Not yet accepted:** The new controls still need browser verification. Remaining 4.4 work includes customer history, date-filtered CSV, dual-label printing and unfinished POS drafts.
+- **Accepted - 2026-11-10:** The owner reported that the new check-in and undo controls passed. This is owner-reported browser acceptance, alongside the automated SQL checks above.
+
+### 4.4b - Customer history and date-filtered CSV - 2026-11-10
+
+- Added Owner-only Customer history and CSV reports pages using the existing navigation, components and translations. History searches names, phone numbers, order IDs and tickets across all workshops in the current business unit. Vietnamese names can be searched without accents. Matching names remain separate orders.
+- Added Orders, Revenue and Expenses CSV downloads with workshop/all-workshop selection and optional inclusive dates in Vietnam time. Orders use their immutable creation date, Revenue uses payment time, and Expenses uses the recorded expense date; these distinct date bases are shown in the UI.
+- CSV exports are read-only, private/no-store and streamed in pages of 1,000 with a stable ID cursor. They do not silently stop at the API's first page. Vietnamese text, CSV quoting and formula-injection protection are covered by tests. Unknown historical cost remains blank, not zero. Pages read live data rather than one transaction snapshot; review consistency during concurrent edits in Phase 4.5.
+- Revenue uses the existing Paid-item snapshot view, excluding refunded/cancelled/archived orders and voided items. Staff is denied by the download route, and all three `security_invoker` read models enforce Owner access independently in the database.
+- Deployed `20261110043403_customer_history` to the Frog Art Space project; source and hosted migration versions match. No business records were written by this migration. Security Advisor has no new findings beyond the existing password-protection warning.
+- Validation passed: 104/104 unit tests, TypeScript, production build, baseline/check-in/reporting SQL on disposable PostgreSQL 17.5. SQL coverage includes cross-workshop search, row isolation, immutable price snapshots, unknown costs, Vietnam-midnight boundaries and role denial. Fixtures were rolled back; no runtime dependency was added.
+- **Not yet accepted:** Browser verification of history/search and downloaded CSV contents is pending. Dual customer/staff labels and POS draft recovery remain for later increments.

@@ -16,6 +16,8 @@ import {
   Wallet,
   Settings,
   Monitor,
+  Users,
+  FileDown,
   Menu,
   X,
   LogOut,
@@ -43,6 +45,8 @@ const management = [
   { href: "/products", key: "products", icon: Package },
   { href: "/inventory", key: "inventory", icon: Boxes },
   { href: "/costs", key: "costs", icon: Wallet },
+  { href: "/customers", key: "customers", icon: Users },
+  { href: "/reports", key: "reports", icon: FileDown },
   { href: "/settings", key: "settings", icon: Settings },
 ];
 function Navigation({ owner, onNavigate }: { owner: boolean; onNavigate?: () => void }) {
