@@ -1,6 +1,6 @@
 # Phase 4 - Backend Integration Plan
 
-Updated: 2026-11-09
+Updated: 2026-11-10
 
 ## Goal
 
@@ -10,8 +10,8 @@ Move Frog Management from the accepted browser-only prototype to the existing Ne
 
 - 4.1 - Backend audit: Complete. Four SQL migrations reviewed and the local PostgreSQL 17 database test passed.
 - 4.2 - Dedicated Supabase setup: Database verified on 2026-11-09. Four migrations, catalogue seed, RLS/security review and local-to-remote migration history alignment passed. Email/password and app environment configuration move to 4.3.
-- 4.3 - Authentication and authorization: Email/password-only implementation committed and its authorization migration deployed. Hosted provider configuration, account provisioning and end-to-end acceptance remain pending.
-- 4.4 - Business feature integration: Not started against hosted infrastructure.
+- 4.3 - Authentication and authorization: Accepted on 2026-11-10 based on the owner's regular app testing and independent hosted account/RLS checks. Browser sign-in was not repeated by the agent.
+- 4.4 - Business feature integration: In progress. Check-in and undo are implemented and their migration is deployed; acceptance of the new controls is pending.
 - 4.5 - Reliability and multi-device testing: Not started.
 - 4.6 - Final manual acceptance: Not started.
 
@@ -59,7 +59,7 @@ Move Frog Management from the accepted browser-only prototype to the existing Ne
 
 ## 4.6 - Final acceptance
 
-Run automated unit, typecheck, format, build, database, security and integration checks after each relevant change. Collect one consolidated owner-led browser/manual QA session at the end, except where earlier real-device or OAuth input is necessary.
+Run automated unit, typecheck, format, build, database, security and integration checks after each relevant change. Collect one consolidated owner-led browser/manual QA session at the end, except where earlier real-device or account input is necessary.
 
 **Acceptance:** All mandatory checks pass, reported issues are fixed and retested, and Phase 4 can be closed.
 
@@ -102,6 +102,32 @@ The temporary security hardening for `public.rls_auto_enable()` is a hosted proj
 - Hosted Security Advisor returned no findings after the migration. No staff Auth users or allowlist entries have been provisioned yet.
 - **Not yet accepted:** Disabling public signups and social providers, enabling the Before User Created Auth Hook, provisioning Owner/Staff, and real login/role tests are still pending.
 
-### Next step - 4.3
+### Next step - 4.4
 
-Configure hosted Email/Password Auth, disable public registration, enable the allowlist Auth Hook, bootstrap an approved owner, and verify password sign-in plus live RLS. Application environment variables must use the project-specific URL and a browser-safe publishable key; never commit secrets. The standalone `localStorage` prototype remains separate.
+Verify the new paid-ticket check-in and undo controls after the application update. Then continue customer history and date-filtered CSV export. Existing login acceptance does not need another manual cycle unless authentication changes.
+
+### 4.3 initial read-only verification - 2026-11-10
+
+- Verified `main` at `328e46d` and all five hosted migration versions. The deployed email/password role helper and signup hook match the source migration.
+- Hosted Auth settings report Email enabled, no other providers enabled and email confirmation required. **Public signup is still enabled** (`disable_signup=false`); disable it in the Dashboard before account acceptance.
+- Anonymous access has no product-read, workspace-RPC or signup-hook permission. An authenticated but unapproved identity sees no workspace, products, orders or product costs, even with forged Owner claims in metadata. These checks passed in a read-only transaction.
+- Direct hook calls reject an unknown email and social-provider payload. Required function/table grants for `supabase_auth_admin` are present. The connected database role cannot impersonate `supabase_auth_admin`, so actual Auth-service invocation and Dashboard hook activation are still unverified.
+- Security Advisor returned no findings. The hosted database still has zero Auth users, zero allowlist entries and zero orders.
+- Reran `npm test`: 96/96 passed. No application code or schema changed. Build/typecheck and the Docker database suite were not rerun for this documentation update; Docker is unavailable in the agent environment.
+- The connected Supabase tools cannot change hosted Auth settings. Dashboard access requires sign-in, so public-signup disabling, hook activation and confirmed account provisioning remain manual steps. Phase 4.3 is **not accepted** until real Owner/Staff password and revocation checks pass.
+
+### 4.3 accepted - 2026-11-10
+
+- Public signup was subsequently disabled. The owner configured the Before User Created hook in the Dashboard and provisioned one Owner and two Staff accounts. All three confirmed email identities, password presence, active allowlist entries and database roles were independently verified. An initial mistyped account was removed and replaced with the intended identity.
+- Read-only database checks verified catalogue access, Owner-only financial/allowlist access, denial of unapproved identities and resistance to forged role metadata. The owner reports that login and permissions work during regular app testing. This is owner-reported browser acceptance, not an agent-run password test.
+- Security Advisor now reports only leaked-password protection disabled. This feature requires Pro or above; the project remains on Free. Reference: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection.
+
+### 4.4a - Ticket check-in and undo - 2026-11-10
+
+- Added arrival time and check-in/undo controls to the existing Tickets page, using the shared action form and Vietnamese/English messages.
+- Only a non-cancelled ticket with at least one live order and all live linked orders Paid can be checked in or undone. Arrival is independent of preparation status. Cancelled, Refunded, deleted, unpaid and wrong-event records are rejected by the backend.
+- Duplicate check-in preserves the original arrival time without a second audit record. Repeated undo is harmless. Attendance updates do not rewrite the queue, change stock, alter orders or affect financial reports; existing ticket auditing records the change.
+- Deployed `20261110035628_ticket_check_in` to `swkbnkazjxgvnhkwrcyx`. The source filename matches the hosted migration version. Existing product/account data remains intact; no sales or tickets were seeded.
+- Verified the `security_invoker` registration view, authenticated-only RPC grants, and absence of new Security Advisor findings beyond the existing Free-plan password warning.
+- Validation passed: 96/96 unit tests, TypeScript, production build, formatting, baseline SQL and new check-in/permission assertions. SQL ran in disposable PGlite PostgreSQL 17.5, with fixtures rolled back; the Docker wrapper was not run because Docker is unavailable here. No runtime dependency was added to the app.
+- **Not yet accepted:** The new controls still need browser verification. Remaining 4.4 work includes customer history, date-filtered CSV, dual-label printing and unfinished POS drafts.

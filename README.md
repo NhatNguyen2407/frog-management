@@ -10,7 +10,7 @@ The first business unit is a creative workshop with a small F&B catalogue. The d
 
 The repository contains Next.js screens, SQL migrations, a seed catalogue and automated tests, alongside the standalone mock POS prototype. The Sprint 3 prototype review recorded 96/96 automated tests and 5/5 follow-up edge cases passing. Those recorded results are not a fresh execution of the suite, nor proof of backend or live multi-device readiness.
 
-The dedicated The Frog Art Space Supabase project is provisioned with aligned migrations and a seeded catalogue. Hosted email/password authentication, Realtime, concurrency and end-to-end acceptance still need verification. The standalone prototype works without Supabase, but is not suitable for real sales. A physical dual-label printer check was recorded for the mock prototype; the separate Next.js printing flow still needs equivalent verification. Without Supabase environment variables, the Next.js app shows a setup screen.
+The dedicated The Frog Art Space Supabase project has aligned migrations and a seeded catalogue. Hosted email/password login and permissions have owner-reported acceptance, with independent database role checks. Ticket check-in and undo are implemented and SQL-tested; their new browser controls still need acceptance. Realtime, concurrency and complete business-flow acceptance remain pending. The standalone prototype works without Supabase, but is not suitable for real sales. A physical dual-label printer check was recorded for the mock prototype; the separate Next.js printing flow still needs equivalent verification. Without Supabase environment variables, the Next.js app shows a setup screen.
 
 This is an internal application, not an online store. There are no customer accounts, online payments or public registration pages in Phase 1.
 
@@ -21,7 +21,7 @@ This is an internal application, not an online store. There are no customer acco
 | Events               | Create events, set capacity and ticket prefix, switch active context            | Owner        |
 | Products             | SKU catalogue, event availability, prices and unit costs                        | Owner        |
 | Counter              | Create orders with workshop and F&B items, optional ticket registration         | Owner, staff |
-| Tickets              | Sequential ticket numbers, status history, receipt printing                     | Owner, staff |
+| Tickets              | Sequential numbers, status history, paid-ticket check-in/undo, receipt printing | Owner, staff |
 | Queue                | Operational queue and a separate TV display with Supabase Realtime subscription | Owner, staff |
 | Orders               | Paid, Unpaid, Refunded and Cancelled statuses; cash or bank transfer            | Owner, staff |
 | Inventory            | Prepared stock, product-to-supply mappings, usage movements and alerts          | Owner        |
@@ -197,7 +197,7 @@ The database test runner starts an isolated PostgreSQL container, exercises migr
 
 ## Next priorities
 
-Before live use, the remaining priority is to finish the separate Supabase backend audit and local database tests, provision an isolated Frog Management project if approved, then verify authentication, RLS, end-to-end transactions, multi-device behavior, printer output, backups, and CI. The current repository has tests but no committed GitHub Actions workflow.
+Hosted accounts and authentication are accepted. The current priority is browser acceptance of ticket check-in/undo, followed by customer history, date-filtered CSV exports, dual customer/staff labels and unfinished POS drafts in the database-backed app. Then verify end-to-end transactions, multi-device behavior, printer output, backups and CI. The current repository has tests but no committed GitHub Actions workflow.
 
 Operational improvements to evaluate next are corrections to cost entries, explicit inventory adjustments/restocking, safer customer names on a public-facing TV and more robust event-level product controls.
 

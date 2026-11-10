@@ -230,6 +230,10 @@
   },
   "tickets": {
     "title": "Tickets",
+    "checkIn": "Check in",
+    "undoCheckIn": "Undo check-in",
+    "checkedIn": "Checked in",
+    "notArrived": "Not arrived",
     "description": "Every person, from their first hello to their finished piece.",
     "empty": "No tickets yet",
     "emptyBody": "Register a ticket at the counter to begin.",
@@ -373,6 +377,7 @@
     "product_unavailable": "A selected product is no longer available for this event.",
     "invalid_transition": "That status change is not available. Refresh and try again.",
     "invalid_ticket": "Choose an available ticket from this event.",
+    "check_in_unavailable": "Check-in and undo require a valid ticket with all linked orders paid.",
     "order_locked": "Only Unpaid orders can be edited.",
     "last_order_item": "Cancel the order instead of removing its last item.",
     "invalid_request": "Check the entered details and try again.",

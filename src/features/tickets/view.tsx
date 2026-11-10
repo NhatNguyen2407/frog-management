@@ -36,7 +36,7 @@ export async function TicketsView({
   if (!w.event)
     return <EmptyState title={t("common.noEvent")} description={t("common.noEventBody")} />;
   let request = w.client
-    .from("tickets")
+    .from("ticket_registrations")
     .select("*", { count: "exact" })
     .eq("event_id", w.event.id)
     .order("sequence_number", { ascending: false });
@@ -111,6 +111,33 @@ export async function TicketsView({
                 <p className="mt-4 text-xs text-muted-foreground">
                   {formatDate(row.created_at, true)}
                 </p>
+                <div className="mt-4 rounded-xl border p-3">
+                  <p className="text-sm font-medium">
+                    {t(row.checked_in_at ? "tickets.checkedIn" : "tickets.notArrived")}
+                  </p>
+                  {row.checked_in_at ? (
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {formatDate(row.checked_in_at, true)}
+                    </p>
+                  ) : null}
+                  {row.can_check_in ? (
+                    <ActionForm
+                      action="ticketCheckIn"
+                      label={t(row.checked_in_at ? "tickets.undoCheckIn" : "tickets.checkIn")}
+                      variant="secondary"
+                      hidden={{
+                        id: row.id,
+                        event_id: row.event_id,
+                        attendance: row.checked_in_at ? "undo" : "check_in",
+                      }}
+                      className="mt-3 grid gap-3"
+                    />
+                  ) : (
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {t("errors.check_in_unavailable")}
+                    </p>
+                  )}
+                </div>
                 <div className="mt-5 flex flex-wrap gap-2 border-t pt-4">
                   {row.status !== "cancelled" ? (
                     <Button asChild variant="secondary">

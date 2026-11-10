@@ -12,6 +12,7 @@ export type ActionName =
   | "orderCreate"
   | "ticketStatus"
   | "ticketPrint"
+  | "ticketCheckIn"
   | "orderPayment"
   | "orderItem"
   | "orderDelete"
@@ -172,6 +173,14 @@ export async function mutate(action: ActionName, form: FormData): Promise<Action
         }
         break;
       }
+      case "ticketCheckIn":
+        if (!eventId) return { ok: false, error: "event_not_active" };
+        result = await client.rpc("set_ticket_check_in", {
+          p_ticket_id: text(form, "id"),
+          p_event_id: eventId,
+          p_checked_in: choice(text(form, "attendance"), ["check_in", "undo"]) === "check_in",
+        });
+        break;
       case "orderPayment":
         result = await client.rpc("set_order_payment", {
           p_order_id: text(form, "id"),

@@ -230,6 +230,10 @@
   },
   "tickets": {
     "title": "Vé",
+    "checkIn": "Check-in",
+    "undoCheckIn": "Hoàn tác check-in",
+    "checkedIn": "Đã check-in",
+    "notArrived": "Chưa đến",
     "description": "Theo dõi từng vị khách, từ lời chào đầu tiên đến thành phẩm.",
     "empty": "Chưa có vé",
     "emptyBody": "Đăng ký vé tại quầy để bắt đầu.",
@@ -373,6 +377,7 @@
     "product_unavailable": "Một sản phẩm đã chọn không còn mở bán trong sự kiện này.",
     "invalid_transition": "Không thể chuyển sang trạng thái này. Hãy tải lại và thử lại.",
     "invalid_ticket": "Chọn vé còn sử dụng trong sự kiện này.",
+    "check_in_unavailable": "Chỉ có thể check-in hoặc hoàn tác cho vé hợp lệ có tất cả đơn liên kết đã thanh toán.",
     "order_locked": "Chỉ có thể sửa đơn chưa thanh toán.",
     "last_order_item": "Hãy hủy đơn thay vì bỏ sản phẩm cuối cùng.",
     "invalid_request": "Kiểm tra thông tin đã nhập và thử lại.",

@@ -1,6 +1,6 @@
 # Staff Email/Password Authentication
 
-Updated: 2026-11-09
+Updated: 2026-11-10
 
 ## Policy
 
@@ -15,6 +15,8 @@ Frog Management is a private staff application. Only administrators provision st
 ## Hosted configuration
 
 Project: `swkbnkazjxgvnhkwrcyx` (The Frog Art Space). Do not change Dioxyzine Frog.
+
+Hosted acceptance on 2026-11-10: Email is enabled, social providers and public signup are disabled, and email confirmation is required. One Owner and two Staff accounts have confirmed email identities, passwords and matching active allowlist entries. Direct database checks verified their roles, blocked unapproved access and rejected forged Owner claims. The project owner reports that app sign-in and permissions work during regular testing; that browser acceptance was not independently repeated by the agent. Actual Auth-service hook invocation remains separate from direct SQL hook checks.
 
 1. Under **Authentication > Providers**, keep **Email** enabled and disable Google and other social login providers.
 2. Disable **Allow new users to sign up** in the project's Auth settings. The UI has no signup route, but this setting is essential to prevent direct public API signup.
@@ -55,4 +57,4 @@ Then provision the corresponding confirmed email/password user in Authentication
 - The Before User Created hook allows approved email accounts and rejects unapproved or social-provider accounts.
 - A database migration `supabase/migrations/20261109143532_staff_password_auth.sql` changes existing RLS helpers and the signup hook without recreating business tables.
 
-Manual account provisioning and hosted provider/hook activation still require verification. Do not claim production authentication is accepted until these checks pass.
+Repeat this checklist when provisioning another environment or changing authentication. The 2026-11-10 owner-reported login acceptance and database permission checks apply to the existing Frog Art Space project, not to an unconfigured copy.

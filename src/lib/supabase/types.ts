@@ -41,6 +41,7 @@ export type Ticket = Base & {
   phone_zalo: string | null;
   status: TicketStatus;
   print_count: number;
+  checked_in_at: string | null;
   created_by: string;
 };
 export type QueueEntry = Base & {
@@ -195,6 +196,7 @@ export type Database = {
       >;
     };
     Views: {
+      ticket_registrations: View<Ticket & { can_check_in: boolean }>;
       event_financials: View<EventFinancials>;
       product_revenue: View<ProductRevenue>;
       inventory_status: View<InventoryStatus>;
@@ -247,6 +249,10 @@ export type Database = {
       >;
       set_ticket_status: Fn<{ p_ticket_id: string; p_status: TicketStatus }, undefined>;
       record_ticket_print: Fn<{ p_ticket_id: string }, number>;
+      set_ticket_check_in: Fn<
+        { p_ticket_id: string; p_event_id: string; p_checked_in: boolean },
+        string | null
+      >;
       set_order_payment: Fn<
         {
           p_order_id: string;

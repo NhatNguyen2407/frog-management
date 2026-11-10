@@ -1,6 +1,6 @@
 # Frontend V1 - Plan and Progress
 
-Updated: 2026-11-07
+Updated: 2026-11-10
 
 ## Goal
 
@@ -31,7 +31,7 @@ Build a small internal POS for The Frog Art Space, starting with workshops and o
 | 3.1  | Reports, CSV export and customer history                            | Accepted - Sprint 3 manual QA                    | 2026-11-07     |
 | 3.2  | Responsive/UX, persistence and POS draft autosave                   | Accepted - Sprint 3 manual QA                    | 2026-11-07     |
 | 3.3  | Final checks, regression and cleanup                                | Accepted - 96/96 tests; 5/5 edge cases           | 2026-11-07     |
-| 4    | Connect prototype to Supabase, authentication and deployment        | Deferred                                         | -              |
+| 4    | Connect prototype to Supabase, authentication and deployment        | In progress - auth accepted; check-in QA pending | 2026-11-10     |
 
 ## Completed increments
 
