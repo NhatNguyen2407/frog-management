@@ -120,8 +120,11 @@ export function Counter({
               {result.order_id}
             </p>
             <div className="mt-8 grid gap-3">
+              <Button asChild>
+                <Link href={`/orders/${result.order_id}/print`}>{t("receipts.title")}</Link>
+              </Button>
               {result.ticket_id ? (
-                <Button asChild>
+                <Button asChild variant="secondary">
                   <Link href={`/tickets/${result.ticket_id}/print`}>{t("common.print")}</Link>
                 </Button>
               ) : null}

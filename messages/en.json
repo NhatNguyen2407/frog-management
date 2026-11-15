@@ -69,6 +69,17 @@
     "note": "Note",
     "details": "Details"
   },
+  "receipts": {
+    "title": "Print order labels",
+    "print": "Print",
+    "both": "Both labels",
+    "customer": "Customer label",
+    "staff": "Preparation slip",
+    "internal": "INTERNAL COPY - NO PRICES",
+    "help": "Use 76 x 130 mm paper, 100% scale, zero margins and no browser headers/footers. Each label has its own page. Reprinting does not change orders or the queue.",
+    "staffHelp": "Staff can print the preparation slip without prices. Use 76 x 130 mm paper, 100% scale, zero margins and no browser headers/footers.",
+    "overflow": "The content exceeds one 76 x 130 mm label. Printing is blocked; review the content or template to avoid losing information."
+  },
   "nav": {
     "dashboard": "Overview",
     "counter": "Counter",

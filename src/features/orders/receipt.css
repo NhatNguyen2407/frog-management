@@ -1,0 +1,153 @@
+@page frog-order-label {
+  size: 76mm 130mm;
+  margin: 0;
+}
+.order-labels {
+  display: grid;
+  justify-items: center;
+  gap: 20px;
+}
+.order-label {
+  box-sizing: border-box;
+  width: 76mm;
+  height: 130mm;
+  max-width: 100%;
+  padding: 3mm 3.5mm;
+  overflow: hidden;
+  background: white;
+  color: black;
+  border: 1px solid #ddd;
+  box-shadow: 0 3px 18px #0002;
+  font:
+    11px/1.25 Arial,
+    sans-serif;
+  overflow-wrap: anywhere;
+}
+.order-label * {
+  box-sizing: border-box;
+  color: inherit;
+}
+.order-label p,
+.order-label h1,
+.order-label dl,
+.order-label dd {
+  margin: 0;
+}
+.order-label-header {
+  text-align: center;
+  border-bottom: 1px dashed #777;
+  padding-bottom: 5px;
+}
+.order-label-header > strong {
+  font-size: 10px;
+}
+.order-label-header h1 {
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: bold;
+}
+.order-label-code {
+  margin: 3px 0;
+  font-size: 23px;
+  line-height: 1.1;
+  font-weight: bold;
+}
+.order-label-header p {
+  font-size: 9px;
+}
+.order-label-meta {
+  padding: 5px 0;
+  font-size: 10px;
+}
+.order-label-meta > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 2px 0;
+}
+.order-label-meta dt {
+  flex-shrink: 0;
+}
+.order-label-meta dd {
+  text-align: right;
+  font-weight: bold;
+}
+.order-label-items {
+  border-top: 1px dashed #777;
+  border-bottom: 1px dashed #777;
+  padding: 3px 0;
+}
+.order-label-item {
+  margin: 4px 0;
+  break-inside: avoid;
+}
+.order-label-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 5px;
+}
+.order-label-line > span {
+  min-width: 0;
+}
+.order-label-line > b {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.order-label-item > p {
+  margin-top: 2px;
+  font-size: 10px;
+  white-space: pre-wrap;
+}
+.order-label-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  margin-top: 5px;
+}
+.order-label-total strong {
+  font-size: 15px;
+}
+.order-label-payment {
+  margin-top: 3px !important;
+  font-size: 10px;
+}
+.order-label-status {
+  margin-top: 5px !important;
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.order-label footer {
+  margin-top: 7px;
+  text-align: center;
+  font-size: 9px;
+}
+@media print {
+  .order-print {
+    page: frog-order-label;
+    width: 76mm;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .order-labels {
+    display: block;
+  }
+  .order-label {
+    page: frog-order-label;
+    width: 76mm;
+    max-width: none;
+    border: 0;
+    margin: 0;
+    box-shadow: none;
+    break-inside: avoid;
+    break-after: page;
+  }
+  .order-label:last-child {
+    break-after: auto;
+  }
+  .order-print[data-overflow="true"] .order-labels {
+    display: none;
+  }
+}

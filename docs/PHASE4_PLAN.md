@@ -11,7 +11,7 @@ Move Frog Management from the accepted browser-only prototype to the existing Ne
 - 4.1 - Backend audit: Complete. Four SQL migrations reviewed and the local PostgreSQL 17 database test passed.
 - 4.2 - Dedicated Supabase setup: Database verified on 2026-11-09. Four migrations, catalogue seed, RLS/security review and local-to-remote migration history alignment passed. Email/password and app environment configuration move to 4.3.
 - 4.3 - Authentication and authorization: Accepted on 2026-11-10 based on the owner's regular app testing and independent hosted account/RLS checks. Browser sign-in was not repeated by the agent.
-- 4.4 - Business feature integration: In progress. Check-in/undo and customer history/live search/CSV are accepted. Phase 4.4b browser acceptance closed on 2026-11-15, including Staff denial and invalid-date handling. Remaining work covers dual customer/staff labels, unfinished POS drafts and order/inventory parity.
+- 4.4 - Business feature integration: In progress. Check-in/undo and customer history/live search/CSV are accepted. Phase 4.4c order labels are implemented and await browser/printer acceptance. Unfinished POS drafts and order/inventory parity remain open.
 - 4.5 - Reliability and multi-device testing: Not started.
 - 4.6 - Final manual acceptance: Not started.
 
@@ -104,7 +104,7 @@ The temporary security hardening for `public.rls_auto_enable()` is a hosted proj
 
 ### Next step - 4.4
 
-Continue dual customer/staff label printing in the Next.js app using saved Supabase orders and the 76 x 130 mm format. Then address unfinished POS drafts and order/inventory parity. Phases 4.3, 4.4a and 4.4b do not need another manual acceptance cycle unless their behavior changes.
+Verify Phase 4.4c labels from Orders or the Counter success screen: Owner can print both copies or either copy separately; Staff can print the price-free preparation slip. Confirm the 76 x 130 mm output and reprint behavior, then address unfinished POS drafts and order/inventory parity. Phases 4.3, 4.4a and 4.4b do not need another manual acceptance cycle unless their behavior changes.
 
 ### 4.3 initial read-only verification - 2026-11-10
 
@@ -154,3 +154,13 @@ Continue dual customer/staff label printing in the Next.js app using saved Supab
 - With the Owner account, a start date of 2026-11-15 and end date of 2026-11-10 shows the invalid-range error and hides the CSV download controls.
 - With the Staff account, opening `/vi/reports` and `/vi/customers` directly shows the Owner-required notice. Neither page displays report/customer data or CSV download controls. Screenshots confirm all three outcomes.
 - This acceptance record changes documentation only. Application/database checks above were not rerun; dual-label printing, POS drafts and the remaining Phase 4 work are still open.
+
+### 4.4c - Saved-order labels - 2026-11-15
+
+- Added a saved-order print page at `/[locale]/orders/[id]/print`, linked from the Counter success screen and each order. It supports orders with or without a workshop ticket and reads the order's actual workshop rather than the currently selected workshop.
+- Owner can preview and print the customer label and preparation slip together or separately. Both use the same order/ticket reference, saved products, quantities, options and current payment status. Customer totals use sale-time selling-price snapshots; missing prices remain unknown and no cost prices are sent to the print component.
+- Existing role limits are preserved: Staff receives only the price-free preparation slip and does not query or receive financial snapshots. Printing both customer/staff copies is currently an Owner action. Staff access to customer financial labels was not added.
+- Each label uses a named 76 x 130 mm page with zero CSS margins. The app checks label height and width after layout/font loading and before printing. Oversized content blocks the Print button instead of silently clipping the paper output. Owner can also select one copy for reprinting.
+- The new print path is read-only. It does not submit checkout again, increment ticket print requests, change ticket/queue state, consume stock or alter revenue. The existing workshop-ticket print action remains available separately.
+- Validation passed: 110/110 unit tests, TypeScript and production build. Six additional checks against the compiled route and real React static markup covered Owner snapshots without costs, Staff redaction/no financial query, invalid/archived/other-unit references, both label contents/escaped notes, Staff-only markup and workshop ticket/phone placement. Their database queries were mocked; these are not hosted browser or hardware tests. No migration, runtime dependency or business record was added.
+- **Not yet accepted:** Browser print-preview pagination, print-mode switching, long-label warnings, reprint behavior and physical Label A318BT output still need manual verification. The current environment cannot open local HTML previews in its browser. POS draft recovery and order/inventory parity remain separate increments.

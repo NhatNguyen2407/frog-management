@@ -6,7 +6,7 @@ Updated: 2026-11-15
 
 The initial backend audit was read-only. Phase 4.2 provisioned a dedicated Supabase project, deployed the migrations and seeded the catalogue. Phase 4.3 added approved accounts and verified database roles; the owner reports regular successful app testing. Phase 4.4a adds ticket attendance without seeding sales or tickets.
 
-**Result: Authentication, check-in/undo and customer history/live search/CSV have browser acceptance alongside the recorded database checks. Phase 4.4b was accepted on 2026-11-15. Dual-label printing, POS draft recovery and inventory-rule parity remain open.**
+**Result: Authentication, check-in/undo and customer history/live search/CSV have browser acceptance alongside the recorded database checks. Phase 4.4b was accepted on 2026-11-15. Phase 4.4c saved-order labels are implemented and await browser/printer acceptance. POS draft recovery and inventory-rule parity remain open.**
 
 ## Connected Supabase projects
 
@@ -34,7 +34,7 @@ Hosted migration history and the deployed password authorization helpers were ch
 
 - **Check-in:** Phase 4.4a adds `tickets.checked_in_at`, a scoped registration view and guarded check-in/undo RPC. Automated SQL checks and owner-reported browser acceptance passed.
 - **Customer history and exports:** Phase 4.4b adds cross-workshop Owner history/live search and Orders/Revenue/Expenses CSV downloads with date/workshop filters. Read models, role isolation, CSV protection and pagination are tested. Browser acceptance passed on 2026-11-15, including exported test data, invalid-date handling and Staff denial on both new pages.
-- **Printing:** The prototype passed customer and staff dual-label testing on 76 x 130 mm paper. The separate Next.js receipt component provides a ticket print view, but not the same two-label customer/staff flow.
+- **Printing:** Phase 4.4c adds saved-order customer/preparation labels on named 76 x 130 mm pages, including F&B orders without tickets. Owner can print both copies or either separately; Staff keeps the existing restriction to price-free operational data. The new path is read-only and retains the separate workshop-ticket print action. Unit, route/static-render, TypeScript and build checks passed; browser pagination and physical printer acceptance are pending.
 - **Inventory:** The prototype models product stock directly. The database has a more detailed materials model with event stock and product-to-supply mappings. This requires an explicit mapping of business rules rather than copying localStorage records.
 - **Drafts:** The prototype saves unfinished POS orders by workshop. The Next.js Counter currently holds its cart in component state; draft persistence must be designed separately when migrating that workflow.
 
@@ -59,4 +59,4 @@ I will use the accepted prototype as the UX/functional reference while keeping t
 
 ## Next action
 
-Phases 4.3, 4.4a and 4.4b are accepted based on the recorded app, database and CSV checks. Next, integrate dual customer/staff labels using saved Supabase orders, then finish POS draft recovery and order/inventory parity. Phase 4 remains in progress. Refer to `docs/PHASE4_PLAN.md` for the verification record.
+Phases 4.3, 4.4a and 4.4b are accepted based on the recorded app, database and CSV checks. Verify Phase 4.4c order-label previews, 76 x 130 mm printer output and read-only reprinting. Then finish POS draft recovery and order/inventory parity. Phase 4 remains in progress. Refer to `docs/PHASE4_PLAN.md` for the verification record.

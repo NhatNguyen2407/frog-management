@@ -212,6 +212,9 @@ export async function OrdersView({ page, status }: { page: number; status: strin
                     ))}
                   </div>
                   <div className="mt-5 flex flex-wrap items-center gap-2 border-t pt-4">
+                    <Button asChild variant="secondary">
+                      <Link href={`/orders/${order.id}/print`}>{t("receipts.title")}</Link>
+                    </Button>
                     {order.payment_status === "unpaid" ? (
                       <>
                         <CheckoutTotal orderId={order.id} />
