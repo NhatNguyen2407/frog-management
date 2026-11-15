@@ -1,6 +1,6 @@
 # Phase 4 - Backend Integration Plan
 
-Updated: 2026-11-10
+Updated: 2026-11-15
 
 ## Goal
 
@@ -11,7 +11,7 @@ Move Frog Management from the accepted browser-only prototype to the existing Ne
 - 4.1 - Backend audit: Complete. Four SQL migrations reviewed and the local PostgreSQL 17 database test passed.
 - 4.2 - Dedicated Supabase setup: Database verified on 2026-11-09. Four migrations, catalogue seed, RLS/security review and local-to-remote migration history alignment passed. Email/password and app environment configuration move to 4.3.
 - 4.3 - Authentication and authorization: Accepted on 2026-11-10 based on the owner's regular app testing and independent hosted account/RLS checks. Browser sign-in was not repeated by the agent.
-- 4.4 - Business feature integration: In progress. Check-in/undo accepted by the owner. Customer history and date-filtered CSV are implemented with deployed read models; their browser acceptance is pending.
+- 4.4 - Business feature integration: In progress. Check-in/undo accepted by the owner. Customer history display/manual search and all three CSV types match the test data. Search-as-you-type is implemented; its browser acceptance and the remaining role/date checks are pending.
 - 4.5 - Reliability and multi-device testing: Not started.
 - 4.6 - Final manual acceptance: Not started.
 
@@ -141,3 +141,13 @@ Verify Owner customer history and the three CSV downloads, including workshop/da
 - Deployed `20261110043403_customer_history` to the Frog Art Space project; source and hosted migration versions match. No business records were written by this migration. Security Advisor has no new findings beyond the existing password-protection warning.
 - Validation passed: 104/104 unit tests, TypeScript, production build, baseline/check-in/reporting SQL on disposable PostgreSQL 17.5. SQL coverage includes cross-workshop search, row isolation, immutable price snapshots, unknown costs, Vietnam-midnight boundaries and role denial. Fixtures were rolled back; no runtime dependency was added.
 - **Not yet accepted:** Browser verification of history/search and downloaded CSV contents is pending. Dual customer/staff labels and POS draft recovery remain for later increments.
+
+### 4.4b verification and live search - 2026-11-15
+
+- I confirmed that searching `DF-001` returns exactly one order. The history screenshot shows the expected ticket, workshop, product, 25,000 VND total and Unpaid status.
+- All exported fields match hosted database records for 10-15 November: Orders contains two orders across two workshops, totaling 50,000 VND; Revenue contains only the Paid order, totaling 25,000 VND. Its unknown cost is correctly blank. Expenses correctly exported headers when empty, then one 10,000 VND record after I added a test cost.
+- Added automatic history search after a 300 ms pause. Clearing the field restores all matching orders; changing the query resets pagination and preserves other URL parameters. Enter and the existing Filter button still submit immediately. The field stays editable while loading, pending timers are cancelled on unmount, and IME composition waits for completed text.
+- Existing Owner checks and database search remain authoritative. No database or business records were changed by this UI update.
+- Eight focused handler/timer assertions passed against the compiled search component with mocked hooks/navigation: debounce, clear/pagination reset, Enter, composition, delayed responses, external query/history restoration, unmount and equivalent queries. These are not browser integration checks. Browser automation could not reach the local development server in this environment.
+- The existing 104/104 tests, TypeScript check and production build passed after the update. No runtime dependency was added.
+- **Still pending:** Automatic typing/clearing needs manual acceptance in the updated app. Staff denial and invalid-date browser checks remain open for these new pages. Do not close all of 4.4b yet.
