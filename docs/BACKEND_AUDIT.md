@@ -1,12 +1,12 @@
 # Sprint 4.1 - Backend Audit
 
-Updated: 2026-11-10
+Updated: 2026-11-15
 
 ## Scope and status
 
 The initial backend audit was read-only. Phase 4.2 provisioned a dedicated Supabase project, deployed the migrations and seeded the catalogue. Phase 4.3 added approved accounts and verified database roles; the owner reports regular successful app testing. Phase 4.4a adds ticket attendance without seeding sales or tickets.
 
-**Result: Authentication and check-in/undo have owner-reported acceptance plus independent database checks. Customer history and CSV exports are implemented and SQL-tested with deployed read models; their browser acceptance and remaining business integrations are pending.**
+**Result: Authentication, check-in/undo and customer history/live search/CSV have browser acceptance alongside the recorded database checks. Phase 4.4b was accepted on 2026-11-15. Dual-label printing, POS draft recovery and inventory-rule parity remain open.**
 
 ## Connected Supabase projects
 
@@ -33,7 +33,7 @@ Hosted migration history and the deployed password authorization helpers were ch
 ## Prototype-to-backend gaps to review
 
 - **Check-in:** Phase 4.4a adds `tickets.checked_in_at`, a scoped registration view and guarded check-in/undo RPC. Automated SQL checks and owner-reported browser acceptance passed.
-- **Customer history and exports:** Phase 4.4b adds cross-workshop Owner history/search and Orders/Revenue/Expenses CSV downloads with date/workshop filters. Read models, role isolation, CSV protection and pagination are tested. Browser acceptance of the new pages/downloads is pending.
+- **Customer history and exports:** Phase 4.4b adds cross-workshop Owner history/live search and Orders/Revenue/Expenses CSV downloads with date/workshop filters. Read models, role isolation, CSV protection and pagination are tested. Browser acceptance passed on 2026-11-15, including exported test data, invalid-date handling and Staff denial on both new pages.
 - **Printing:** The prototype passed customer and staff dual-label testing on 76 x 130 mm paper. The separate Next.js receipt component provides a ticket print view, but not the same two-label customer/staff flow.
 - **Inventory:** The prototype models product stock directly. The database has a more detailed materials model with event stock and product-to-supply mappings. This requires an explicit mapping of business rules rather than copying localStorage records.
 - **Drafts:** The prototype saves unfinished POS orders by workshop. The Next.js Counter currently holds its cart in component state; draft persistence must be designed separately when migrating that workflow.
@@ -45,7 +45,7 @@ I will use the accepted prototype as the UX/functional reference while keeping t
 - Owner-reported local checks for Sprint 3: 96/96 unit tests, TypeScript, Prettier and Next.js build passed.
 - **4.1a accepted - 2026-11-09:** The project owner ran `npm run test:db` locally with the existing Docker PostgreSQL 17 container. The SQL suite returned `All Phase 1 database assertions passed`, followed by `ROLLBACK` and `Database schema and permission assertions passed; all test changes were rolled back.` This verifies the local schema/permission/operations assertions, not the hosted Supabase environment.
 - Hosted schema, RLS, migration history, catalogue seed and advisors have been inspected. The owner configured Auth and accepts regular email/password sign-in and role behavior. The agent independently checked the three accounts and their database permissions, without using their passwords. Actual Realtime delivery still needs multi-device testing.
-- The SQL includes scoped RLS and `security_invoker` views. Direct database checks covered Owner, Staff, unapproved access and spoofed role claims. New check-in behavior passed disposable PostgreSQL 17.5 tests; hosted browser acceptance remains pending.
+- The SQL includes scoped RLS and `security_invoker` views. Direct database checks covered Owner, Staff, unapproved access and spoofed role claims. Check-in and history/reporting assertions passed on disposable PostgreSQL 17.5. Check-in browser acceptance is recorded under 4.4a; history/live search/CSV browser acceptance closed under 4.4b on 2026-11-15.
 - The browser-only prototype is not safe to use for real transactions. Two browser tabs updating localStorage are not a substitute for transaction-safe multi-device checkout.
 
 ## Execution plan
@@ -59,4 +59,4 @@ I will use the accepted prototype as the UX/functional reference while keeping t
 
 ## Next action
 
-Phases 4.3 and 4.4a are accepted based on owner-reported app testing and independent database checks. Phase 4.4b history/CSV is implemented with a deployed migration. Verify the new pages/downloads after the application update, then continue dual-label printing and POS drafts. Refer to `docs/PHASE4_PLAN.md` for the verification record.
+Phases 4.3, 4.4a and 4.4b are accepted based on the recorded app, database and CSV checks. Next, integrate dual customer/staff labels using saved Supabase orders, then finish POS draft recovery and order/inventory parity. Phase 4 remains in progress. Refer to `docs/PHASE4_PLAN.md` for the verification record.

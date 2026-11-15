@@ -11,7 +11,7 @@ Move Frog Management from the accepted browser-only prototype to the existing Ne
 - 4.1 - Backend audit: Complete. Four SQL migrations reviewed and the local PostgreSQL 17 database test passed.
 - 4.2 - Dedicated Supabase setup: Database verified on 2026-11-09. Four migrations, catalogue seed, RLS/security review and local-to-remote migration history alignment passed. Email/password and app environment configuration move to 4.3.
 - 4.3 - Authentication and authorization: Accepted on 2026-11-10 based on the owner's regular app testing and independent hosted account/RLS checks. Browser sign-in was not repeated by the agent.
-- 4.4 - Business feature integration: In progress. Check-in/undo accepted by the owner. Customer history display/manual search and all three CSV types match the test data. Search-as-you-type is implemented; its browser acceptance and the remaining role/date checks are pending.
+- 4.4 - Business feature integration: In progress. Check-in/undo and customer history/live search/CSV are accepted. Phase 4.4b browser acceptance closed on 2026-11-15, including Staff denial and invalid-date handling. Remaining work covers dual customer/staff labels, unfinished POS drafts and order/inventory parity.
 - 4.5 - Reliability and multi-device testing: Not started.
 - 4.6 - Final manual acceptance: Not started.
 
@@ -104,7 +104,7 @@ The temporary security hardening for `public.rls_auto_enable()` is a hosted proj
 
 ### Next step - 4.4
 
-Verify Owner customer history and the three CSV downloads, including workshop/date filters and denial for Staff. Then continue dual-label printing and unfinished POS drafts. Existing login and check-in acceptance do not need another manual cycle unless those features change.
+Continue dual customer/staff label printing in the Next.js app using saved Supabase orders and the 76 x 130 mm format. Then address unfinished POS drafts and order/inventory parity. Phases 4.3, 4.4a and 4.4b do not need another manual acceptance cycle unless their behavior changes.
 
 ### 4.3 initial read-only verification - 2026-11-10
 
@@ -150,4 +150,7 @@ Verify Owner customer history and the three CSV downloads, including workshop/da
 - Existing Owner checks and database search remain authoritative. No database or business records were changed by this UI update.
 - Eight focused handler/timer assertions passed against the compiled search component with mocked hooks/navigation: debounce, clear/pagination reset, Enter, composition, delayed responses, external query/history restoration, unmount and equivalent queries. These are not browser integration checks. Browser automation could not reach the local development server in this environment.
 - The existing 104/104 tests, TypeScript check and production build passed after the update. No runtime dependency was added.
-- **Still pending:** Automatic typing/clearing needs manual acceptance in the updated app. Staff denial and invalid-date browser checks remain open for these new pages. Do not close all of 4.4b yet.
+- **Accepted - 2026-11-15:** I confirmed that automatic search works in the updated app. Together with the history and CSV checks above, the final browser checks below close 4.4b.
+- With the Owner account, a start date of 2026-11-15 and end date of 2026-11-10 shows the invalid-range error and hides the CSV download controls.
+- With the Staff account, opening `/vi/reports` and `/vi/customers` directly shows the Owner-required notice. Neither page displays report/customer data or CSV download controls. Screenshots confirm all three outcomes.
+- This acceptance record changes documentation only. Application/database checks above were not rerun; dual-label printing, POS drafts and the remaining Phase 4 work are still open.
