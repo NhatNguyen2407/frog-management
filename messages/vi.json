@@ -77,7 +77,6 @@
     "staff": "Phiếu thực hiện",
     "internal": "PHIẾU NỘI BỘ - KHÔNG CÓ GIÁ",
     "help": "Chọn giấy 76 x 130 mm, tỷ lệ 100%, lề 0 và tắt đầu/chân trang. Mỗi tem nằm trên một trang riêng. In lại không thay đổi đơn hàng hay hàng chờ.",
-    "staffHelp": "Tài khoản nhân viên chỉ in phiếu thực hiện không có giá. Chọn giấy 76 x 130 mm, tỷ lệ 100%, lề 0 và tắt đầu/chân trang.",
     "overflow": "Nội dung vượt khổ tem 76 x 130 mm. Chưa thể in; cần kiểm tra nội dung hoặc mẫu in để tránh mất thông tin."
   },
   "nav": {

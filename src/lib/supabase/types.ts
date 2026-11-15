@@ -302,6 +302,10 @@ export type Database = {
       update_order_item: Fn<{ p_item_id: string; p_quantity: number; p_options: Json }, undefined>;
       soft_delete_order: Fn<{ p_order_id: string }, undefined>;
       get_order_checkout: Fn<{ p_order_id: string }, Json>;
+      get_order_receipt_prices: Fn<
+        { p_order_id: string },
+        Pick<Financials, "order_item_id" | "unit_price_vnd">[]
+      >;
       save_inventory: Fn<
         {
           p_unit: string;

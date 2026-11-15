@@ -17,7 +17,7 @@ export default async function OrderPrintPage({ params }: { params: Promise<{ id:
     .maybeSingle();
   if (error) throw new Error("app.load_failed");
   if (!order) notFound();
-  const [event, ticket, items] = await Promise.all([
+  const [event, ticket, items, prices] = await Promise.all([
     requireData(
       w.client
         .from("events")
@@ -45,21 +45,8 @@ export default async function OrderPrintPage({ params }: { params: Promise<{ id:
         .order("created_at")
         .order("id"),
     ),
+    requireData(w.client.rpc("get_order_receipt_prices", { p_order_id: id })),
   ]);
-  const prices =
-    w.owner && items.length
-      ? await requireData(
-          w.client
-            .from("order_item_financials")
-            .select("order_item_id,unit_price_vnd")
-            .in(
-              "order_item_id",
-              items.map((item) => item.id),
-            ),
-        )
-      : w.owner
-        ? []
-        : null;
   return (
     <OrderReceipt
       order={{
@@ -71,7 +58,6 @@ export default async function OrderPrintPage({ params }: { params: Promise<{ id:
       event={event}
       ticket={ticket}
       snapshot={receiptSnapshot(id, items, prices)}
-      canPrintCustomer={w.owner}
     />
   );
 }

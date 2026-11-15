@@ -52,7 +52,7 @@ test("receipt excludes voided items and items belonging to another order", () =>
   assert.equal(result.total_vnd, 50000);
 });
 
-test("staff receipt data contains no selling prices or financial total", () => {
+test("unavailable receipt pricing stays unknown", () => {
   const result = receiptSnapshot("order", [item], null);
   assert.equal(result.total_vnd, null);
   assert.equal(result.items[0].unit_price_vnd, null);

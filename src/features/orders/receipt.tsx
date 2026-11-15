@@ -14,19 +14,15 @@ export function OrderReceipt({
   event,
   ticket,
   snapshot,
-  canPrintCustomer,
 }: {
   order: Pick<Order, "id" | "created_at" | "payment_status" | "payment_method">;
   event: Pick<Event, "name" | "event_date">;
   ticket: Pick<Ticket, "ticket_number" | "customer_name" | "phone_zalo"> | null;
   snapshot: { items: ReceiptItem[]; total_vnd: number | null };
-  canPrintCustomer: boolean;
 }) {
   const t = useTranslations();
   const locale = useLocale();
-  const [mode, setMode] = useState<"both" | "customer" | "staff">(
-    canPrintCustomer ? "both" : "staff",
-  );
+  const [mode, setMode] = useState<"both" | "customer" | "staff">("both");
   const [ready, setReady] = useState(false);
   const [overflow, setOverflow] = useState(false);
   const pages = useRef<HTMLDivElement>(null);
@@ -66,7 +62,7 @@ export function OrderReceipt({
           )
           .join(" · ")
       : "";
-  const modes = canPrintCustomer ? (["both", "customer", "staff"] as const) : (["staff"] as const);
+  const modes = ["both", "customer", "staff"] as const;
   return (
     <main className="order-print mx-auto max-w-3xl p-4 sm:p-8" data-overflow={overflow}>
       <div className="no-print mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -104,9 +100,7 @@ export function OrderReceipt({
         ))}
       </div>
       <div className="no-print">
-        <Notice variant="info">
-          {t(canPrintCustomer ? "receipts.help" : "receipts.staffHelp")}
-        </Notice>
+        <Notice variant="info">{t("receipts.help")}</Notice>
       </div>
       {overflow ? (
         <div className="order-print-warning">
