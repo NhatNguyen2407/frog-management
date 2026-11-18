@@ -11,8 +11,8 @@ Move Frog Management from the accepted browser-only prototype to the existing Ne
 - 4.1 - Backend audit: Complete. Four SQL migrations reviewed and the local PostgreSQL 17 database test passed.
 - 4.2 - Dedicated Supabase setup: Database verified on 2026-11-09. Four migrations, catalogue seed, RLS/security review and local-to-remote migration history alignment passed. Email/password and app environment configuration move to 4.3.
 - 4.3 - Authentication and authorization: Accepted on 2026-11-10 based on the owner's regular app testing and independent hosted account/RLS checks. Browser sign-in was not repeated by the agent.
-- 4.4 - Business feature integration: In progress. Check-in/undo and customer history/live search/CSV are accepted. Phase 4.4c order labels and Counter draft recovery are accepted on the main app. Order/inventory parity remains open.
-- 4.5 - Reliability and multi-device testing: Not started.
+- 4.4 - Business feature integration: In progress. Check-in/undo and customer history/live search/CSV are accepted. Order labels, Counter drafts and the redesigned product-stock flow are accepted on the main app. The five-step order/stock checklist passed; remaining business edge cases belong to final regression.
+- 4.5 - Single-machine reliability: Pending. Multi-device concurrency and cross-session Realtime acceptance are deferred by the owner; duplicate submission, network recovery and backup/restore remain in scope.
 - 4.6 - Final manual acceptance: Not started.
 
 ## 4.2 - Dedicated Supabase setup
@@ -47,15 +47,16 @@ Move Frog Management from the accepted browser-only prototype to the existing Ne
 
 **Acceptance:** The Next.js workflow covers the agreed V1 functions without relying on prototype localStorage for business records.
 
-## 4.5 - Reliability and multi-device consistency
+## 4.5 - Single-machine reliability
 
-- Test duplicate order submission and safe retries.
-- Test simultaneous checkouts and inventory limits.
-- Verify Realtime queue updates across sessions and recover gracefully from lost connections.
+The operating scope is one computer at the counter for the shop and events. Multi-device concurrency and cross-session Realtime acceptance are deferred until that scope changes; they do not block the current single-machine release.
+
+- Test duplicate order submission and safe retries on one machine.
+- Check lost-connection handling, refresh/restart recovery and retained drafts without duplicate transactions.
 - Verify database backup and restore using a disposable environment.
-- Retest receipt overflow, print preview and confirmed printer output before operating the shop.
+- Verify oversized receipt protection; normal physical dual-label printing/reprinting is already accepted.
 
-**Acceptance:** Transactions remain consistent under retries and concurrent operations; backup recovery has been demonstrated.
+**Acceptance:** Single-machine retries/recovery preserve transaction state, backup recovery is demonstrated, and the remaining printer edge case passes.
 
 ## 4.6 - Final acceptance
 
@@ -104,7 +105,7 @@ The temporary security hardening for `public.rls_auto_enable()` is a hosted proj
 
 ### Next step - 4.4
 
-Review the remaining order/inventory parity, then run Phase 4.5 reliability and multi-device checks. Main-app dual-label printing/reprinting and Counter draft recovery are accepted. Earlier accepted flows do not need another full manual cycle unless their behavior changes.
+Run the single-machine reliability checks in 4.5, then one consolidated final business regression in 4.6. Dual-label printing/reprinting, Counter draft recovery and the five-step order/stock flow are accepted. Reuse those results unless behavior changes; multi-device acceptance is deferred.
 
 ### 4.3 initial read-only verification - 2026-11-10
 
@@ -184,3 +185,10 @@ Review the remaining order/inventory parity, then run Phase 4.5 reliability and 
 - Deployed additive migration `20261118040618_product_stock_workflow`; its filename matches hosted history. Security Advisor has no new findings beyond the existing password-protection warning.
 - Verification: 116/116 tests, TypeScript, production build and formatting passed. Baseline, check-in, reporting, receipts and new inventory SQL assertions passed on disposable PostgreSQL 17.5 with rollback. Coverage includes setup, retry, stock in/out, stale edits, oversell rollback, cancellation, payment/refund, legacy conversion/deficit repair, shared-recipe protection and Owner/Staff/outsider/anonymous access. Hosted checks confirmed RPCs, grants and balance guard.
 - **Acceptance pending:** Review the new main-app inventory screen and repeat the stock/order checklist. Real-browser layout/modal behavior, simultaneous device transactions and Realtime remain manual/Phase 4.5 checks; database tests are not a physical/browser acceptance result.
+
+### Product-stock acceptance and operating scope - 2026-11-18
+
+- I accepted the redesigned inventory screen and completed all five main-app stock checks: set the physical count to 3; create an Unpaid order for 2 (remaining 1); pay it (still 1); create another order for 1 and cancel it (0 then 1); attempt to buy 2 with only 1 remaining (blocked without a new order). This is owner-reported browser acceptance.
+- The shop/event will use one computer for the foreseeable future. I deferred multi-device concurrency and cross-session Realtime acceptance. Single-machine duplicate requests, connection/restart recovery, backup/restore and final operational regression remain required.
+- Final regression should cover the linked Counter > payment > ticket/check-in > queue > completion journey, F&B without a ticket, refund/item-edit behavior, workshop capacity/isolation, expense/report reconciliation, long receipt content and production-mode startup on the counter machine. Earlier individual acceptance results remain valid; prototype acceptance alone does not close these main-app checks.
+- Existing dependency security findings remain tracked in BACKEND_AUDIT.md and must be reviewed during final readiness. This documentation update did not rerun automated checks; the latest implementation verification remains 116 tests plus TypeScript/build/format and disposable PostgreSQL assertions.
