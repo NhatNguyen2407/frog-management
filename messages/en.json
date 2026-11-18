@@ -218,7 +218,8 @@
     "activeProductsEmpty": "No active products for this event.",
     "review": "Review order",
     "complete": "Order total",
-    "detailsHint": "Add any details the team needs for this item."
+    "detailsHint": "Add any details the team needs for this item.",
+    "draftUnavailable": "Draft storage is unavailable in this browser. Keep this page open to avoid losing your entries."
   },
   "options": {
     "font": "Font",

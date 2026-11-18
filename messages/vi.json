@@ -218,7 +218,8 @@
     "activeProductsEmpty": "Chưa có sản phẩm đang bán cho sự kiện này.",
     "review": "Kiểm tra đơn",
     "complete": "Tổng đơn hàng",
-    "detailsHint": "Thêm chi tiết cần thiết cho sản phẩm này."
+    "detailsHint": "Thêm chi tiết cần thiết cho sản phẩm này.",
+    "draftUnavailable": "Không thể lưu nháp trên trình duyệt này. Giữ trang mở để tránh mất thông tin đang nhập."
   },
   "options": {
     "font": "Kiểu chữ",

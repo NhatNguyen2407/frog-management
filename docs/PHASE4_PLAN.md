@@ -165,3 +165,11 @@ Verify Phase 4.4c labels from Orders or the Counter success screen: both Owner a
 - Validation passed: 110/110 unit tests, TypeScript, production build and React static markup checks. The complete baseline, check-in, reporting and new receipt SQL assertions passed on disposable PostgreSQL 17.5 with fixtures rolled back. They cover Paid/Unpaid/F&B receipts, voided items, the limited price payload, role denial and unchanged order/ticket/queue/stock state.
 - Deployed the `staff_order_receipt_prices` migration and matched its source filename to hosted migration history. Read-only hosted checks confirmed that both Staff accounts can read Paid receipt prices while cost/financial tables and report views stay blocked. Security Advisor has no new findings. No runtime dependency or business record was added.
 - **Not yet accepted:** Browser print-preview pagination, print-mode switching, long-label warnings, reprint behavior and physical Label A318BT output still need manual verification. The current environment cannot open local HTML previews in its browser. POS draft recovery and order/inventory parity remain separate increments.
+
+### 4.4c acceptance and POS drafts - 2026-11-18
+
+- Staff printing both order labels and reprinting without duplicate orders or state changes was accepted in the main application.
+- Counter drafts now retain products, quantities, saved options, customer name/phone, ticket selection and payment choices through reload and navigation. Storage is scoped to the signed-in account, business unit and workshop in the current browser tab. Closing the tab ends the draft session.
+- Restored lines use the current catalogue and selling prices; unavailable products and invalid tickets are excluded. Checkout still validates current business rules on the server.
+- The checkout request ID survives an unchanged draft retry. Confirmed checkout clears the draft; failed checkout retains it. Printing does not restore a completed draft. Storage failures show a visible warning.
+- Manual acceptance pending: reload, Orders/back, workshop/account isolation, failed checkout retention and successful checkout clearing on the main application.

@@ -39,6 +39,8 @@ export async function CounterView() {
   const ids = new Set(links.map((row) => row.product_id));
   return (
     <Counter
+      key={`${w.user.id}:${w.unit.id}:${w.event.id}`}
+      draftKey={`frog-counter-v1:${w.user.id}:${w.unit.id}:${w.event.id}`}
       products={products.filter((row) => ids.has(row.id))}
       categories={categories}
       tickets={tickets}

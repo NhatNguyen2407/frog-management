@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useRef, useState, useTransition, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition, type FormEvent } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import {
@@ -22,14 +22,17 @@ import { Input, Select } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Field, Notice, PageTitle } from "@/components/shared";
+import { readDraft, emptyDraft, type CounterDraft } from "./draft";
 import { OptionsEditor } from "./options-editor";
 type CartLine = { id: string; product: Product; quantity: number; options: Record<string, string> };
 export function Counter({
+  draftKey,
   products,
   categories,
   tickets,
   event,
 }: {
+  draftKey: string;
   products: Product[];
   categories: Category[];
   tickets: Ticket[];
@@ -40,13 +43,49 @@ export function Counter({
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
-  const [cart, setCart] = useState<CartLine[]>([]);
-  const [ticketMode, setTicketMode] = useState("new");
-  const [payment, setPayment] = useState("unpaid");
+  const [draft, setDraft] = useState<CounterDraft>(emptyDraft);
+  const [ready, setReady] = useState(false);
+  const [storageFailed, setStorageFailed] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const cart: CartLine[] = draft.items.flatMap((item) => {
+    const product = products.find((row) => row.id === item.productId);
+    return product ? [{ ...item, product }] : [];
+  });
+  const { ticketMode, payment } = draft;
+  useEffect(() => {
+    try {
+      setDraft(readDraft(sessionStorage.getItem(draftKey), products, tickets));
+    } catch {
+      setStorageFailed(true);
+    }
+    setReady(true);
+  }, [draftKey, products, tickets]);
+  function saveDraft(next: CounterDraft) {
+    setDraft(next);
+    try {
+      sessionStorage.setItem(draftKey, JSON.stringify(next));
+    } catch {
+      setStorageFailed(true);
+    }
+  }
+  function setCart(change: (previous: CartLine[]) => CartLine[]) {
+    saveDraft({
+      ...draft,
+      requestId: null,
+      items: change(cart).map((line) => ({
+        id: line.id,
+        productId: line.product.id,
+        quantity: line.quantity,
+        options: line.options,
+      })),
+    });
+  }
+  function field(name: keyof CounterDraft, value: string) {
+    saveDraft({ ...draft, [name]: value, requestId: null });
+  }
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<CheckoutResult | null>(null);
   const [pending, startTransition] = useTransition();
-  const requestId = useRef<string | null>(null);
   const filtered = useMemo(
     () =>
       products.filter(
@@ -74,8 +113,9 @@ export function Counter({
       return;
     }
     const form = new FormData(event.currentTarget);
-    requestId.current ??= crypto.randomUUID();
-    form.set("request_id", requestId.current);
+    const requestId = draft.requestId ?? crypto.randomUUID();
+    saveDraft({ ...draft, requestId });
+    form.set("request_id", requestId);
     form.set(
       "items",
       JSON.stringify(
@@ -92,6 +132,8 @@ export function Counter({
     startTransition(async () => {
       const response = await mutate("orderCreate", form);
       if (response.ok && response.checkout) {
+        saveDraft(emptyDraft());
+        formRef.current?.reset();
         setResult(response.checkout);
         router.refresh();
       } else setError(response.error ?? "generic");
@@ -132,8 +174,7 @@ export function Counter({
                 variant="secondary"
                 onClick={() => {
                   setResult(null);
-                  setCart([]);
-                  requestId.current = null;
+                  saveDraft(emptyDraft());
                   setError(null);
                 }}
               >
@@ -148,6 +189,7 @@ export function Counter({
   return (
     <>
       <PageTitle title={t("counter.title")} description={t("counter.description")} />
+      {storageFailed ? <Notice variant="error">{t("counter.draftUnavailable")}</Notice> : null}
       {event.status !== "active" ? <Notice>{t("counter.eventClosed")}</Notice> : null}
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_400px]">
         <section aria-label={t("counter.catalogue")}>
@@ -191,7 +233,7 @@ export function Counter({
                 <button
                   type="button"
                   key={product.id}
-                  disabled={pending || event.status !== "active"}
+                  disabled={!ready || pending || event.status !== "active"}
                   aria-label={t("counter.addItem", { name: product.name })}
                   onClick={() =>
                     setCart((previous) => [
@@ -222,8 +264,8 @@ export function Counter({
             <h2 className="font-semibold">{t("counter.basket")}</h2>
             <Badge>{cart.length}</Badge>
           </CardHeader>
-          <form onSubmit={submit}>
-            <fieldset disabled={pending} className="contents">
+          <form ref={formRef} onSubmit={submit}>
+            <fieldset disabled={!ready || pending} className="contents">
               <div className="space-y-4 p-4 sm:p-5">
                 {!cart.length ? (
                   <div className="py-10 text-center">
@@ -273,7 +315,7 @@ export function Counter({
                             value={line.quantity}
                             onChange={(e) => {
                               const number = Number(e.target.value);
-                              if (number >= 1 && number <= 999)
+                              if (Number.isInteger(number) && number >= 1 && number <= 999)
                                 update(line.id, { quantity: number });
                             }}
                           />
@@ -318,7 +360,10 @@ export function Counter({
                 )}
                 <div className="space-y-4 border-t pt-5">
                   <Field label={t("counter.customer")}>
-                    <Select value={ticketMode} onChange={(e) => setTicketMode(e.target.value)}>
+                    <Select
+                      value={ticketMode}
+                      onChange={(e) => field("ticketMode", e.target.value)}
+                    >
                       <option value="new">{t("counter.createTicket")}</option>
                       <option value="existing">{t("counter.existingTicket")}</option>
                       <option value="none">{t("common.none")}</option>
@@ -327,15 +372,34 @@ export function Counter({
                   {ticketMode === "new" ? (
                     <>
                       <Field label={t("counter.customerName")}>
-                        <Input name="customer_name" autoComplete="off" required maxLength={150} />
+                        <Input
+                          name="customer_name"
+                          value={draft.customerName}
+                          onChange={(e) => field("customerName", e.target.value)}
+                          autoComplete="off"
+                          required
+                          maxLength={150}
+                        />
                       </Field>
                       <Field label={`${t("counter.phone")} · ${t("common.optional")}`}>
-                        <Input name="phone_zalo" type="tel" autoComplete="off" maxLength={50} />
+                        <Input
+                          name="phone_zalo"
+                          value={draft.phone}
+                          onChange={(e) => field("phone", e.target.value)}
+                          type="tel"
+                          autoComplete="off"
+                          maxLength={50}
+                        />
                       </Field>
                     </>
                   ) : ticketMode === "existing" ? (
                     <Field label={t("tickets.number")}>
-                      <Select name="ticket_id" required defaultValue="">
+                      <Select
+                        name="ticket_id"
+                        required
+                        value={draft.ticketId}
+                        onChange={(e) => field("ticketId", e.target.value)}
+                      >
                         <option value="" disabled>
                           {t("common.choose")}
                         </option>
@@ -353,7 +417,7 @@ export function Counter({
                     <Select
                       name="payment_status"
                       value={payment}
-                      onChange={(e) => setPayment(e.target.value)}
+                      onChange={(e) => field("payment", e.target.value)}
                     >
                       <option value="unpaid">{t("paymentStatus.unpaid")}</option>
                       <option value="paid">{t("paymentStatus.paid")}</option>
@@ -361,7 +425,12 @@ export function Counter({
                   </Field>
                   {payment === "paid" ? (
                     <Field label={t("orders.paymentMethod")}>
-                      <Select name="method" required>
+                      <Select
+                        name="method"
+                        required
+                        value={draft.method}
+                        onChange={(e) => field("method", e.target.value)}
+                      >
                         <option value="cash">{t("paymentMethod.cash")}</option>
                         <option value="bank_transfer">{t("paymentMethod.bank_transfer")}</option>
                       </Select>
