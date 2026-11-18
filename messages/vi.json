@@ -219,7 +219,8 @@
     "review": "Kiểm tra đơn",
     "complete": "Tổng đơn hàng",
     "detailsHint": "Thêm chi tiết cần thiết cho sản phẩm này.",
-    "draftUnavailable": "Không thể lưu nháp trên trình duyệt này. Giữ trang mở để tránh mất thông tin đang nhập."
+    "draftUnavailable": "Không thể lưu nháp trên trình duyệt này. Giữ trang mở để tránh mất thông tin đang nhập.",
+    "remaining": "Còn lại: {count}"
   },
   "options": {
     "font": "Kiểu chữ",
@@ -339,7 +340,37 @@
     "mappingEmpty": "Chưa có liên kết vật tư",
     "preparedHelp": "Để trống nghĩa là chưa nhập; 0 nghĩa là chưa chuẩn bị.",
     "disableMapping": "Tắt liên kết",
-    "disableConfirm": "Tắt liên kết cho các đơn sau này? Lượng vật tư đã chốt được giữ nguyên."
+    "disableConfirm": "Tắt liên kết cho các đơn sau này? Lượng vật tư đã chốt được giữ nguyên.",
+    "productDescription": "Theo dõi số lượng sản phẩm của workshop, chỉnh tồn và xem lịch sử nhập/xuất kho.",
+    "lowCount": "{count} sản phẩm sắp hết",
+    "setupHelp": "Chọn Chỉnh tồn và nhập số lượng thực tế cho sản phẩm cần theo dõi. Sản phẩm chưa thiết lập chưa được giới hạn tồn kho.",
+    "negativeHelp": "Có tồn kho âm từ dữ liệu cũ. Chọn Chỉnh tồn > Điều chỉnh để ghi số lượng thực tế trước khi tiếp tục bán.",
+    "productsEmpty": "Chưa có sản phẩm cho workshop",
+    "productsEmptyBody": "Thêm sản phẩm vào workshop trong trang Sản phẩm trước.",
+    "notConfigured": "Chưa thiết lập",
+    "editStock": "Chỉnh tồn",
+    "currentStock": "Còn lại: {count}",
+    "sharedStock": "Kho dùng chung",
+    "history": "Lịch sử biến động kho",
+    "historyHelp": "30 biến động gần nhất được ghi nhận từ bản cập nhật này. Lịch sử vật tư cũ vẫn được giữ trong dữ liệu kho.",
+    "historyEmpty": "Chưa có biến động kho.",
+    "movement": "Loại",
+    "quantity": "Số lượng",
+    "target": "Tồn kho mới",
+    "adjustHelp": "Nhập tổng số sản phẩm thực tế đang còn, không phải số lượng thêm vào.",
+    "quantityHelp": "Nhập số sản phẩm cần thêm vào hoặc lấy ra khỏi kho.",
+    "reason": "Lý do",
+    "beforeAfter": "Trước → Sau",
+    "orderMovement": "Cập nhật theo đơn hàng",
+    "advanced": "Nâng cao: vật tư và công thức",
+    "advancedHelp": "Dành cho sản phẩm dùng chung vật tư hoặc nhiều loại nguyên liệu. Các số liệu ở đây được tính theo đơn vị vật tư; thao tác thông thường dùng bảng sản phẩm phía trên.",
+    "kinds": {
+      "in": "Nhập kho",
+      "out": "Xuất kho",
+      "adjust": "Điều chỉnh",
+      "sale": "Bán hàng",
+      "restore": "Hoàn kho"
+    }
   },
   "stockStatus": {
     "ok": "Đủ",
@@ -440,6 +471,10 @@
     "scope_immutable": "Không thể chuyển dữ liệu giữa các đơn vị hoặc sự kiện.",
     "load_failed": "Không thể tải dữ liệu mới nhất. Vui lòng thử lại.",
     "print_failed": "Không thể ghi nhận yêu cầu in. Hãy thử lại trước khi in.",
-    "price_changed": "Giá sản phẩm vừa thay đổi. Hãy tải lại và kiểm tra đơn trước khi tiếp tục."
+    "price_changed": "Giá sản phẩm vừa thay đổi. Hãy tải lại và kiểm tra đơn trước khi tiếp tục.",
+    "insufficient_stock": "Không đủ tồn kho. Giảm số lượng hoặc kiểm tra lại kho.",
+    "stock_changed": "Tồn kho vừa thay đổi. Tải lại trang rồi thử lại.",
+    "stock_setup_required": "Chọn Điều chỉnh để nhập số lượng thực tế trước.",
+    "inventory_shared": "Sản phẩm dùng chung vật tư hoặc nhiều nguyên liệu. Chỉnh trong phần Nâng cao."
   }
 }

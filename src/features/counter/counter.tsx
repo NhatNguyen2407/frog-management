@@ -12,8 +12,16 @@ import {
   ArrowRight,
   LoaderCircle,
 } from "lucide-react";
-import type { Product, Category, Ticket, Event, CheckoutResult } from "@/lib/supabase/types";
+import type {
+  Product,
+  Category,
+  Ticket,
+  Event,
+  CheckoutResult,
+  ProductStock,
+} from "@/lib/supabase/types";
 import { formatVnd } from "@/lib/formatting";
+import { stockAvailable } from "@/lib/domain/stock";
 import { subtotal } from "@/lib/domain/finance";
 import { mutate } from "@/features/actions";
 import { Link } from "@/i18n/navigation";
@@ -26,12 +34,14 @@ import { readDraft, emptyDraft, type CounterDraft } from "./draft";
 import { OptionsEditor } from "./options-editor";
 type CartLine = { id: string; product: Product; quantity: number; options: Record<string, string> };
 export function Counter({
+  stocks,
   draftKey,
   products,
   categories,
   tickets,
   event,
 }: {
+  stocks: ProductStock[];
   draftKey: string;
   products: Product[];
   categories: Category[];
@@ -103,6 +113,8 @@ export function Counter({
       category: "",
     })),
   );
+  const available = (productId: string, exceptId?: string) =>
+    stockAvailable(stocks, cart, productId, exceptId);
   function update(id: string, patch: Partial<CartLine>) {
     setCart((previous) => previous.map((line) => (line.id === id ? { ...line, ...patch } : line)));
   }
@@ -110,6 +122,10 @@ export function Counter({
     event.preventDefault();
     if (!cart.length) {
       setError("items_required");
+      return;
+    }
+    if (cart.some((line) => line.quantity > available(line.product.id, line.id))) {
+      setError("insufficient_stock");
       return;
     }
     const form = new FormData(event.currentTarget);
@@ -233,7 +249,9 @@ export function Counter({
                 <button
                   type="button"
                   key={product.id}
-                  disabled={!ready || pending || event.status !== "active"}
+                  disabled={
+                    !ready || pending || event.status !== "active" || available(product.id) < 1
+                  }
                   aria-label={t("counter.addItem", { name: product.name })}
                   onClick={() =>
                     setCart((previous) => [
@@ -254,6 +272,11 @@ export function Counter({
                     </span>
                     <Plus aria-hidden className="size-4 shrink-0" />
                   </span>
+                  {stocks.find((s) => s.product_id === product.id)?.stock_remaining != null ? (
+                    <span className="mt-2 text-xs text-muted-foreground">
+                      {t("counter.remaining", { count: available(product.id) })}
+                    </span>
+                  ) : null}
                 </button>
               ))}
             </div>
@@ -311,11 +334,15 @@ export function Counter({
                             aria-label={t("counter.quantityFor", { name: line.product.name })}
                             className="w-16 px-1 text-center"
                             min={1}
-                            max={999}
+                            max={Math.min(999, available(line.product.id, line.id))}
                             value={line.quantity}
                             onChange={(e) => {
                               const number = Number(e.target.value);
-                              if (Number.isInteger(number) && number >= 1 && number <= 999)
+                              if (
+                                Number.isInteger(number) &&
+                                number >= 1 &&
+                                number <= Math.min(999, available(line.product.id, line.id))
+                              )
                                 update(line.id, { quantity: number });
                             }}
                           />
@@ -323,7 +350,9 @@ export function Counter({
                             type="button"
                             variant="ghost"
                             size="icon"
-                            disabled={line.quantity >= 999}
+                            disabled={
+                              line.quantity >= Math.min(999, available(line.product.id, line.id))
+                            }
                             aria-label={t("counter.quantityFor", { name: line.product.name })}
                             onClick={() => update(line.id, { quantity: line.quantity + 1 })}
                           >

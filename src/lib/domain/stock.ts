@@ -1,3 +1,4 @@
+import type { ProductStock } from "../supabase/types.ts";
 import type { PaymentStatus } from "./finance.ts";
 
 export function desiredStockUsage(
@@ -52,4 +53,22 @@ export function stockSummary(
           ? "low"
           : "ok";
   return { remaining, status } as const;
+}
+
+export function stockAvailable(
+  stocks: ProductStock[],
+  cart: { id: string; product: { id: string }; quantity: number }[],
+  productId: string,
+  exceptId?: string,
+) {
+  const stock = stocks.find((row) => row.product_id === productId)?.stock_remaining;
+  return stock == null
+    ? 999
+    : Math.max(
+        0,
+        stock -
+          cart
+            .filter((row) => row.product.id === productId && row.id !== exceptId)
+            .reduce((sum, row) => sum + row.quantity, 0),
+      );
 }

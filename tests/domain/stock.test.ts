@@ -1,3 +1,5 @@
+import type { ProductStock } from "../../src/lib/supabase/types.ts";
+import { stockAvailable } from "../../src/lib/domain/stock.ts";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { desiredStockUsage, stockAdjustment, stockSummary } from "../../src/lib/domain/stock.ts";
@@ -32,4 +34,29 @@ test("fractional supplies keep three decimal places", () => {
   assert.equal(desiredStockUsage(3, 0.1, "unpaid"), 0.3);
   assert.equal(stockAdjustment(0.3, 0.2), 0.1);
   assert.equal(stockSummary(1, [-0.1, -0.2], 0).remaining, 0.7);
+});
+
+const row: ProductStock = {
+  product_id: "p",
+  stock_remaining: 5,
+  low_stock_threshold: 1,
+  editable: true,
+};
+const cart = [
+  { id: "a", product: { id: "p" }, quantity: 2 },
+  { id: "b", product: { id: "p" }, quantity: 1 },
+  { id: "c", product: { id: "other" }, quantity: 10 },
+];
+test("availability counts all customized lines of one product", () => {
+  assert.equal(stockAvailable([row], cart, "p"), 2);
+  assert.equal(stockAvailable([row], cart, "p", "a"), 4);
+});
+test("restored oversized baskets and negative legacy stock cannot add more", () => {
+  assert.equal(stockAvailable([{ ...row, stock_remaining: 1 }], cart, "p"), 0);
+  assert.equal(stockAvailable([{ ...row, stock_remaining: -3 }], [], "p"), 0);
+});
+test("unconfigured product stock remains distinct from zero", () => {
+  assert.equal(stockAvailable([{ ...row, stock_remaining: null }], [], "p"), 999);
+  assert.equal(stockAvailable([], [], "p"), 999);
+  assert.equal(stockAvailable([{ ...row, stock_remaining: 0 }], [], "p"), 0);
 });

@@ -56,6 +56,7 @@ try {
     await readFile("tests/database/check-in.sql", "utf8"),
     await readFile("tests/database/reporting.sql", "utf8"),
     await readFile("tests/database/receipts.sql", "utf8"),
+    await readFile("tests/database/product-stock.sql", "utf8"),
     "rollback;",
   ].join("\n");
   const output = docker(

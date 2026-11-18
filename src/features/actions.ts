@@ -17,6 +17,7 @@ export type ActionName =
   | "orderItem"
   | "orderDelete"
   | "checkout"
+  | "productStock"
   | "inventorySave"
   | "inventoryMapping"
   | "mappingDisable"
@@ -63,6 +64,7 @@ export async function mutate(action: ActionName, form: FormData): Promise<Action
     "eventUpdate",
     "productSave",
     "orderDelete",
+    "productStock",
     "inventorySave",
     "inventoryMapping",
     "mappingDisable",
@@ -208,6 +210,21 @@ export async function mutate(action: ActionName, form: FormData): Promise<Action
       case "checkout": {
         result = await client.rpc("get_order_checkout", { p_order_id: text(form, "id") });
         if (!result.error) return { ok: true, checkout: result.data as CheckoutResult };
+        break;
+      }
+      case "productStock": {
+        if (!eventId) return { ok: false, error: "not_found" };
+        const expected = text(form, "expected");
+        result = await client.rpc("change_product_stock", {
+          p_event: eventId,
+          p_product: text(form, "product_id"),
+          p_kind: choice(text(form, "kind"), ["in", "out", "adjust"] as const),
+          p_quantity: number(form, "quantity")!,
+          p_reason: text(form, "reason"),
+          p_threshold: number(form, "threshold")!,
+          p_expected: expected === "" ? null : Number(expected),
+          p_request: text(form, "request_id"),
+        });
         break;
       }
       case "inventorySave": {

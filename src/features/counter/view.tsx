@@ -7,7 +7,7 @@ export async function CounterView() {
   const [w, t] = await Promise.all([getWorkspace(), getTranslations()]);
   if (!w.event)
     return <EmptyState title={t("common.noEvent")} description={t("common.noEventBody")} />;
-  const [products, categories, links, tickets] = await Promise.all([
+  const [products, categories, links, tickets, stocks] = await Promise.all([
     requireData(
       w.client
         .from("products")
@@ -35,12 +35,14 @@ export async function CounterView() {
         .order("sequence_number", { ascending: false })
         .limit(500),
     ),
+    requireData(w.client.rpc("get_product_stock", { p_event: w.event.id })),
   ]);
   const ids = new Set(links.map((row) => row.product_id));
   return (
     <Counter
       key={`${w.user.id}:${w.unit.id}:${w.event.id}`}
       draftKey={`frog-counter-v1:${w.user.id}:${w.unit.id}:${w.event.id}`}
+      stocks={stocks}
       products={products.filter((row) => ids.has(row.id))}
       categories={categories}
       tickets={tickets}

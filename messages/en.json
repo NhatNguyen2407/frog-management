@@ -219,7 +219,8 @@
     "review": "Review order",
     "complete": "Order total",
     "detailsHint": "Add any details the team needs for this item.",
-    "draftUnavailable": "Draft storage is unavailable in this browser. Keep this page open to avoid losing your entries."
+    "draftUnavailable": "Draft storage is unavailable in this browser. Keep this page open to avoid losing your entries.",
+    "remaining": "Remaining: {count}"
   },
   "options": {
     "font": "Font",
@@ -339,7 +340,37 @@
     "mappingEmpty": "No stock mappings yet",
     "preparedHelp": "Blank means not entered; 0 means none prepared.",
     "disableMapping": "Disable mapping",
-    "disableConfirm": "Disable this mapping for future orders? Existing usage snapshots will stay intact."
+    "disableConfirm": "Disable this mapping for future orders? Existing usage snapshots will stay intact.",
+    "productDescription": "Track workshop product quantities, update stock and review stock movements.",
+    "lowCount": "{count} products running low",
+    "setupHelp": "Choose Edit stock and enter the physical count for products you want to track. Products without a stock setup have no stock limit yet.",
+    "negativeHelp": "Some existing stock balances are negative. Use Edit stock > Adjust to enter the physical count before selling more.",
+    "productsEmpty": "No products for this workshop",
+    "productsEmptyBody": "Add products to this workshop on the Products page first.",
+    "notConfigured": "Not set up",
+    "editStock": "Edit stock",
+    "currentStock": "Remaining: {count}",
+    "sharedStock": "Shared stock",
+    "history": "Stock movement history",
+    "historyHelp": "The latest 30 movements recorded since this update. Existing material movement history is retained.",
+    "historyEmpty": "No stock movements yet.",
+    "movement": "Movement",
+    "quantity": "Quantity",
+    "target": "New stock",
+    "adjustHelp": "Enter the total physical product count remaining, not the amount to add.",
+    "quantityHelp": "Enter the number of products to add to or take out of stock.",
+    "reason": "Reason",
+    "beforeAfter": "Before → After",
+    "orderMovement": "Order update",
+    "advanced": "Advanced: materials and recipes",
+    "advancedHelp": "For products sharing materials or using several supplies. These figures use material units; use the product table above for everyday changes.",
+    "kinds": {
+      "in": "Stock in",
+      "out": "Stock out",
+      "adjust": "Adjust",
+      "sale": "Sale",
+      "restore": "Restock"
+    }
   },
   "stockStatus": {
     "ok": "OK",
@@ -440,6 +471,10 @@
     "scope_immutable": "Records cannot be moved between business units or events.",
     "load_failed": "The latest data could not be loaded. Please try again.",
     "print_failed": "The print request could not be recorded. Try again before printing.",
-    "price_changed": "A product price changed. Refresh and review the order before continuing."
+    "price_changed": "A product price changed. Refresh and review the order before continuing.",
+    "insufficient_stock": "Insufficient stock. Reduce the quantity or check inventory.",
+    "stock_changed": "Stock has changed. Reload this page and try again.",
+    "stock_setup_required": "Use Adjust to enter the physical stock count first.",
+    "inventory_shared": "This product shares stock or uses multiple materials. Use the Advanced section."
   }
 }

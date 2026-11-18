@@ -80,6 +80,29 @@ export type Financials = Base & {
   unit_price_vnd: number;
   unit_cost_vnd: number | null;
 };
+export type ProductStock = {
+  product_id: string;
+  stock_remaining: number | null;
+  low_stock_threshold: number;
+  editable: boolean;
+};
+export type StockMovement = {
+  id: string;
+  business_unit_id: string;
+  event_id: string;
+  event_inventory_id: string;
+  order_item_id: string | null;
+  quantity_delta: number;
+  reason: string;
+  note: string | null;
+  created_at: string;
+  product_id: string | null;
+  product_quantity_delta: number | null;
+  stock_before: number | null;
+  stock_after: number | null;
+  stock_kind: string | null;
+  request_id: string | null;
+};
 export type InventoryStatus = {
   business_unit_id: string;
   event_id: string;
@@ -220,6 +243,7 @@ export type Database = {
           low_stock_threshold: number;
         }
       >;
+      inventory_movements: Table<StockMovement>;
       product_inventory_links: Table<
         Base & {
           event_id: string;
@@ -305,6 +329,20 @@ export type Database = {
       get_order_receipt_prices: Fn<
         { p_order_id: string },
         Pick<Financials, "order_item_id" | "unit_price_vnd">[]
+      >;
+      get_product_stock: Fn<{ p_event: string }, ProductStock[]>;
+      change_product_stock: Fn<
+        {
+          p_event: string;
+          p_product: string;
+          p_kind: string;
+          p_quantity: number;
+          p_reason: string;
+          p_threshold: number;
+          p_expected: number | null;
+          p_request: string;
+        },
+        undefined
       >;
       save_inventory: Fn<
         {
