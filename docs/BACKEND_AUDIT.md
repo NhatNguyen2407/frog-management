@@ -1,12 +1,12 @@
 # Sprint 4.1 - Backend Audit
 
-Updated: 2026-11-15
+Updated: 2026-11-18
 
 ## Scope and status
 
 The initial backend audit was read-only. Phase 4.2 provisioned a dedicated Supabase project, deployed the migrations and seeded the catalogue. Phase 4.3 added approved accounts and verified database roles; the owner reports regular successful app testing. Phase 4.4a adds ticket attendance without seeding sales or tickets.
 
-**Result: Authentication, check-in/undo and customer history/live search/CSV have browser acceptance alongside the recorded database checks. Phase 4.4b was accepted on 2026-11-15. Phase 4.4c saved-order labels are implemented and await browser/printer acceptance. POS draft recovery and inventory-rule parity remain open.**
+**Result: Authentication, check-in/undo and customer history/live search/CSV have browser acceptance alongside the recorded database checks. Phase 4.4b was accepted on 2026-11-15. Phase 4.4c saved-order labels/reprinting and Counter draft recovery are accepted on the main application as of 2026-11-18. Order/inventory parity remains open.**
 
 ## Connected Supabase projects
 
@@ -34,9 +34,9 @@ Hosted migration history and the deployed password authorization helpers were ch
 
 - **Check-in:** Phase 4.4a adds `tickets.checked_in_at`, a scoped registration view and guarded check-in/undo RPC. Automated SQL checks and owner-reported browser acceptance passed.
 - **Customer history and exports:** Phase 4.4b adds cross-workshop Owner history/live search and Orders/Revenue/Expenses CSV downloads with date/workshop filters. Read models, role isolation, CSV protection and pagination are tested. Browser acceptance passed on 2026-11-15, including exported test data, invalid-date handling and Staff denial on both new pages.
-- **Printing:** Phase 4.4c adds saved-order customer/preparation labels on named 76 x 130 mm pages, including F&B orders without tickets. Both Owner and Staff can print both copies or either separately. A membership-checked receipt RPC exposes saved selling prices per order without granting access to cost prices or financial reports. The preparation slip remains price-free. The path is read-only and retains the separate workshop-ticket print action. Unit, SQL permission, hosted Staff access, static-render, TypeScript and build checks passed; browser pagination and physical printer acceptance are pending.
+- **Printing:** Phase 4.4c adds saved-order customer/preparation labels on named 76 x 130 mm pages, including F&B orders without tickets. Both Owner and Staff can print both copies or either separately. A membership-checked receipt RPC exposes saved selling prices per order without granting access to cost prices or financial reports. The preparation slip remains price-free. The path is read-only and retains the separate workshop-ticket print action. Unit, SQL permission, hosted Staff access, static-render, TypeScript and build checks passed. Staff printing both labels and read-only reprinting were accepted in the main application; oversized-label edge cases remain for final operational QA.
 - **Inventory:** The prototype models product stock directly. The database has a more detailed materials model with event stock and product-to-supply mappings. This requires an explicit mapping of business rules rather than copying localStorage records.
-- **Drafts:** The prototype saves unfinished POS orders by workshop. The Next.js Counter currently holds its cart in component state; draft persistence must be designed separately when migrating that workflow.
+- **Drafts:** The Next.js Counter now saves products, quantities, options, customer details, ticket selection and payment choices in sessionStorage, scoped by account, business unit and workshop in the current tab. Reload/navigation recovery and the operational draft workflow were accepted on 2026-11-18. Confirmed checkout clears the draft; closing the tab ends the draft session. Cross-account/workshop isolation and failure/retry scenarios remain in Phase 4.5.
 
 I will use the accepted prototype as the UX/functional reference while keeping the existing transactional schema and code where appropriate.
 
@@ -59,4 +59,11 @@ I will use the accepted prototype as the UX/functional reference while keeping t
 
 ## Next action
 
-Phases 4.3, 4.4a and 4.4b are accepted based on the recorded app, database and CSV checks. Verify Phase 4.4c order-label previews, 76 x 130 mm printer output and read-only reprinting. Then finish POS draft recovery and order/inventory parity. Phase 4 remains in progress. Refer to `docs/PHASE4_PLAN.md` for the verification record.
+Authentication, check-in, customer history/CSV, dual-label printing/reprinting and Counter draft recovery are accepted based on the recorded checks and owner feedback. Review order/inventory parity, then continue with Phase 4.5 reliability, multi-device and backup/restore verification. Phase 4 remains in progress. Refer to `docs/PHASE4_PLAN.md` for the verification record.
+
+## Dependency security maintenance - 2026-11-18
+
+- Upgraded the pinned Next.js version from 16.4.3 to 16.4.6, including the matching environment/SWC packages in the lockfile. This includes the 16.4.5 security fixes and subsequent stable bug fixes. React and other application dependencies are unchanged.
+- Upstream references: [16.4.5 security release](https://github.com/vercel/next.js/releases/tag/v16.4.5) and [16.4.6 release](https://github.com/vercel/next.js/releases/tag/v16.4.6).
+- Post-upgrade npm audit no longer reports Next.js. It still reports two High dependency entries for one underlying [picomatch ReDoS advisory](https://github.com/advisories/GHSA-fc5q-39xc-vjpf), through next-intl > @parcel/watcher > picomatch 4.0.7. The advisory lists no patched version, and the registry still lists 4.0.7 as latest. This is an unresolved upstream dependency finding; it is not evidence that this application's customer inputs can exploit it. No forced dependency downgrade or security-warning suppression was applied.
+- Verification passed: 113/113 tests, TypeScript, production build on Next.js 16.4.6 and repository formatting. HTTP smoke checks passed for Vietnamese/English sign-in pages, unauthenticated Counter/Orders/export/print redirects, private no-store caching and response security headers. These HTTP checks did not use a signed-in browser or repeat database transaction tests.

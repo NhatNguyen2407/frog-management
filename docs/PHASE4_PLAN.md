@@ -1,6 +1,6 @@
 # Phase 4 - Backend Integration Plan
 
-Updated: 2026-11-15
+Updated: 2026-11-18
 
 ## Goal
 
@@ -11,7 +11,7 @@ Move Frog Management from the accepted browser-only prototype to the existing Ne
 - 4.1 - Backend audit: Complete. Four SQL migrations reviewed and the local PostgreSQL 17 database test passed.
 - 4.2 - Dedicated Supabase setup: Database verified on 2026-11-09. Four migrations, catalogue seed, RLS/security review and local-to-remote migration history alignment passed. Email/password and app environment configuration move to 4.3.
 - 4.3 - Authentication and authorization: Accepted on 2026-11-10 based on the owner's regular app testing and independent hosted account/RLS checks. Browser sign-in was not repeated by the agent.
-- 4.4 - Business feature integration: In progress. Check-in/undo and customer history/live search/CSV are accepted. Phase 4.4c order labels are implemented and await browser/printer acceptance. Unfinished POS drafts and order/inventory parity remain open.
+- 4.4 - Business feature integration: In progress. Check-in/undo and customer history/live search/CSV are accepted. Phase 4.4c order labels and Counter draft recovery are accepted on the main app. Order/inventory parity remains open.
 - 4.5 - Reliability and multi-device testing: Not started.
 - 4.6 - Final manual acceptance: Not started.
 
@@ -104,7 +104,7 @@ The temporary security hardening for `public.rls_auto_enable()` is a hosted proj
 
 ### Next step - 4.4
 
-Verify Phase 4.4c labels from Orders or the Counter success screen: both Owner and Staff can print both copies or either copy separately. The customer bill includes selling prices; the preparation slip does not. Confirm the 76 x 130 mm output and reprint behavior, then address unfinished POS drafts and order/inventory parity. Phases 4.3, 4.4a and 4.4b do not need another manual acceptance cycle unless their behavior changes.
+Review the remaining order/inventory parity, then run Phase 4.5 reliability and multi-device checks. Main-app dual-label printing/reprinting and Counter draft recovery are accepted. Earlier accepted flows do not need another full manual cycle unless their behavior changes.
 
 ### 4.3 initial read-only verification - 2026-11-10
 
@@ -172,4 +172,4 @@ Verify Phase 4.4c labels from Orders or the Counter success screen: both Owner a
 - Counter drafts now retain products, quantities, saved options, customer name/phone, ticket selection and payment choices through reload and navigation. Storage is scoped to the signed-in account, business unit and workshop in the current browser tab. Closing the tab ends the draft session.
 - Restored lines use the current catalogue and selling prices; unavailable products and invalid tickets are excluded. Checkout still validates current business rules on the server.
 - The checkout request ID survives an unchanged draft retry. Confirmed checkout clears the draft; failed checkout retains it. Printing does not restore a completed draft. Storage failures show a visible warning.
-- Manual acceptance pending: reload, Orders/back, workshop/account isolation, failed checkout retention and successful checkout clearing on the main application.
+- **Accepted - 2026-11-18:** I confirmed that the Counter draft workflow works in the main application after the fix. The previous reload and Orders/back reset issue is resolved. Account/workshop isolation and failure/retry scenarios remain part of Phase 4.5 reliability checks.
