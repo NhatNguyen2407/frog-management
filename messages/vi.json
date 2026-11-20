@@ -263,7 +263,8 @@
     "thankYou": "Cảm ơn bạn. Chúc bạn có một trải nghiệm thật vui.",
     "cancel": "Hủy vé",
     "allItems": "Sản phẩm trên vé",
-    "noItems": "Chưa có sản phẩm đang sử dụng liên kết với vé này."
+    "noItems": "Chưa có sản phẩm đang sử dụng liên kết với vé này.",
+    "paymentRequired": "Thanh toán các đơn liên kết trước khi chuyển vé vào hàng chờ hoặc thực hiện."
   },
   "queue": {
     "title": "Hàng chờ trực tiếp",
@@ -475,6 +476,8 @@
     "insufficient_stock": "Không đủ tồn kho. Giảm số lượng hoặc kiểm tra lại kho.",
     "stock_changed": "Tồn kho vừa thay đổi. Tải lại trang rồi thử lại.",
     "stock_setup_required": "Chọn Điều chỉnh để nhập số lượng thực tế trước.",
-    "inventory_shared": "Sản phẩm dùng chung vật tư hoặc nhiều nguyên liệu. Chỉnh trong phần Nâng cao."
+    "inventory_shared": "Sản phẩm dùng chung vật tư hoặc nhiều nguyên liệu. Chỉnh trong phần Nâng cao.",
+    "ticket_payment_required": "Vé cần có đơn hợp lệ và tất cả đơn liên kết phải được thanh toán trước khi thực hiện.",
+    "ticket_in_progress": "Vé đã bắt đầu hoặc hoàn thành. Không thể hủy đơn chưa thanh toán gắn với vé này."
   }
 }

@@ -10,7 +10,7 @@ The first business unit is a creative workshop with a small F&B catalogue. The d
 
 The repository contains Next.js screens, SQL migrations, a seed catalogue and automated tests, alongside the standalone mock POS prototype. The Sprint 3 prototype review recorded 96/96 automated tests and 5/5 follow-up edge cases passing. Those recorded results are not a fresh execution of the suite, nor proof of backend or live multi-device readiness.
 
-The dedicated The Frog Art Space Supabase project has aligned migrations and a seeded catalogue. Hosted email/password login, permissions and ticket check-in/undo have owner-reported acceptance, with independent database checks. Owner customer history and date-filtered CSV exports are implemented and tested; their browser acceptance is pending. Realtime, concurrency and complete business-flow acceptance remain pending. The standalone prototype works without Supabase, but is not suitable for real sales. A physical dual-label printer check was recorded for the mock prototype; the separate Next.js printing flow still needs equivalent verification. Without Supabase environment variables, the Next.js app shows a setup screen.
+The dedicated The Frog Art Space Supabase project has aligned migrations and a seeded catalogue. The main app has owner-reported acceptance for email/password roles, ticket check-in/undo, customer history/live search/CSV, physical dual-label printing/reprinting, Counter draft recovery and the five-step order/stock flow. Single-machine duplicate submission, post-checkout refresh and offline/retry checks were accepted on 2026-11-20. The current operating scope is one counter computer; multi-device concurrency and cross-session Realtime acceptance are deferred. Final linked-workflow browser QA, receipt overflow, backup/restore and production-mode startup remain open. The standalone prototype works without Supabase but is not suitable for real sales. Without Supabase environment variables, the Next.js app shows a setup screen.
 
 This is an internal application, not an online store. There are no customer accounts, online payments or public registration pages in Phase 1.
 
@@ -24,7 +24,7 @@ This is an internal application, not an online store. There are no customer acco
 | Tickets              | Sequential numbers, status history, paid-ticket check-in/undo, receipt printing | Owner, staff |
 | Queue                | Operational queue and a separate TV display with Supabase Realtime subscription | Owner, staff |
 | Orders               | Paid, Unpaid, Refunded and Cancelled statuses; cash or bank transfer            | Owner, staff |
-| Inventory            | Prepared stock, product-to-supply mappings, usage movements and alerts          | Owner        |
+| Inventory            | Product stock in/out/adjust, thresholds and movement history; advanced recipes  | Owner        |
 | Costs                | Record event expenses by category and date                                      | Owner        |
 | Customer history     | Search separate orders across workshops by name, phone, order or ticket         | Owner        |
 | CSV reports          | Orders, paid revenue and expenses with workshop and Vietnam-date filters        | Owner        |
@@ -142,8 +142,9 @@ The repository also includes an owner allowlist bootstrap script, but it does no
 - Profit = Paid revenue - cost of goods for Paid items - event operating costs. If a sold item's unit cost is missing, profit and margin are shown as unavailable.
 - An order can contain both workshop and F&B items.
 - Stock usage is recorded for non-cancelled orders, including Unpaid and Refunded orders. Cancelling, soft-deleting or voiding an item reverses the corresponding recorded usage. A refund does not imply a physical return.
-- Ticket numbers are generated per event. Tickets move through Registered, Ticket printed, Waiting, In progress and Completed, with a separate Cancelled state.
-- Printing records a print request and reprint count. The browser cannot confirm that paper was successfully printed.
+- Ticket numbers are generated per event. Paid tickets can move from Registered or Ticket printed to Waiting, then In progress and Completed. All live linked orders must be Paid to advance preparation. Attendance remains a separate paid-ticket check-in/undo operation.
+- Cancelling/refunding or archiving a linked order cancels its unfinished ticket and queue entry; completed preparation history is retained. Cancelling an Unpaid order after preparation started is rejected.
+- Saved-order customer/preparation labels are read-only and do not advance the queue or count ticket prints. The separate legacy workshop-ticket print action records print requests/reprints. The browser cannot confirm physical paper output.
 - Events and operational data are associated with a business unit. The SQL migrations use RLS and restricted functions to enforce access.
 
 Be careful not to count the same material purchase both as a product unit cost and as an event expense.
@@ -199,11 +200,11 @@ The database test runner starts an isolated PostgreSQL container, exercises migr
 
 ## Next priorities
 
-Hosted accounts, authentication and check-in/undo are accepted. The current priority is browser acceptance of customer history and CSV exports, followed by dual customer/staff labels and unfinished POS drafts in the database-backed app. Then verify end-to-end transactions, multi-device behavior, printer output, backups and CI. The current repository has tests but no committed GitHub Actions workflow.
+The next check is the linked main-app business workflow: Counter, payment, ticket/check-in, queue and completion, followed by refund/item edits, capacity/workshop isolation and expense/report reconciliation. The paid-production/cancellation guards have automated SQL coverage; their browser acceptance is pending. See [docs/MAIN_APP_QA.md](docs/MAIN_APP_QA.md) for the remaining checklist.
 
-Operational improvements to evaluate next are corrections to cost entries, explicit inventory adjustments/restocking, safer customer names on a public-facing TV and more robust event-level product controls.
+After that, verify long-label handling, backup/restore and production-mode startup on the counter computer. Multi-device acceptance is deferred. Review the tracked dependency security findings before release. The current repository has tests but no committed GitHub Actions workflow.
 
-The accepted browser prototype already includes customer history, CSV exports, workshop-specific reporting, draft autosave, and responsive workflows. These features still need verified parity in the database-backed application. Future work may add product-level cost analytics, cross-event comparisons and a separate public registration flow. A coffee-specific workflow remains out of scope.
+Future work may add expense correction controls, product-level cost analytics, cross-event comparisons and a separate public registration flow. A coffee-specific workflow remains out of scope.
 
 For the current backend audit, see [docs/BACKEND_AUDIT.md](docs/BACKEND_AUDIT.md). It distinguishes code already in the repository from the database and hosting checks still pending.
 

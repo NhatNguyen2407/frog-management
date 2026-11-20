@@ -19,6 +19,7 @@ const statuses: TicketStatus[] = [
   "cancelled",
 ];
 const next: Partial<Record<TicketStatus, TicketStatus>> = {
+  registered: "waiting",
   ticket_printed: "waiting",
   waiting: "in_progress",
   in_progress: "completed",
@@ -147,7 +148,7 @@ export async function TicketsView({
                       </Link>
                     </Button>
                   ) : null}
-                  {next[row.status] ? (
+                  {next[row.status] && row.can_check_in ? (
                     <ActionForm
                       action="ticketStatus"
                       label={t("tickets.advance", {
@@ -156,6 +157,11 @@ export async function TicketsView({
                       hidden={{ id: row.id, status: next[row.status]! }}
                       className="grid"
                     />
+                  ) : null}
+                  {next[row.status] && !row.can_check_in ? (
+                    <p className="w-full text-xs text-muted-foreground">
+                      {t("tickets.paymentRequired")}
+                    </p>
                   ) : null}
                   {!["cancelled", "completed"].includes(row.status) ? (
                     <ActionForm

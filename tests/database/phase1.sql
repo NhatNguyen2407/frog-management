@@ -57,11 +57,10 @@ do $$ declare ticket uuid; item uuid; before_count bigint; begin
   exception when check_violation then assert sqlerrm='app.invalid_transition'; end;
   assert public.record_ticket_print(ticket)=1;
   assert public.record_ticket_print(ticket)=2;
-  perform public.set_ticket_status(ticket,'waiting');
-  perform public.set_ticket_status(ticket,'in_progress');
-  perform public.set_ticket_status(ticket,'completed');
-  assert (select count(*) from public.ticket_transitions where ticket_id=ticket)=5, 'All transitions logged';
-  assert (select status from public.queue_entries where ticket_id=ticket)='completed';
+  begin
+    perform public.set_ticket_status(ticket,'waiting');
+    raise exception 'FAIL: unpaid ticket queued';
+  exception when check_violation then assert sqlerrm='app.ticket_payment_required'; end;
   select id into item from public.order_items where sku_snapshot='WS-TOTE-L-100';
   perform public.update_order_item(item,3,'{"font":"Serif"}');
   select count(*) into before_count from public.inventory_movements;
@@ -75,6 +74,11 @@ do $$ declare ticket uuid; item uuid; before_count bigint; begin
   assert (select profit_vnd from public.event_financials)=220000, 'Profit less COGS and expenses';
   assert (select stock_remaining from public.inventory_status)=7, 'Payment does not decrement twice';
   assert (select sum(revenue_percent) from public.product_revenue)=100;
+  perform public.set_ticket_status(ticket,'waiting');
+  perform public.set_ticket_status(ticket,'in_progress');
+  perform public.set_ticket_status(ticket,'completed');
+  assert (select count(*) from public.ticket_transitions where ticket_id=ticket)=5, 'All transitions logged';
+  assert (select status from public.queue_entries where ticket_id=ticket)='completed';
 end $$;
 
 do $$ declare p public.products; begin

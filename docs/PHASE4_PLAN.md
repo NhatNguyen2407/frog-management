@@ -1,6 +1,6 @@
 # Phase 4 - Backend Integration Plan
 
-Updated: 2026-11-18
+Updated: 2026-11-20
 
 ## Goal
 
@@ -12,8 +12,8 @@ Move Frog Management from the accepted browser-only prototype to the existing Ne
 - 4.2 - Dedicated Supabase setup: Database verified on 2026-11-09. Four migrations, catalogue seed, RLS/security review and local-to-remote migration history alignment passed. Email/password and app environment configuration move to 4.3.
 - 4.3 - Authentication and authorization: Accepted on 2026-11-10 based on the owner's regular app testing and independent hosted account/RLS checks. Browser sign-in was not repeated by the agent.
 - 4.4 - Business feature integration: In progress. Check-in/undo and customer history/live search/CSV are accepted. Order labels, Counter drafts and the redesigned product-stock flow are accepted on the main app. The five-step order/stock checklist passed; remaining business edge cases belong to final regression.
-- 4.5 - Single-machine reliability: Pending. Multi-device concurrency and cross-session Realtime acceptance are deferred by the owner; duplicate submission, network recovery and backup/restore remain in scope.
-- 4.6 - Final manual acceptance: Not started.
+- 4.5 - Single-machine reliability: Partially accepted on 2026-11-20. TC01 duplicate submission, TC02 post-checkout refresh and TC03 offline/retry passed in the main app. Backup/restore, process-restart recovery and oversized-label acceptance remain open; multi-device concurrency and cross-session Realtime acceptance are deferred.
+- 4.6 - Final manual acceptance: In progress. Linked-workflow SQL regression passed; the browser checklist in MAIN_APP_QA.md awaits acceptance.
 
 ## 4.2 - Dedicated Supabase setup
 
@@ -192,3 +192,14 @@ Run the single-machine reliability checks in 4.5, then one consolidated final bu
 - The shop/event will use one computer for the foreseeable future. I deferred multi-device concurrency and cross-session Realtime acceptance. Single-machine duplicate requests, connection/restart recovery, backup/restore and final operational regression remain required.
 - Final regression should cover the linked Counter > payment > ticket/check-in > queue > completion journey, F&B without a ticket, refund/item-edit behavior, workshop capacity/isolation, expense/report reconciliation, long receipt content and production-mode startup on the counter machine. Earlier individual acceptance results remain valid; prototype acceptance alone does not close these main-app checks.
 - Existing dependency security findings remain tracked in BACKEND_AUDIT.md and must be reviewed during final readiness. This documentation update did not rerun automated checks; the latest implementation verification remains 116 tests plus TypeScript/build/format and disposable PostgreSQL assertions.
+
+### Single-machine reliability acceptance and linked workflow - 2026-11-20
+
+- **Accepted:** I completed TC01 (rapid repeated create-order clicks), TC02 (refresh/navigation after checkout) and TC03 (offline before submit, reconnect/refresh and retry) on the main application. Orders/tickets were not duplicated, stock was not deducted twice, and the failed checkout retained the draft. This is owner-reported browser acceptance. It does not cover a full process restart, a lost response after server commit or a hosted database restore.
+- Started the consolidated business-workflow checks. A disposable PostgreSQL regression reproduced the existing bug: a printed Unpaid ticket could enter Waiting. The backend now requires at least one live order and every live linked order Paid before advancing Waiting/In progress/Completed. The initial-payment barrier is enforced independently of frontend controls.
+- Cancelling/refunding or archiving a linked order now cancels its unfinished ticket/queue entry atomically. Completed preparation and attendance timestamps are retained. Cancelling an Unpaid linked order after preparation started is rejected without stock changes. Existing refund-without-restock and cancellation-restock rules remain unchanged.
+- A paid Registered ticket can move directly to Waiting using an explicit Tickets action. Customer/preparation label printing stays read-only; it no longer forces a separate legacy ticket print to unlock the queue. Unpaid tickets show a payment reminder instead of the advance action.
+- The baseline test now performs item edits while Unpaid, verifies the payment barrier, then confirms the same logged production transitions after payment. New integrated assertions cover paid/unpaid preparation, completion/retry, refund before/after completion, cancellation capacity release, no-ticket F&B, shared-ticket unpaid add-ons, archive removal, stock/report reconciliation, Staff operation and outsider denial.
+- **Next manual action:** Run QA04-QA09 in [MAIN_APP_QA.md](MAIN_APP_QA.md), starting with one complete Counter > payment > two-label print > check-in > Waiting > In progress > Completed journey. These manual cases are pending; SQL results do not replace browser acceptance. Backup/restore and production-mode startup remain separate readiness checks.
+- Deployed additive migration `20261120122914_ticket_workflow_guards` to Frog Management. Hosted read-only checks confirmed the payment barrier, order/ticket trigger and unchanged authenticated/anonymous API boundaries; the trigger function cannot be called directly by app roles. No existing sales, tickets or stock balances were rewritten by deployment. Security Advisor has no new findings beyond the existing password-protection warning.
+- Verification passed: 116/116 unit tests, TypeScript, production build and formatting; all six database suites passed on disposable PostgreSQL 17.5 and were rolled back. The pre-fix integrated test failed because printing an Unpaid ticket bypassed payment, and now passes. Docker, real password/browser operation, hardware printing and backup restore were not repeated by the agent.

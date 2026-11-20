@@ -263,7 +263,8 @@
     "thankYou": "Thank you. Enjoy making something yours.",
     "cancel": "Cancel ticket",
     "allItems": "Ticket items",
-    "noItems": "No active items linked to this ticket."
+    "noItems": "No active items linked to this ticket.",
+    "paymentRequired": "Pay all linked orders before moving this ticket into the queue or production."
   },
   "queue": {
     "title": "Live queue",
@@ -475,6 +476,8 @@
     "insufficient_stock": "Insufficient stock. Reduce the quantity or check inventory.",
     "stock_changed": "Stock has changed. Reload this page and try again.",
     "stock_setup_required": "Use Adjust to enter the physical stock count first.",
-    "inventory_shared": "This product shares stock or uses multiple materials. Use the Advanced section."
+    "inventory_shared": "This product shares stock or uses multiple materials. Use the Advanced section.",
+    "ticket_payment_required": "This ticket needs a live order and all linked orders must be paid before production.",
+    "ticket_in_progress": "The ticket is in progress or completed. Its unpaid order cannot be cancelled."
   }
 }

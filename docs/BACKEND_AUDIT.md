@@ -1,12 +1,12 @@
 # Sprint 4.1 - Backend Audit
 
-Updated: 2026-11-18
+Updated: 2026-11-20
 
 ## Scope and status
 
 The initial backend audit was read-only. Phase 4.2 provisioned a dedicated Supabase project, deployed the migrations and seeded the catalogue. Phase 4.3 added approved accounts and verified database roles; the owner reports regular successful app testing. Phase 4.4a adds ticket attendance without seeding sales or tickets.
 
-**Result: Authentication, check-in/undo and customer history/live search/CSV have browser acceptance alongside the recorded database checks. Phase 4.4b was accepted on 2026-11-15. Phase 4.4c saved-order labels/reprinting and Counter draft recovery are accepted on the main application as of 2026-11-18. The redesigned inventory UI and five-step order/stock flow are accepted. Single-machine reliability and final business regression remain open.**
+**Result: Authentication, check-in/undo and customer history/live search/CSV have browser acceptance alongside the recorded database checks. Phase 4.4b was accepted on 2026-11-15. Phase 4.4c saved-order labels/reprinting and Counter draft recovery are accepted on the main application as of 2026-11-18. The redesigned inventory UI and five-step order/stock flow are accepted. Single-machine TC01-TC03 are also accepted on 2026-11-20. Linked-workflow browser QA and the remaining readiness checks are open.**
 
 ## Connected Supabase projects
 
@@ -20,7 +20,7 @@ I will not point Frog Management migrations at either Dioxyzine Frog project. A 
 
 - The standalone `public/prototype/` is the accepted browser-only UI. It uses localStorage and is not authenticated or connected to Postgres.
 - The Next.js application in `src/` is a separate, database-oriented implementation. It uses Supabase SSR clients, a server-side workspace context, owner/staff permissions, data queries and server actions. Staff email/password has replaced social login.
-- Nine SQL migrations exist under `supabase/migrations/`: core schema, security, operations, reporting, staff password authentication, ticket check-in, customer history/report read models and scoped receipt selling prices and product-stock workflow. All nine versions match hosted migration history.
+- Ten SQL migrations exist under `supabase/migrations/`: core schema, security, operations, reporting, staff password authentication, ticket check-in, customer history/report read models and scoped receipt selling prices and product-stock workflow and ticket workflow guards. All ten versions match hosted migration history.
 - Core schema defines 20 business tables, including units, staff allowlist, events, products, tickets, queue, orders, inventory movements, costs and audit log.
 - Security migration defines row-level security, the staff allowlist Auth Hook, unit membership checks, role-based policies, guarded writes and audit triggers.
 - Operations migration implements database functions for creating events, products and orders, ticket status/printing, payment transitions, inventory and checkout.
@@ -59,7 +59,7 @@ I will use the accepted prototype as the UX/functional reference while keeping t
 
 ## Next action
 
-Authentication, check-in, customer history/CSV, dual-label printing/reprinting and Counter draft recovery are accepted based on the recorded checks and owner feedback. The redesigned order/stock checklist is also accepted. Continue with Phase 4.5 single-machine reliability and backup/restore, followed by consolidated final business regression. Multi-device acceptance is deferred. Phase 4 remains in progress. Refer to `docs/PHASE4_PLAN.md` for the verification record.
+Authentication, check-in, customer history/CSV, dual-label printing/reprinting and Counter draft recovery are accepted based on the recorded checks and owner feedback. The redesigned order/stock checklist is also accepted. TC01-TC03 single-machine reliability checks are accepted. Continue with the consolidated browser workflow in MAIN_APP_QA.md; process-restart/receipt edge cases, backup/restore and production-mode startup remain pending. Multi-device acceptance is deferred. Phase 4 remains in progress. Refer to `docs/PHASE4_PLAN.md` for the verification record.
 
 ## Dependency security maintenance - 2026-11-18
 
@@ -67,3 +67,12 @@ Authentication, check-in, customer history/CSV, dual-label printing/reprinting a
 - Upstream references: [16.4.5 security release](https://github.com/vercel/next.js/releases/tag/v16.4.5) and [16.4.6 release](https://github.com/vercel/next.js/releases/tag/v16.4.6).
 - Post-upgrade npm audit no longer reports Next.js. It still reports two High dependency entries for one underlying [picomatch ReDoS advisory](https://github.com/advisories/GHSA-fc5q-39xc-vjpf), through next-intl > @parcel/watcher > picomatch 4.0.7. The advisory lists no patched version, and the registry still lists 4.0.7 as latest. This is an unresolved upstream dependency finding; it is not evidence that this application's customer inputs can exploit it. No forced dependency downgrade or security-warning suppression was applied.
 - Verification passed: 113/113 tests, TypeScript, production build on Next.js 16.4.6 and repository formatting. HTTP smoke checks passed for Vietnamese/English sign-in pages, unauthenticated Counter/Orders/export/print redirects, private no-store caching and response security headers. These HTTP checks did not use a signed-in browser or repeat database transaction tests.
+
+## Linked-workflow verification - 2026-11-20
+
+- A disposable SQL reproduction confirmed that the old backend let a printed Unpaid ticket enter the production queue. New guards require all live linked orders Paid before advancing preparation. Cancelling/refunding/archiving a linked order stops unfinished preparation; completed work history and attendance remain intact.
+- The Tickets page now offers Paid Registered > Waiting explicitly, while customer/preparation label printing remains read-only. No extra legacy ticket-print request is required.
+- The new workflow SQL suite runs with the existing baseline/check-in/report/receipt/product-stock suites on a disposable PostgreSQL 17.5 instance; all fixtures are rolled back. Automated checks are distinct from owner browser acceptance.
+- Browser TC01-TC03 acceptance is recorded in PHASE4_PLAN.md. The next manual cases and remaining backup/startup requirements are in MAIN_APP_QA.md.
+- Deployed `20261120122914_ticket_workflow_guards`; all ten source/hosted migration versions align. Hosted metadata confirmed the guard/trigger and anonymous/app-role grant boundaries, with no new Security Advisor findings. No existing business records were changed by deployment.
+- Current verification: 116/116 unit tests, TypeScript, production build, formatting and all six SQL suites passed on disposable PostgreSQL 17.5. The Docker wrapper, physical printer, signed-in browser and backup/restore were not exercised by the agent in this increment.
